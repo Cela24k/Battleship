@@ -1,5 +1,5 @@
 # Battleship
-Web Technologies and Applications's course project
+Web Technologies and Applications's class project
 
 Game logic
 Battleship is a turn-based guessing game for two players. Each player has two grids of
