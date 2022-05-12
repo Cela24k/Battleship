@@ -1,4 +1,8 @@
 {
+  "name": "battleship",
+  "main": "index",
+  "version": "0.0.1",
+  "author": "Alessandro Giuliani, Alessandro Celadon",
   "dependencies": {
     "colors": "^1.4.0",
     "angular": "^1.8.3",
