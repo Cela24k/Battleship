@@ -8,10 +8,11 @@ import mongoose = require('mongoose');
 import express = require('express');
 import bodyparser = require('body-parser');
 import passport = require('passport');
-import jsonwebtoken = require('jsonwebtoken');  
+import jsonwebtoken = require('jsonwebtoken');
 import jwt = require('express-jwt');
-import cors = require('cors');                  
+import cors = require('cors');
 import io = require('socket.io');
+import { Http2ServerResponse } from 'http2';
 
 
 
@@ -23,8 +24,23 @@ app.use(cors());
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body
 app.use(bodyparser.json())
 
+app.use( (req,res,next) => {
+    console.log("------------------------------------------------".inverse)
+    console.log("Method: "+req.method.cyan+" Endpoint : "+req.url.blue);
+    next();
+  })
+
 // TODO vedere in che modo conviene creare il server, se dopo aver connesso il database o prima, Mettere nel .env url mongo, jwt ecc.
-mongoose.connect(process.env.DB_URL)
-.then(function(){
-    console.log('Connected to DB');
-})
+mongoose.connect("mongodb+srv://admin:admin@cluster0.ui3ec.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+    .then(
+        () => {
+            console.log('Connected to DB'.green);
+            let server = http.createServer(app);
+            server.listen(8080, () => console.log("HTTP Server started on port 8080".green));
+        }
+    ).catch(
+        (err) => {
+            console.log("Error Occurred during initialization".red);
+            console.log(err);
+        }
+    )

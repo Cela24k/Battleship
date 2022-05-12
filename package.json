@@ -30,5 +30,9 @@
     "@types/node": "^13.13.52",
     "@types/passport": "^1.0.3",
     "typescript": "^3.8.3"
+  },
+  "scripts": {
+    "compile": "tsc ./src/index.ts",
+    "start": "node index"
   }
 }
