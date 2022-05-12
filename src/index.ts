@@ -1,17 +1,17 @@
 // importati  imoduli che ci possono servire per l'applicazione
-const result = require('dotenv').config();
-const fs = require('fs');
-const http = require('http');
-const colors = require('colors');
+const result = require('dotenv').config(); //loada variabili d'ambiente into process.env:The process.env property returns an object containing the user environment. https://nodejs.org/docs/latest/api/process.html#process_process_env
+import fs = require('fs');
+import http = require('http');
+import colors = require('colors');
 colors.enabled = true;
-const mongoose = require('mongoose');
-const express = require('express');
-const bodyparser = require('body-parser');
-const passport = require('passport');
-const jsonwebtoken = require('jsonwebtoken');  
-const jwt = require('express-jwt');
-const cors = require('cors');                  
-const io = require('socket.io');
+import mongoose = require('mongoose');
+import express = require('express');
+import bodyparser = require('body-parser');
+import passport = require('passport');
+import jsonwebtoken = require('jsonwebtoken');  
+import jwt = require('express-jwt');
+import cors = require('cors');                  
+import io = require('socket.io');
 
 
 
@@ -24,3 +24,7 @@ app.use(cors());
 app.use(bodyparser.json())
 
 // TODO vedere in che modo conviene creare il server, se dopo aver connesso il database o prima, Mettere nel .env url mongo, jwt ecc.
+mongoose.connect(process.env.DB_URL)
+.then(function(){
+    console.log('Connected to DB');
+})
