@@ -1,0 +1,19 @@
+.comp{
+    color:black;
+    top:200px;
+    width:10vw;
+}
+
+.scene{
+    width:100vw; 
+    height:100vh - 500px;
+    position:absolute;
+    top:300px;
+    text-align: center;
+}
+
+@media (min-width: 398px){
+    .container {
+        width: 400px;
+    }
+}
