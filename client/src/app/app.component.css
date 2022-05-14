@@ -11,9 +11,3 @@
     top:300px;
     text-align: center;
 }
-
-@media (min-width: 398px){
-    .container {
-        width: 400px;
-    }
-}
