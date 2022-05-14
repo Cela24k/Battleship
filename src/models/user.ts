@@ -1,4 +1,5 @@
-import { Document, Model, Schema, Types, SchemaTypes, SchemaType } from "mongoose";
+import { Document, Model, Schema, Types, SchemaTypes, SchemaType} from "mongoose";
+import mongoose from "mongoose";
 import { ChatInterface } from "./chat";
 
 enum Role {
@@ -98,4 +99,14 @@ export const UserSchema = new Schema<UserInterface>({
     }
 })
 
+export function getSchema() { return UserSchema; }
+
+// Mongoose Model
+var userModel;  // This is not exposed outside the model
+export function getModel() : Model< Document > { // Return Model as singleton
+    if( !userModel ) {
+        userModel = mongoose.model('User', getSchema() )
+    }
+    return userModel;
+}
 
