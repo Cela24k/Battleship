@@ -334,4 +334,7 @@
 <div *ngIf="logged===2" class="scene">
   <app-register class="comp"></app-register>
 </div>
+<div *ngIf="logged===3">
+  <app-play-game (click)="logged=1"></app-play-game>
+</div>
 <router-outlet></router-outlet>
