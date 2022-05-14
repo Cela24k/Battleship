@@ -11,3 +11,11 @@
     top:300px;
     text-align: center;
 }
+
+.button{
+    color:white; 
+    margin-right: 16px;
+    text-decoration: underline; 
+    background-color: #1976d2; 
+    border: #1976d2;
+}
