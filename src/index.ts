@@ -36,7 +36,7 @@ app.use('/auth', authRoutes);
 
 app.get("/", (req, res) => {
 
-    res.status(200).json({ api_version: "1.0", endpoints: ["/login"] }); // json method sends a JSON response (setting the correct Content-Type) to the client
+    res.status(200).json({ api_version: "1.0", endpoints: ["/auth","/user"] }); // json method sends a JSON response (setting the correct Content-Type) to the client
 
 });
 
