@@ -17,6 +17,16 @@ export interface UserInterface extends Document {
     friends:[Types.ObjectId], // by reference ?
     chats:[ChatInterface],  //by copy ?
     stats: StatsInterface,
+    setPassword(pwd: String) : void,
+    validatePassword(pwd: String) : boolean,
+    hasAdminRole() : boolean,
+    hasModeratorRole() : boolean, // vedere se è meglio avere due metodi oppure un metodo che ci restituisce direttamente il ruolo
+    addChat() : void, // vedere che parametri ha bisogno 
+    removeChat() : void,//stessa cosa
+    setModeratorRole() : void,
+    addFriend(idFriend: Types.ObjectId): void,
+    removeFriend(idFriend: Types.ObjectId): void,//vedere se si elimina uno alla volta, in caso contrario dobbiamo mettere come parametri un array di id
+
 } 
 
 export interface StatsInterface {
@@ -75,10 +85,12 @@ export const UserSchema = new Schema<UserInterface>({
     username: {
         type: SchemaTypes.String,
         required: true,
+        unique: true
     },
     email: {
         type: SchemaTypes.String,
         required: true,
+        unique : true
     },
     pass: {
         type: SchemaTypes.String,
@@ -98,6 +110,8 @@ export const UserSchema = new Schema<UserInterface>({
         type: StatsSchema,
     }
 })
+
+
 
 export function getSchema() { return UserSchema; }
 
