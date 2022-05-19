@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { AccessComponent } from './access/access.component';
 import { PlayGameComponent } from './play-game/play-game.component';
 import { RegisterComponent } from './register/register.component';
-
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,7 +16,8 @@ import { RegisterComponent } from './register/register.component';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
