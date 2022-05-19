@@ -17,17 +17,20 @@ var app = express();
 app.use(cors());
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body
 app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({
+    extended: true
+}));
 //
 app.use(function (req, res, next) {
     console.log("------------------------------------------------".inverse);
     console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.blue + req.body);
     next();
 });
-//qui passiamo tutti i middleware(routes) che implementiamo
-app.use('/auth', authRoutes);
 app.get("/", function (req, res) {
     res.status(200).json({ api_version: "1.0", endpoints: ["/auth", "/user"] }); // json method sends a JSON response (setting the correct Content-Type) to the client
 });
+//qui passiamo tutti i middleware(routes) che implementiamo
+app.use('/auth', authRoutes);
 // TODO vedere in che modo conviene creare il server, se dopo aver connesso il database o prima, Mettere nel .env url mongo, jwt ecc.
 mongoose.connect("mongodb+srv://admin:admin@cluster0.ui3ec.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     .then(function () {

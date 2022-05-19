@@ -23,7 +23,10 @@ const app = express();
 // in questo caso cors(cross-origin resource sharing) serve nel condividere risorse limitate tra le origini che possono avere domini diversi
 app.use(cors());
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body
-app.use(bodyparser.json())
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({
+  extended: true
+}));
 //
 app.use((req, res, next) => {
     console.log("------------------------------------------------".inverse)
@@ -31,15 +34,15 @@ app.use((req, res, next) => {
     next();
 })
 
-//qui passiamo tutti i middleware(routes) che implementiamo
-app.use('/auth', authRoutes);
 
 app.get("/", (req, res) => {
-
+    
     res.status(200).json({ api_version: "1.0", endpoints: ["/auth","/user"] }); // json method sends a JSON response (setting the correct Content-Type) to the client
-
+    
 });
 
+//qui passiamo tutti i middleware(routes) che implementiamo
+app.use('/auth', authRoutes);
 
 
 
