@@ -156,10 +156,12 @@ export const UserSchema = new Schema<UserInterface>({
 })
 
 UserSchema.methods.setPassword = function (pwd: string) {
+    console.log('Ghesbor');
     this.salt = crypto.randomBytes(16).toString('hex');
     var hmac = crypto.createHmac('sha512', this.salt);
     hmac.update(pwd);
     this.digest = hmac.digest('hex'); // The final digest depends both by 
+
 }
 
 UserSchema.methods.validatePassword = function (pwd: string): boolean {
@@ -170,26 +172,26 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
     return (this.digest === digest);
 }
 
-UserSchema.methods.isAdmin = function():boolean {
+UserSchema.methods.isAdmin = function (): boolean {
     return this.role == Role.Admin;
 }
 
-UserSchema.methods.isModerator = function():boolean {
+UserSchema.methods.isModerator = function (): boolean {
     return this.role == Role.Mod;
 }
 
-UserSchema.methods.isWaiting = function():boolean{
+UserSchema.methods.isWaiting = function (): boolean {
     return this.waiting == true;
 }
 
-UserSchema.methods.addFriend = function(friend: Types.ObjectId): void {
-    if(!this.friends.find(friend)) this.friends.push(friend);
+UserSchema.methods.addFriend = function (friend: Types.ObjectId): void {
+    if (!this.friends.find(friend)) this.friends.push(friend);
 }
 
-UserSchema.methods.setRole = function(role: Role): void{
-    if(this.role !== role) this.role = role;
+UserSchema.methods.setRole = function (role: Role): void {
+    if (this.role !== role) this.role = role;
 }
-UserSchema.methods.removeFriend = function(): void{
+UserSchema.methods.removeFriend = function (): void {
     /* TODO */
 }
 export function getSchema() { return UserSchema; }

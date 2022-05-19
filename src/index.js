@@ -18,9 +18,6 @@ app.use(cors());
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body
 app.use(bodyparser.urlencoded());
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({
-    extended: true
-}));
 //
 app.use(function (req, res, next) {
     console.log("------------------------------------------------".inverse);
