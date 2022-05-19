@@ -2,6 +2,7 @@
     color:black;
     top:200px;
     width:10vw;
+    font-family: 'Press Start 2P', cursive;
 }
 
 .scene{
@@ -16,6 +17,6 @@
     color:white; 
     margin-right: 16px;
     text-decoration: underline; 
-    background-color: #1976d2; 
-    border: #1976d2;
+    background-color: #DB9D47; 
+    border: #DB9D47;
 }
