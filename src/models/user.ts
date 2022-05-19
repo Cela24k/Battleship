@@ -1,8 +1,9 @@
 import { Document, Model, Schema, Types, SchemaTypes, SchemaType} from "mongoose";
 import mongoose from "mongoose";
 import { ChatInterface } from "./chat";
+import { NotificationType , NotificationInterface } from "./notification";
 
-enum Role {
+export enum Role {
     Admin,
     Mod,
     None
@@ -17,6 +18,41 @@ export interface UserInterface extends Document {
     friends:[Types.ObjectId], // by reference ?
     chats:[ChatInterface],  //by copy ?
     stats: StatsInterface,
+    notifications: [NotificationInterface],
+
+    /* this could be useful for the Matchmaking,
+    *  a match shouldn't start unless both players are waiting and if 
+    *  something bad happens in the meantime, this field is set to false 
+    */
+    waiting: boolean, 
+
+    /* Returns true if this user's role field is set to "Role.Admin" */
+    isAdmin(): boolean;
+
+    /* Returns true if this user's role field is set to "Role.Admin" */
+    isModerator(): boolean;
+
+    /* Handy in the matchmaking, read "waiting" property.
+    * Returns true if the player is looking for a match 
+    */
+    isWaiting(): boolean;
+
+    /* Sends a notification to the other user to ask for friendship */ 
+    addFriend(friend: Types.ObjectId): void;
+
+    removeFriend(friend: Types.ObjectId): void;
+
+    blockFriend(friend: Types.ObjectId): void;
+
+    /* Invites a friend to a game with a notification*/
+    gameNotification(friend: Types.ObjectId): void;
+
+    /* Sends a friend notification, the addFriend function is called 
+    *  if it is accepted */
+    friendNotification(friend: Types.ObjectId): void;
+    
+    /* Sets this User's role */
+    setRole(): void;
 } 
 
 export interface StatsInterface {
