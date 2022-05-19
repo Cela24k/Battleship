@@ -155,7 +155,7 @@ export const UserSchema = new Schema<UserInterface>({
 
 })
 
-UserSchema.methods.setPassword = async function (pwd: string) {
+UserSchema.methods.setPassword = function (pwd: string) {
     this.salt = crypto.randomBytes(16).toString('hex');
     var hmac = crypto.createHmac('sha512', this.salt);
     hmac.update(pwd);
@@ -203,7 +203,8 @@ export function getModel(): Model<UserInterface> { // Return Model as singleton
     return userModel;
 }
 
-export function newUser(data): UserInterface {
+export function newUser(data: any): UserInterface {
+    console.log(data);
     const _userModel = getModel();
     var user = new _userModel(data);
 
