@@ -111,10 +111,12 @@ export const UserSchema = new Schema<UserInterface>({
     username: {
         type: SchemaTypes.String,
         required: true,
+        unique: true
     },
     email: {
         type: SchemaTypes.String,
         required: true,
+        unique : true
     },
     pass: {
         type: SchemaTypes.String,
@@ -134,6 +136,8 @@ export const UserSchema = new Schema<UserInterface>({
         type: StatsSchema,
     }
 })
+
+
 
 export function getSchema() { return UserSchema; }
 
