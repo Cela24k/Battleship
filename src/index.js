@@ -20,7 +20,7 @@ app.use(bodyparser.json());
 //
 app.use(function (req, res, next) {
     console.log("------------------------------------------------".inverse);
-    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.blue);
+    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.blue + req.body);
     next();
 });
 //qui passiamo tutti i middleware(routes) che implementiamo
