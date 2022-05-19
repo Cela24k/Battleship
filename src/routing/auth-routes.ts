@@ -6,34 +6,33 @@ import * as user from '../models/user'
 var router = Router();
 
 router.post('/login', function (req, res) {
-
+    console.log(req.body);
+    return res.sendStatus(200);
 })
-router.post('/registration', function (req, res, next) {//TODO non funziona postmassage, vedere come mandare il body giusto
+
+router.post('/register', function (req, res, next) {//TODO non funziona postmassage, vedere come mandare il body giusto
     const { email, password, username } = req.body;
     console.log(req.body);
     if (email) {// TODO controllo email non solo da parte frontend ma anche da backend
         user.getModel().findOne({ email: email }) //vedere in che modo mettere all'interno della richiesta, il nome email cosi da non dover ripetere con lo stesso nome del database
             .then((doc) => {
-                if (!doc) {
+                if (!doc){
                     var u = user.newUser({
                         username: username,
                         email: email
                     })
                     u.setPassword(password);
                     u.save().then((data) => {
-                        return res.status(200);
+                        return res.sendStatus(200);
                     }).catch((reason) => {
-                        return res.status(404);
+                        return res.sendStatus(404);
                     })
-
                 }
             }).catch((err) => {
-                return res.status(404).send("Geshborso")
+                return res.sendStatus(404);
             })
     }
-    return res.status(404);
+    return res.sendStatus(404);
 })
-
-
 
 export = router;

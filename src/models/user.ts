@@ -46,7 +46,7 @@ export interface UserInterface extends Document {
     */
     isWaiting(): boolean;
 
-    /* Sends a notification to the other user to ask for friendship */
+    /* Directly adds a user to this user's friendlist */
     addFriend(friend: Types.ObjectId): void;
 
     //TODO vedere se si elimina uno alla volta, in caso contrario dobbiamo mettere come parametri un array di id
@@ -62,7 +62,7 @@ export interface UserInterface extends Document {
     friendNotification(friend: Types.ObjectId): void;
 
     /* Sets this User's role */
-    setRole(): void;
+    setRole(role: Role): void;
     // addChat(): void, // vedere che parametri ha bisogno 
     // removeChat(): void,//stessa cosa
 }
@@ -170,8 +170,28 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
     return (this.digest === digest);
 }
 
+UserSchema.methods.isAdmin = function():boolean {
+    return this.role == Role.Admin;
+}
 
+UserSchema.methods.isModerator = function():boolean {
+    return this.role == Role.Mod;
+}
 
+UserSchema.methods.isWaiting = function():boolean{
+    return this.waiting == true;
+}
+
+UserSchema.methods.addFriend = function(friend: Types.ObjectId): void {
+    if(!this.friends.find(friend)) this.friends.push(friend);
+}
+
+UserSchema.methods.setRole = function(role: Role): void{
+    if(this.role !== role) this.role = role;
+}
+UserSchema.methods.removeFriend = function(): void{
+    /* TODO */
+}
 export function getSchema() { return UserSchema; }
 
 // Mongoose Model
