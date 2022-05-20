@@ -11,7 +11,9 @@ router.post('/login', function (req, res) {
 })
 router.post('/register',async function (req, res, next) {//TODO non funziona postmassage, vedere come mandare il body giusto
     const { username, email, password } = req.body;
+    console.log(req.body);
     console.log('Entering in auth-routes and executing post /register');
+    console.log('username: '+ username,'email: '+ email,'password: '+ password );    
     
     // TODO controllo email non solo da parte frontend ma anche da backend
     let userDoc =  await user.getModel().findOne({ email: email }) //vedere in che modo mettere all'interno della richiesta, il nome email cosi da non dover ripetere con lo stesso nome del database

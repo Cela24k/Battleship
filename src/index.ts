@@ -30,7 +30,7 @@ app.use(bodyparser.json())
 //
 app.use((req, res, next) => {
     console.log("------------------------------------------------".inverse)
-    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.blue + req.body);
+    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + req.body);
     next();
 })
 

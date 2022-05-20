@@ -7,6 +7,7 @@ import { AccessComponent } from './access/access.component';
 import { PlayGameComponent } from './play-game/play-game.component';
 import { RegisterComponent } from './register/register.component';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthService } from './auth.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +20,7 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [ {provide: AuthService, useClass: AuthService} ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

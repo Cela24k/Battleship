@@ -49,6 +49,7 @@ router.post('/register', function (req, res, next) {
             switch (_b.label) {
                 case 0:
                     _a = req.body, username = _a.username, email = _a.email, password = _a.password;
+                    console.log(req.body);
                     console.log('Entering in auth-routes and executing post /register');
                     console.log('username: ' + username, 'email: ' + email, 'password: ' + password);
                     return [4 /*yield*/, user.getModel().findOne({ email: email })]; //vedere in che modo mettere all'interno della richiesta, il nome email cosi da non dover ripetere con lo stesso nome del database

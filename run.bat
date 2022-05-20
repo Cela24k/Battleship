@@ -1,2 +1,2 @@
-cd client
-ng serve --open
+call cd client
+call ng serve --open
