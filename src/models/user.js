@@ -81,6 +81,7 @@ exports.UserSchema = new mongoose_1.Schema({
     }
 });
 exports.UserSchema.methods.setPassword = function (pwd) {
+    console.log('Ghesbor');
     this.salt = crypto.randomBytes(16).toString('hex');
     var hmac = crypto.createHmac('sha512', this.salt);
     hmac.update(pwd);

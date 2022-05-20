@@ -39,8 +39,6 @@ var express_1 = require("express");
 var user = require("../models/user");
 var router = express_1.Router();
 router.post('/login', function (req, res) {
-    console.log(req.body);
-    return res.sendStatus(200);
 });
 router.post('/register', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function () {
@@ -52,7 +50,7 @@ router.post('/register', function (req, res, next) {
                     console.log(req.body);
                     console.log('Entering in auth-routes and executing post /register');
                     console.log('username: ' + username, 'email: ' + email, 'password: ' + password);
-                    return [4 /*yield*/, user.getModel().findOne({ email: email })]; //vedere in che modo mettere all'interno della richiesta, il nome email cosi da non dover ripetere con lo stesso nome del database
+                    return [4 /*yield*/, user.getModel().findOne({ email: email, username: username })]; //vedere in che modo mettere all'interno della richiesta, il nome email cosi da non dover ripetere con lo stesso nome del database
                 case 1:
                     userDoc = _b.sent() //vedere in che modo mettere all'interno della richiesta, il nome email cosi da non dover ripetere con lo stesso nome del database
                     ;
