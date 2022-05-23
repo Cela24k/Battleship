@@ -60,15 +60,15 @@ router.post('/register', function (req, res, next) {
                         email: email
                     });
                     u.setPassword(password);
-                    return [4 /*yield*/, u.save().then(function () {
-                            return res.status(200).send("User Registered!");
+                    return [4 /*yield*/, u.save().then(function (data) {
+                            return res.status(200).json({ error: false, errormessage: "", id: data._id });
                         })["catch"](function () {
-                            return res.status(400).send("Something has been wrong with registration!");
+                            return res.status(400).json({ error: true, errormessage: "Something has been wrong with registration!" });
                         })];
                 case 2:
                     _b.sent();
                     return [3 /*break*/, 4];
-                case 3: return [2 /*return*/, res.status(400).send("User already exists!")];
+                case 3: return [2 /*return*/, res.status(400).json({ error: true, errormessage: "User already exist" })];
                 case 4: return [2 /*return*/];
             }
         });

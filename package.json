@@ -33,6 +33,7 @@
   },
   "scripts": {
     "compile": "tsc ./src/index.ts",
+    "dev-start": "supervisor ./src/index",
     "start": "node ./src/index"
   }
 }
