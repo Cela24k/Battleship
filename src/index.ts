@@ -23,7 +23,7 @@ const app = express();
 app.use(cors());
 
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body
-app.use(bodyparser.urlencoded())
+
 app.use(bodyparser.json())
 
 

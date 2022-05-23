@@ -4,19 +4,20 @@ import { request } from "http";
 import * as user from '../models/user'
 import passport = require('passport');           // authentication middleware for Express
 import passportHTTP = require('passport-http');  // implements Basic and Digest authentication for HTTP (used for /login endpoint)
+import jsonwebtoken = require('jsonwebtoken');
 
 var router = Router();
 
 passport.use( new passportHTTP.BasicStrategy(
-    function(email: string, password: string, done:any) {
+    function(username: string, password: string, done:any) {
   
       // "done" callback (verify callback) documentation:  http://www.passportjs.org/docs/configure/
   
       // Delegate function we provide to passport middleware
       // to verify user credentials 
   
-      console.log("New login attempt from ".green + email );
-      user.getModel().findOne( {email: email} , (err, user)=>{
+      console.log("New login attempt from ".green + username.red );
+      user.getModel().findOne( {username: username} , (err, user: user.UserInterface)=>{
         if( err ) {
           return done( {statusCode: 500, error: true, errormessage:err} );
         }
@@ -35,7 +36,18 @@ passport.use( new passportHTTP.BasicStrategy(
   ));
 
 router.post('/login',passport.authenticate('basic', { session: false }), function (req, res) {
+    let {username, email, role, _id} = req.user;
+    let tokendata = {
+        username,
+        role,
+        email,
+        _id
+    }
     
+    let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, {expiresIn: '1h'});//settare un expires giusto
+    //localStorage.setItem('token',token);//TODO vedere come settare il token nel localstorage
+    console.log("Token Generated".america);
+    return res.status(200).json({ error: false, errormessage: "", token });
 })
 /**
  * It registers a user

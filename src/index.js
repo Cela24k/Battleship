@@ -16,7 +16,6 @@ var app = express();
 // in questo caso cors(cross-origin resource sharing) serve nel condividere risorse limitate tra le origini che possono avere domini diversi
 app.use(cors());
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body
-app.use(bodyparser.urlencoded());
 app.use(bodyparser.json());
 //
 app.use(function (req, res, next) {
