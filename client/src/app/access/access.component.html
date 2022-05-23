@@ -5,11 +5,11 @@ padding-bottom: 1rem;
   <h2 style="font-size: 60px; color:#DB9D47;">Accedi</h2>
   <form action="/action_page.php">
     <div class="form-group">
-      <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+      <input type="email" class="form-control" #mail id="email" placeholder="Enter email" name="email">
     </div>
     <div class="form-group">
-      <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="pwd">
+      <input type="password" class="form-control" #pass id="pwd" placeholder="Enter password" name="pwd">
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="submit" (click)="onSubmit(mail.value,pass.value)" class="btn btn-default">Submit</button>
   </form>
 </div>

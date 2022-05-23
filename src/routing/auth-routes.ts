@@ -45,8 +45,6 @@ router.post('/login',passport.authenticate('basic', { session: false }), functio
     }
     
     let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, {expiresIn: '1h'});//settare un expires giusto
-    //localStorage.setItem('token',token);//TODO vedere come settare il token nel localstorage
-    console.log("Token Generated".america);
     return res.status(200).json({ error: false, errormessage: "", token });
 })
 /**
