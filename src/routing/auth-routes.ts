@@ -23,14 +23,14 @@ router.post('/register',async function (req, res, next) {//TODO non funziona pos
             email
         })
         u.setPassword(password);
-        await u.save().then(() => {
-            return res.status(200).send("User Registered!");
+        await u.save().then((data) => {
+            return res.status(200).json({ error: false, errormessage: "", id: data._id });
         }).catch(() => {
-            return res.status(400).send("Something has been wrong with registration!");
+            return res.status(400).json({ error: true, errormessage: "Something has been wrong with registration!"});
         })
 
     }else{
-        return res.status(400).send("User already exists!");
+        return res.status(400).json({ error: true, errormessage: "User already exist"});;
     }
 
 

@@ -17,7 +17,7 @@ export class AuthService {
         //authorization: 'Basic' + btoa( username+':'+email+':'+password),
         'cache-control': 'no-cache',
         'Content-Type':  'application/json',
-      }),
+      })
     };
     // let body = new URLSearchParams();// per riuscire a passare il body bisogna creare dei reqparams e passare body.toString
     // body.set('username', username);
