@@ -25,7 +25,7 @@ export class AccessComponent implements OnInit {
 
         this.router.navigate(['/play']);
       },
-      error: (err) => {
+      error: (err) => {//TODO vedere redirect per quando ci sono errori
         console.log(err);
       },
       complete: ()=> console.log('Login completed'),

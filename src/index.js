@@ -34,7 +34,7 @@ app.get("/", function (req, res) {
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
 // TODO vedere in che modo conviene creare il server, se dopo aver connesso il database o prima, Mettere nel .env url mongo, jwt ecc.
-mongoose.connect("mongodb+srv://admin:admin@cluster0.ui3ec.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+mongoose.connect(process.env.DB_URI)
     .then(function () {
     console.log('Connected to DB'.green);
     var server = http.createServer(app);

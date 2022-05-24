@@ -37,14 +37,14 @@ export class AuthService {
       headers: {
         'cache-control': 'no-cache',
         'Content-Type': 'application/json',
-        Authorization: `Basic ${btoa(username + ':' + password)}`,//TODO vedere se funziona l'authorization o come farla giusta
+        Authorization: `Basic ${btoa(username + ':' + password)}`,
       }
     };
     
 
-    return this.http.get<any>(this.url + '/login', options = options).pipe(//TODO qui dobbiamo settare il token nel local storage
+    return this.http.get<any>(this.url + '/login', options = options).pipe(
       map(user => {
-        this.localHelper.set('token', user.token);//qui settiamo il token nel localStorage
+        this.localHelper.set('token', user.token);
         console.log('Token settato in LocalStorage');
       })
     );

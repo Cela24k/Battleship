@@ -21,7 +21,7 @@ export class RegisterComponent implements OnInit {
   onSubmit(username: string, email: string, password: string) {
     console.log('Submitting this info: ' + username + ' ' + email + ' ' + password);
     this.auth.register(username, email, password).subscribe({//right way for subscribing https://rxjs.dev/deprecations/subscribe-arguments
-      next: (d) => {// TODO error problem need to be checked
+      next: (d) => {
         console.log('Login granted: ' + JSON.stringify(d));
         this.router.navigate(['/']);
       },
