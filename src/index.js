@@ -14,7 +14,7 @@ var authRoutes = require("./routing/auth-routes");
 var userRoutes = require("./routing/user-routes");
 //crezione dell'istanza del modulo Express
 var app = express();
-var auth = express_jwt_1.expressjwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] });
+var auth = express_jwt_1.expressjwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }); //TODO ho paura di aver sbagliato algoritmo oppure non so se funziona del tutto
 //utilizziamo delle global middleware functions che possono essere inserite nella pipeline indipendentemente dal metodo HTTP e endpoint usati. Attenzione all'ordine in cui si possono mettere
 // in questo caso cors(cross-origin resource sharing) serve nel condividere risorse limitate tra le origini che possono avere domini diversi
 app.use(cors());

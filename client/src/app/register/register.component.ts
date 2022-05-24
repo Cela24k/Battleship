@@ -13,6 +13,8 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterComponent implements OnInit {
 
+  register_error = false;
+
   constructor(private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
@@ -28,7 +30,8 @@ export class RegisterComponent implements OnInit {
       error: (err) => {
         console.log(err);
         console.log('Login error: ' + JSON.stringify(err));
-
+        this.register_error = true;
+        console.log(this.register_error);
       },
       complete: () => console.log('Registration completed'),
     });
