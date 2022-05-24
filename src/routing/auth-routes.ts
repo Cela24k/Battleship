@@ -12,7 +12,6 @@ passport.use( new passportHTTP.BasicStrategy(
     function(username: string, password: string, done:any) {
   
       // "done" callback (verify callback) documentation:  http://www.passportjs.org/docs/configure/
-  
       // Delegate function we provide to passport middleware
       // to verify user credentials 
   

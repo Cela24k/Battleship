@@ -14,8 +14,8 @@ export interface NotificationInterface extends Document{
     expire_time: Date,
     
     /* fa una determinata richiesta in base al tipo di notifica
-    *  es. if(NotifiCìcationType === Friend) receiver.addFriend(sender)
-    */
+    *  es. if(NotificationType === Friend) receiver.addFriend(sender)
+    */ 
     accept(): void;
     
     //rimuove la notifica dal database 

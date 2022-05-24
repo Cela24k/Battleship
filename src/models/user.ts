@@ -31,7 +31,7 @@ export interface UserInterface extends Document {
 
     setPassword(pwd: String): void,
 
-    /* Validate the hasahed password */
+    /* Validate the hashed password */
 
     validatePassword(pwd: String): boolean,
 
@@ -74,12 +74,26 @@ export interface StatsInterface {
     losses: number,
     winstreak: number,
     maxWinstreak: number,
-    previousMatch: boolean,
     elo: number,
     playedGames: number,
     shotsFired: number,
     shotsHit: number,
+    accuracy: number,
     timePlayed: Date,
+    ladderPosition: number,
+
+    winsAdd(): void,
+    lossesAdd(): void,
+    winstreakAdd(): void,
+    winstreakReset(): void,
+    eloIncrement(value: number): void,
+    shotsFiredAdd(): void,
+    shotsHitAdd(): void,
+    accuracySet(): void,
+    timePlayedAdd(amount: Date): void,
+    ladderPositionSet(): void,
+    win(): void,
+    lose(): void,
 }
 
 export const StatsSchema = new Schema<StatsInterface>({
@@ -92,7 +106,7 @@ export const StatsSchema = new Schema<StatsInterface>({
         default: 0,
     },
     winstreak: {
-        type: SchemaTypes.Number,
+        type: SchemaTypes.Boolean,
         default: 0,
     },
     maxWinstreak: {
@@ -120,6 +134,71 @@ export const StatsSchema = new Schema<StatsInterface>({
         default: new Date(0),
     }
 })
+
+/*winsAdd(): void,
+    lossesAdd(): void,
+    winstreakAdd(): void,
+    winstreakReset(): void,
+    eloIncrement(value: number): void,
+    shotsFiredAdd(): void,
+    shotsHitAdd(): void,
+    accuracySet(): void,
+    timePlayedAdd(amount: Date): void,
+    win(): void,
+    lose(): void,
+*/
+
+StatsSchema.methods.winsAdd = function(): void {
+    this.wins++;
+}
+
+StatsSchema.methods.lossesAdd = function(): void {
+    this.losses++;
+}
+
+StatsSchema.methods.winstreakAdd = function(): void {
+    this.winstreak++;
+    if(this.maxWinstreak < this.winstreak) 
+        this.maxWinstreak = this.winstreak;
+}
+
+StatsSchema.methods.winstreakReset = function(): void {
+    this.winstreak = 0;
+}
+
+StatsSchema.methods.eloIncrement = function(amount: number): void {
+    if(this.elo + amount < 0 )
+        this.elo = 0;
+    else this.elo += amount;
+}
+StatsSchema.methods.accuracySet = function(): void {
+    this.accuracy = this.shotsFired / this.shotsHit;
+}
+StatsSchema.methods.shotsHitAdd = function(): void {
+    this.wins++;
+}
+
+// DA QUA IN POI RIVEDERE
+
+StatsSchema.methods.shotsFiredAdd = function(): void {
+    this.shotsFired++;
+    /*if(the shot hit the target)*/
+        this.shotsHitAdd();
+    this.accuracySet();
+}
+StatsSchema.methods.timePlayedAdd = function(amount: Date): void {
+    this.timePlayed += amount;
+}
+StatsSchema.methods.win = function(): void {
+    this.winsAdd();
+    this.winstreakAdd();
+}
+StatsSchema.methods.lose = function(): void {
+    this.lossesAdd();
+    this.winstreakReset();
+
+    this.timePlayedAdd();
+}
 
 export const UserSchema = new Schema<UserInterface>({
     username: {
@@ -155,7 +234,7 @@ export const UserSchema = new Schema<UserInterface>({
 
 })
 
-UserSchema.methods.setPassword = function (pwd: string) {
+UserSchema.methods.setPassword = function (pwd: string): void {
     console.log('Ghesbor');
     this.salt = crypto.randomBytes(16).toString('hex');
     var hmac = crypto.createHmac('sha512', this.salt);

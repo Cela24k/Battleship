@@ -20,7 +20,7 @@ exports.StatsSchema = new mongoose_1.Schema({
         "default": 0
     },
     winstreak: {
-        type: mongoose_1.SchemaTypes.Number,
+        type: mongoose_1.SchemaTypes.Boolean,
         "default": 0
     },
     maxWinstreak: {
@@ -48,6 +48,62 @@ exports.StatsSchema = new mongoose_1.Schema({
         "default": new Date(0)
     }
 });
+/*winsAdd(): void,
+    lossesAdd(): void,
+    winstreakAdd(): void,
+    winstreakReset(): void,
+    eloIncrement(value: number): void,
+    shotsFiredAdd(): void,
+    shotsHitAdd(): void,
+    accuracySet(): void,
+    timePlayedAdd(amount: Date): void,
+    win(): void,
+    lose(): void,
+*/
+exports.StatsSchema.methods.winsAdd = function () {
+    this.wins++;
+};
+exports.StatsSchema.methods.lossesAdd = function () {
+    this.losses++;
+};
+exports.StatsSchema.methods.winstreakAdd = function () {
+    this.winstreak++;
+    if (this.maxWinstreak < this.winstreak)
+        this.maxWinstreak = this.winstreak;
+};
+exports.StatsSchema.methods.winstreakReset = function () {
+    this.winstreak = 0;
+};
+exports.StatsSchema.methods.eloIncrement = function (amount) {
+    if (this.elo + amount < 0)
+        this.elo = 0;
+    else
+        this.elo += amount;
+};
+exports.StatsSchema.methods.accuracySet = function () {
+    this.accuracy = this.shotsFired / this.shotsHit;
+};
+exports.StatsSchema.methods.shotsHitAdd = function () {
+    this.wins++;
+};
+exports.StatsSchema.methods.shotsFiredAdd = function () {
+    this.shotsFired++;
+    /*if(the shot hit the target)*/
+    this.shotsHitAdd();
+    this.accuracySet();
+};
+exports.StatsSchema.methods.timePlayedAdd = function (amount) {
+    this.timePlayed += amount;
+};
+exports.StatsSchema.methods.win = function () {
+    this.winsAdd();
+    this.winstreakAdd();
+};
+exports.StatsSchema.methods.lose = function () {
+    this.lossesAdd();
+    this.winstreakReset();
+    this.timePlayedAdd();
+};
 exports.UserSchema = new mongoose_1.Schema({
     username: {
         type: mongoose_1.SchemaTypes.String,
