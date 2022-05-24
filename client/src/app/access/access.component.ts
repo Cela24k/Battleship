@@ -12,7 +12,7 @@ export class AccessComponent implements OnInit {
 
   constructor(private auth: AuthService, private router: Router, private local: LocalStorageService) { }
   
-  public errmessage = undefined;//avoidare questo TODO vedere come ritornare bene gli errori
+  
   ngOnInit(): void {
   }
 
@@ -22,18 +22,13 @@ export class AccessComponent implements OnInit {
     return this.auth.login(username, password).subscribe({
       next: (d) => {
         console.log('Login granted: ' + JSON.stringify(d));
-        this.errmessage = undefined;
 
         this.router.navigate(['/play']);
       },
       error: (err) => {
         console.log(err);
-
-        console.log('Login error: ' + JSON.stringify(err));
-        this.errmessage = err.message;
-
       },
-      complete: ()=> console.log('Registration completed'),
+      complete: ()=> console.log('Login completed'),
     });
   }
 

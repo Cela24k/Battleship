@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { tap, catchError } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import { Observable, of, map } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
@@ -26,7 +26,7 @@ export class AuthService {
       password
     }
 
-    return this.http.post(this.url + '/register', body, options).pipe(
+    return this.http.post<any>(this.url + '/register', body, options).pipe(
       tap((data) => {
         console.log(JSON.stringify(data) + 'auth service');
       }));;
@@ -34,17 +34,20 @@ export class AuthService {
 
   login(username: string, password: string) {
     let options = {
-      headers: new HttpHeaders({
-        authorization: 'Basic' + btoa(username + ':' + password),//TODO vedere se funziona l'authorization o come farla giusta
+      headers: {
         'cache-control': 'no-cache',
         'Content-Type': 'application/json',
-      })
+        Authorization: `Basic ${btoa(username + ':' + password)}`,//TODO vedere se funziona l'authorization o come farla giusta
+      }
     };
+    
 
-    return this.http.post(this.url + '/login', options).pipe(//TODO qui dobbiamo settare il token nel local storage
-      tap((data) => {
-        console.log(JSON.stringify(data) + 'Login effettuato');
-      }));;
+    return this.http.get<any>(this.url + '/login', options = options).pipe(//TODO qui dobbiamo settare il token nel local storage
+      map(user => {
+        this.localHelper.set('token', user.token);//qui settiamo il token nel localStorage
+        console.log('Token settato in LocalStorage');
+      })
+    );
   }
 
 }

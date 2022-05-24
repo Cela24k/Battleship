@@ -17,6 +17,8 @@ passport.use( new passportHTTP.BasicStrategy(
   
       console.log("New login attempt from ".green + username.red );
       user.getModel().findOne( {username: username} , (err, user: user.UserInterface)=>{
+        console.log('QUI VIENE VALIDATA LA PASS'+password)
+
         if( err ) {
           return done( {statusCode: 500, error: true, errormessage:err} );
         }
@@ -34,7 +36,7 @@ passport.use( new passportHTTP.BasicStrategy(
     }
   ));
 
-router.post('/login',passport.authenticate('basic', { session: false }), function (req, res) {
+router.get('/login',passport.authenticate('basic', { session: false }), function (req, res) {
     let {username, email, role, _id} = req.user;
     let tokendata = {
         username,
@@ -44,6 +46,7 @@ router.post('/login',passport.authenticate('basic', { session: false }), functio
     }
     
     let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, {expiresIn: '1h'});//settare un expires giusto
+    console.log(token.toString());
     return res.status(200).json({ error: false, errormessage: "", token });
 })
 /**

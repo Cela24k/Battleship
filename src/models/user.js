@@ -86,6 +86,7 @@ exports.StatsSchema.methods.accuracySet = function () {
 exports.StatsSchema.methods.shotsHitAdd = function () {
     this.wins++;
 };
+// DA QUA IN POI RIVEDERE
 exports.StatsSchema.methods.shotsFiredAdd = function () {
     this.shotsFired++;
     /*if(the shot hit the target)*/

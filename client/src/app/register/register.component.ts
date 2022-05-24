@@ -13,7 +13,6 @@ import { AuthService } from '../auth.service';
 })
 export class RegisterComponent implements OnInit {
 
-  public errmessage = undefined;
   constructor(private auth: AuthService, private router: Router) { }
 
   ngOnInit(): void {
@@ -24,17 +23,14 @@ export class RegisterComponent implements OnInit {
     this.auth.register(username, email, password).subscribe({//right way for subscribing https://rxjs.dev/deprecations/subscribe-arguments
       next: (d) => {// TODO error problem need to be checked
         console.log('Login granted: ' + JSON.stringify(d));
-        this.errmessage = undefined;
         this.router.navigate(['/']);
       },
       error: (err) => {
         console.log(err);
-
         console.log('Login error: ' + JSON.stringify(err));
-        this.errmessage = err.message;
 
       },
-      complete: ()=> console.log('Registration completed'),
+      complete: () => console.log('Registration completed'),
     });
   }
 }

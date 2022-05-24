@@ -47,6 +47,7 @@ passport.use(new passportHTTP.BasicStrategy(function (username, password, done) 
     // to verify user credentials 
     console.log("New login attempt from ".green + username.red);
     user.getModel().findOne({ username: username }, function (err, user) {
+        console.log('QUI VIENE VALIDATA LA PASS' + password);
         if (err) {
             return done({ statusCode: 500, error: true, errormessage: err });
         }
@@ -59,7 +60,7 @@ passport.use(new passportHTTP.BasicStrategy(function (username, password, done) 
         return done(null, false, { statusCode: 500, error: true, errormessage: "Invalid password!" });
     });
 }));
-router.post('/login', passport.authenticate('basic', { session: false }), function (req, res) {
+router.get('/login', passport.authenticate('basic', { session: false }), function (req, res) {
     var _a = req.user, username = _a.username, email = _a.email, role = _a.role, _id = _a._id;
     var tokendata = {
         username: username,
@@ -68,6 +69,7 @@ router.post('/login', passport.authenticate('basic', { session: false }), functi
         _id: _id
     };
     var token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, { expiresIn: '1h' }); //settare un expires giusto
+    console.log(token.toString());
     return res.status(200).json({ error: false, errormessage: "", token: token });
 });
 /**
