@@ -36,7 +36,7 @@ passport.use( new passportHTTP.BasicStrategy(
     }
   ));
 
-router.get('/login',passport.authenticate('basic', { session: false }), function (req, res) {
+router.get('/login',passport.authenticate('basic', { session: false }), function (req:any, res) {
     let {username, email, role, _id} = req.user;
     let tokendata = {
         username,

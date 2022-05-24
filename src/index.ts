@@ -9,14 +9,16 @@ import express = require('express');
 import bodyparser = require('body-parser');
 import passport = require('passport');
 import jsonwebtoken = require('jsonwebtoken');
-import jwt = require('express-jwt');
+import { expressjwt, Request as JWTrequest } from "express-jwt";
 import cors = require('cors');
 import io = require('socket.io');
 import authRoutes = require('./routing/auth-routes');
-import { Http2ServerResponse } from 'http2';
+import userRoutes = require('./routing/user-routes');
+
 
 //crezione dell'istanza del modulo Express
 const app = express();
+var auth = expressjwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"]}); //TODO ho paura di aver sbagliato algoritmo oppure non so se funziona del tutto
 
 //utilizziamo delle global middleware functions che possono essere inserite nella pipeline indipendentemente dal metodo HTTP e endpoint usati. Attenzione all'ordine in cui si possono mettere
 // in questo caso cors(cross-origin resource sharing) serve nel condividere risorse limitate tra le origini che possono avere domini diversi
@@ -30,29 +32,30 @@ app.use(bodyparser.json())
 //
 app.use((req, res, next) => {
     console.log("------------------------------------------------".inverse)
-    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red+ "StatusCode"+ res.statusCode);
+    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + "StatusCode" + res.statusCode);
     console.log("Body: " + req.body + " Headers : " + req.headers.authorization);
     next();
 })
 
 app.get("/", (req, res) => {
-    res.status(200).json({ api_version: "1.0", endpoints: ["/auth","/user"] }); // json method sends a JSON response (setting the correct Content-Type) to the client
+    res.status(200).json({ api_version: "1.0", endpoints: ["/auth", "/user"] }); // json method sends a JSON response (setting the correct Content-Type) to the client
 });
 
 //qui passiamo tutti i middleware(routes) che implementiamo
 app.use('/auth', authRoutes);
+app.use('/user', auth, userRoutes);
 
 // TODO vedere in che modo conviene creare il server, se dopo aver connesso il database o prima, Mettere nel .env url mongo, jwt ecc.
 mongoose.connect("mongodb+srv://admin:admin@cluster0.ui3ec.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-.then(
-    () => {
-        console.log('Connected to DB'.green);
-        let server = http.createServer(app);
-        server.listen(8080, () => console.log("HTTP Server started at http://localhost:8080".green));
-    }
-).catch(
-    (err) => {
-        console.log("Error Occurred during initialization".red);
-        console.log(err);
-    }
-)
+    .then(
+        () => {
+            console.log('Connected to DB'.green);
+            let server = http.createServer(app);
+            server.listen(8080, () => console.log("HTTP Server started at http://localhost:8080".green));
+        }
+    ).catch(
+        (err) => {
+            console.log("Error Occurred during initialization".red);
+            console.log(err);
+        }
+    )

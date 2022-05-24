@@ -8,10 +8,13 @@ colors.enabled = true;
 var mongoose = require("mongoose");
 var express = require("express");
 var bodyparser = require("body-parser");
+var express_jwt_1 = require("express-jwt");
 var cors = require("cors");
 var authRoutes = require("./routing/auth-routes");
+var userRoutes = require("./routing/user-routes");
 //crezione dell'istanza del modulo Express
 var app = express();
+var auth = express_jwt_1.expressjwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] });
 //utilizziamo delle global middleware functions che possono essere inserite nella pipeline indipendentemente dal metodo HTTP e endpoint usati. Attenzione all'ordine in cui si possono mettere
 // in questo caso cors(cross-origin resource sharing) serve nel condividere risorse limitate tra le origini che possono avere domini diversi
 app.use(cors());
@@ -29,6 +32,7 @@ app.get("/", function (req, res) {
 });
 //qui passiamo tutti i middleware(routes) che implementiamo
 app.use('/auth', authRoutes);
+app.use('/user', auth, userRoutes);
 // TODO vedere in che modo conviene creare il server, se dopo aver connesso il database o prima, Mettere nel .env url mongo, jwt ecc.
 mongoose.connect("mongodb+srv://admin:admin@cluster0.ui3ec.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
     .then(function () {
