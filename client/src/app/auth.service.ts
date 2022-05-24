@@ -44,7 +44,6 @@ export class AuthService {
     return this.http.post(this.url + '/login', options).pipe(//TODO qui dobbiamo settare il token nel local storage
       tap((data) => {
         console.log(JSON.stringify(data) + 'Login effettuato');
-
       }));;
   }
 

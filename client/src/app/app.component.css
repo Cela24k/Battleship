@@ -20,3 +20,25 @@
     background-color: #DB9D47; 
     border: #DB9D47;
 }
+
+/* capire perché non me lo prende nelle componenti children register e access*/
+
+.submit{
+    display: inline-block;
+    padding: 5px;
+    background-color: #3A3042; 
+    color: #DB9D47;
+    border: solid;
+    border-color: #DB9D47;
+    border-radius:10px;
+}
+.submit:hover{
+    display: inline-block;
+    padding: 5px;
+    background-color: #DB9D47; 
+    color: #3A3042;
+    border: 1px solid;
+    border-color: #DB9D47;
+    border-radius:10px;
+    cursor: pointer;
+}  

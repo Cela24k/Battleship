@@ -24,7 +24,7 @@ export class AccessComponent implements OnInit {
         console.log('Login granted: ' + JSON.stringify(d));
         this.errmessage = undefined;
 
-        this.router.navigate(['/']);
+        this.router.navigate(['/play']);
       },
       error: (err) => {
         console.log(err);
