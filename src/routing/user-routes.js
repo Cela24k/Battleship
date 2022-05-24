@@ -13,7 +13,7 @@ var router = express_1.Router();
  *     /users/:mail                             -               GET            Get user info by mail
  *   */
 router.get('/list', function (req, res) {
-    console.log("GIUSTO ED AUTENTICATO");
+    console.log("GIUSTO ED AUTENTICATO"); //Debugging tool for auth
     res.send(202);
 });
 module.exports = router;

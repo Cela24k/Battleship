@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 //import UserHttpService 
 
@@ -10,26 +10,22 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 })
 
 export class AppComponent {
-  title = 'client';
+  title = 'client';  
+  route = '';
 
-  button = "register";
-
-  logged = 1; // 1 this is going to change dynamically with cookies and authentication, 1 shows "login" page, 2 shows "register" and 3 shows "play a game"
-  
-  constructor( /*private us: UserHttpService, */ private router: Router  ) { }
+  constructor(private router: Router  ) {  }
 
   ngOnInit(): void {
+    this.router.events.subscribe((event) => {
+      event instanceof NavigationEnd ? this.route = this.router.url : null
+    })
   }
 
   navigateRegister(): void{
     this.router.navigate(['/register']);
-    this.button = "login";
-
   }
 
   navigateLogin(): void{
     this.router.navigate(['/login']);
-    this.button = "register";
-
   }
 }

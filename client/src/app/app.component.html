@@ -309,8 +309,8 @@
     src="https://freesvg.org/img/ftkbattleship.png" />
   <span>Battleships</span>
   <div class="spacer"></div>
-  <button *ngIf="button === 'register'" class="button" (click)="navigateRegister()">Registrati</button>
-  <button *ngIf="button === 'login'" class="button" (click)="navigateLogin()">Accedi</button>
+  <button *ngIf="route === '/login'" class="button" (click)="navigateRegister()">Registrati</button>
+  <button *ngIf="route === '/register'" class="button" (click)="navigateLogin()">Accedi</button>
   <a aria-label="Angular on twitter" target="_blank" rel="noopener" href="https://twitter.com/angular" title="Twitter">
     <svg id="twitter-logo" height="24" data-name="Logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
       <rect width="400" height="400" fill="none" />
