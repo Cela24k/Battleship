@@ -69,6 +69,7 @@ export interface UserInterface extends Document {
     // addChat(): void, // vedere che parametri ha bisogno 
     // removeChat(): void,//stessa cosa
 
+    getUserPublicInfo(): void; 
 
 }
 
@@ -85,7 +86,7 @@ export interface StatsInterface {
     shotsHit: number,
     accuracy: number,
     timePlayed: Date,
-    ladderPosition: number,
+    rank: number,
 
     winsAdd(): void,
     lossesAdd(): void,
@@ -96,7 +97,7 @@ export interface StatsInterface {
     shotsHitAdd(): void,
     accuracySet(): void,
     timePlayedAdd(amount: Date): void,
-    ladderPositionSet(): void,
+    rankSet(): void,
     win(): void,
     lose(): void,
 }
@@ -137,6 +138,10 @@ export const StatsSchema = new Schema<StatsInterface>({
     timePlayed: {
         type: SchemaTypes.Date,
         default: new Date(0),
+    },
+    rank: {
+        type: SchemaTypes.Date,
+        default: 0
     }
 })
 
@@ -232,11 +237,9 @@ export const UserSchema = new Schema<UserInterface>({
     friends: {
         type: [SchemaTypes.ObjectId],
     },
-    // chats: {   //TODO implementare i models delle chat ricordare di togliere dal database gli utenti creati precedentemente
-    //     type: [SchemaTypes.SubDocument],
-    // },
     stats: {
         type: StatsSchema,
+        default: 
     }
 
 })
@@ -280,6 +283,17 @@ UserSchema.methods.setRole = function (role: Role): void {
 }
 UserSchema.methods.removeFriend = function (): void {
     /* TODO */
+}
+
+UserSchema.methods.getUserPublicInfo = function(): Object {
+    let body = {
+        username: this.username,
+        friends: this.friendlist,
+        stats: this.stats,
+        isPlaying: this.playing
+    }
+
+    return body;
 }
 export function getSchema() { return UserSchema; }
 
