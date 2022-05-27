@@ -45,7 +45,7 @@ router.get('/login',passport.authenticate('basic', { session: false }), function
         _id
     }
     
-    let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, {expiresIn: '1h'});//settare un expires giusto
+    let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, {expiresIn: '3h'});//settare un expires giusto
     console.log(token.toString());
     return res.status(200).json({ error: false, errormessage: "", token });
 })

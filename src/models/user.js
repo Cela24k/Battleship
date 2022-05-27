@@ -52,18 +52,6 @@ exports.StatsSchema = new mongoose_1.Schema({
         "default": 0
     }
 });
-/*winsAdd(): void,
-    lossesAdd(): void,
-    winstreakAdd(): void,
-    winstreakReset(): void,
-    eloIncrement(value: number): void,
-    shotsFiredAdd(): void,
-    shotsHitAdd(): void,
-    accuracySet(): void,
-    timePlayedAdd(amount: Date): void,
-    win(): void,
-    lose(): void,
-*/
 exports.StatsSchema.methods.winsAdd = function () {
     this.wins++;
     this.playedGames++;
@@ -180,7 +168,11 @@ exports.UserSchema = new mongoose_1.Schema({
     },
     stats: {
         type: exports.StatsSchema,
-        "default": new EmptyStats
+        "default": new EmptyStats()
+    },
+    playing: {
+        type: mongoose_1.SchemaTypes.Boolean,
+        "default": false
     }
 });
 exports.UserSchema.methods.setPassword = function (pwd) {

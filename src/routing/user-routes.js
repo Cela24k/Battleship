@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var user = require("../models/user");
 var express_1 = require("express");
+var jsonwebtoken = require("jsonwebtoken");
 var router = express_1.Router();
 /*
     ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
@@ -62,8 +63,8 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 0:
                 projection = {
                     username: true,
-                    friends: true,
-                    stats: true
+                    stats: true,
+                    playing: true
                 };
                 return [4 /*yield*/, user.getModel().find({}, projection).then(function (data) {
                         res.send(data);
@@ -72,6 +73,22 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
                 _a.sent();
                 return [2 /*return*/];
         }
+    });
+}); });
+router.get('/:userId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var jwt, projection;
+    return __generator(this, function (_a) {
+        jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+        projection = {
+            username: true,
+            stats: true,
+            playing: true
+        };
+        console.log(req.headers.authorization);
+        console.log(jwt);
+        console.log(jwt.toString());
+        res.send();
+        return [2 /*return*/];
     });
 }); });
 module.exports = router;

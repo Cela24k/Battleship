@@ -146,19 +146,6 @@ export const StatsSchema = new Schema<StatsInterface>({
     }
 })
 
-/*winsAdd(): void,
-    lossesAdd(): void,
-    winstreakAdd(): void,
-    winstreakReset(): void,
-    eloIncrement(value: number): void,
-    shotsFiredAdd(): void,
-    shotsHitAdd(): void,
-    accuracySet(): void,
-    timePlayedAdd(amount: Date): void,
-    win(): void,
-    lose(): void,
-*/
-
 StatsSchema.methods.winsAdd = function(): void {
     this.wins++;
     this.playedGames++;
@@ -225,6 +212,7 @@ export class EmptyStats implements StatsInterface {
     accuracy: 0;
     timePlayed: Date;
     rank: 0;
+
     winsAdd(): void {
         throw new Error("Method not implemented.");
     }
@@ -264,10 +252,6 @@ export class EmptyStats implements StatsInterface {
     
 }
 
-let emptySt = {
-    
-}
-
 export const UserSchema = new Schema<UserInterface>({
     username: {
         type: SchemaTypes.String,
@@ -295,7 +279,11 @@ export const UserSchema = new Schema<UserInterface>({
     },
     stats: {
         type: StatsSchema,
-        default: new EmptyStats,
+        default: new EmptyStats(),
+    },
+    playing: {
+        type: SchemaTypes.Boolean,
+        default: false,
     }
 
 })
