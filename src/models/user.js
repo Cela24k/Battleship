@@ -62,9 +62,11 @@ exports.StatsSchema = new mongoose_1.Schema({
 */
 exports.StatsSchema.methods.winsAdd = function () {
     this.wins++;
+    this.playedGames++;
 };
 exports.StatsSchema.methods.lossesAdd = function () {
     this.losses++;
+    this.playedGames++;
 };
 exports.StatsSchema.methods.winstreakAdd = function () {
     this.winstreak++;

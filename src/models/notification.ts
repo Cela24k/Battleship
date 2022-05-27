@@ -7,8 +7,8 @@ export enum NotificationType {
 }
 
 export interface NotificationInterface extends Document{
-    sender: Types.ObjectId,
-    receiver: Types.ObjectId,
+    sender: Object,
+    receiver: Object,
     text: string,
     type: NotificationType,
     expire_time: Date,

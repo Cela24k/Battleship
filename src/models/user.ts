@@ -20,6 +20,7 @@ export interface UserInterface extends Document {
     //chats: [ChatInterface],  //by copy ?
     stats: StatsInterface,
     notifications: [NotificationInterface],
+    playing:boolean,
 
     /* this could be useful for the Matchmaking,
     *  a match shouldn't start unless both players are waiting and if 
@@ -46,6 +47,8 @@ export interface UserInterface extends Document {
     */
     isWaiting(): boolean;
 
+    isPlaying(): boolean;
+
     /* Directly adds a user to this user's friendlist */
     addFriend(friend: Types.ObjectId): void;
 
@@ -65,6 +68,8 @@ export interface UserInterface extends Document {
     setRole(role: Role): void;
     // addChat(): void, // vedere che parametri ha bisogno 
     // removeChat(): void,//stessa cosa
+
+
 }
 
 
@@ -150,10 +155,12 @@ export const StatsSchema = new Schema<StatsInterface>({
 
 StatsSchema.methods.winsAdd = function(): void {
     this.wins++;
+    this.playedGames++;
 }
 
 StatsSchema.methods.lossesAdd = function(): void {
     this.losses++;
+    this.playedGames++;
 }
 
 StatsSchema.methods.winstreakAdd = function(): void {
@@ -264,7 +271,8 @@ UserSchema.methods.isWaiting = function (): boolean {
 }
 
 UserSchema.methods.addFriend = function (friend: Types.ObjectId): void {
-    if (!this.friends.find(friend)) this.friends.push(friend);
+    if (!this.friends.find(friend)) 
+        this.friends.push(friend);
 }
 
 UserSchema.methods.setRole = function (role: Role): void {
