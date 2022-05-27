@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.newUser = exports.getModel = exports.getSchema = exports.UserSchema = exports.StatsSchema = exports.Role = void 0;
+exports.newUser = exports.getModel = exports.getSchema = exports.UserSchema = exports.EmptyStats = exports.StatsSchema = exports.Role = void 0;
 var mongoose_1 = require("mongoose");
 var mongoose_2 = require("mongoose");
 var crypto = require("crypto");
@@ -20,7 +20,7 @@ exports.StatsSchema = new mongoose_1.Schema({
         "default": 0
     },
     winstreak: {
-        type: mongoose_1.SchemaTypes.Boolean,
+        type: mongoose_1.SchemaTypes.Number,
         "default": 0
     },
     maxWinstreak: {
@@ -46,6 +46,10 @@ exports.StatsSchema = new mongoose_1.Schema({
     timePlayed: {
         type: mongoose_1.SchemaTypes.Date,
         "default": new Date(0)
+    },
+    rank: {
+        type: mongoose_1.SchemaTypes.Number,
+        "default": 0
     }
 });
 /*winsAdd(): void,
@@ -107,6 +111,48 @@ exports.StatsSchema.methods.lose = function () {
     this.winstreakReset();
     this.timePlayedAdd();
 };
+var EmptyStats = /** @class */ (function () {
+    function EmptyStats() {
+    }
+    EmptyStats.prototype.winsAdd = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.lossesAdd = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.winstreakAdd = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.winstreakReset = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.eloIncrement = function (value) {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.shotsFiredAdd = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.shotsHitAdd = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.accuracySet = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.timePlayedAdd = function (amount) {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.rankSet = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.win = function () {
+        throw new Error("Method not implemented.");
+    };
+    EmptyStats.prototype.lose = function () {
+        throw new Error("Method not implemented.");
+    };
+    return EmptyStats;
+}());
+exports.EmptyStats = EmptyStats;
 exports.UserSchema = new mongoose_1.Schema({
     username: {
         type: mongoose_1.SchemaTypes.String,
@@ -132,11 +178,9 @@ exports.UserSchema = new mongoose_1.Schema({
     friends: {
         type: [mongoose_1.SchemaTypes.ObjectId]
     },
-    // chats: {   //TODO implementare i models delle chat ricordare di togliere dal database gli utenti creati precedentemente
-    //     type: [SchemaTypes.SubDocument],
-    // },
     stats: {
-        type: exports.StatsSchema
+        type: exports.StatsSchema,
+        "default": new EmptyStats
     }
 });
 exports.UserSchema.methods.setPassword = function (pwd) {
@@ -171,6 +215,15 @@ exports.UserSchema.methods.setRole = function (role) {
 };
 exports.UserSchema.methods.removeFriend = function () {
     /* TODO */
+};
+exports.UserSchema.methods.getUserPublicInfo = function () {
+    var body = {
+        username: this.username,
+        friends: this.friendlist,
+        stats: this.stats,
+        isPlaying: this.playing
+    };
+    return body;
 };
 function getSchema() { return exports.UserSchema; }
 exports.getSchema = getSchema;

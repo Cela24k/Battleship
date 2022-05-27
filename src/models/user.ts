@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import { ChatInterface } from "./chat";
 import { NotificationType, NotificationInterface } from "./notification";
 import * as crypto from "crypto";
+import { Stats } from "fs";
 
 export enum Role {
     Admin,
@@ -112,7 +113,7 @@ export const StatsSchema = new Schema<StatsInterface>({
         default: 0,
     },
     winstreak: {
-        type: SchemaTypes.Boolean,
+        type: SchemaTypes.Number,
         default: 0,
     },
     maxWinstreak: {
@@ -140,7 +141,7 @@ export const StatsSchema = new Schema<StatsInterface>({
         default: new Date(0),
     },
     rank: {
-        type: SchemaTypes.Date,
+        type: SchemaTypes.Number,
         default: 0
     }
 })
@@ -212,6 +213,61 @@ StatsSchema.methods.lose = function(): void {
     this.timePlayedAdd();
 }
 
+export class EmptyStats implements StatsInterface {
+    wins: 0;
+    losses: 0;
+    winstreak: 0;
+    maxWinstreak: 0;
+    elo: 0;
+    playedGames: 0;
+    shotsFired: 0;
+    shotsHit: 0;
+    accuracy: 0;
+    timePlayed: Date;
+    rank: 0;
+    winsAdd(): void {
+        throw new Error("Method not implemented.");
+    }
+    lossesAdd(): void {
+        throw new Error("Method not implemented.");
+    }
+    winstreakAdd(): void {
+        throw new Error("Method not implemented.");
+    }
+    winstreakReset(): void {
+        throw new Error("Method not implemented.");
+    }
+    eloIncrement(value: number): void {
+        throw new Error("Method not implemented.");
+    }
+    shotsFiredAdd(): void {
+        throw new Error("Method not implemented.");
+    }
+    shotsHitAdd(): void {
+        throw new Error("Method not implemented.");
+    }
+    accuracySet(): void {
+        throw new Error("Method not implemented.");
+    }
+    timePlayedAdd(amount: Date): void {
+        throw new Error("Method not implemented.");
+    }
+    rankSet(): void {
+        throw new Error("Method not implemented.");
+    }
+    win(): void {
+        throw new Error("Method not implemented.");
+    }
+    lose(): void {
+        throw new Error("Method not implemented.");
+    }
+    
+}
+
+let emptySt = {
+    
+}
+
 export const UserSchema = new Schema<UserInterface>({
     username: {
         type: SchemaTypes.String,
@@ -239,7 +295,7 @@ export const UserSchema = new Schema<UserInterface>({
     },
     stats: {
         type: StatsSchema,
-        default: 
+        default: new EmptyStats,
     }
 
 })

@@ -36,7 +36,5 @@ router.get('/', async (req, res) => {
 
 })
 
-
-
 export = router;
 
