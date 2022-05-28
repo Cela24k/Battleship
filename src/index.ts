@@ -25,11 +25,9 @@ app.use(cors());
 //estrae l'intero body di una incoming request stream e lo "passa" nel req.body in formato json
 app.use(bodyparser.json())
 
-
-
 app.use((req, res, next) => {
     console.log("------------------------------------------------".rainbow)
-    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + "StatusCode" + res.statusCode);
+    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + " StatusCode " + res.statusCode);
     next();
 })
 

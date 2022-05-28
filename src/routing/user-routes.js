@@ -36,6 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 var user = require("../models/user");
+var user_1 = require("../models/user");
 var express_1 = require("express");
 var jsonwebtoken = require("jsonwebtoken");
 var router = express_1.Router();
@@ -56,6 +57,7 @@ router.get('/list', function (req, res) {
     console.log("GIUSTO ED AUTENTICATO"); //Debugging tool for auth
     res.send(202);
 });
+// Returns a list of all users' public data: id, username, stats, playing
 router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var projection;
     return __generator(this, function (_a) {
@@ -75,20 +77,49 @@ router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, f
         }
     });
 }); });
-router.get('/:userId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, projection;
+// Returns the public data of the user identified by {:userId} if it exists, else throws error 404 
+router.get('/:userid', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var projection;
     return __generator(this, function (_a) {
-        jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-        projection = {
-            username: true,
-            stats: true,
-            playing: true
-        };
-        console.log(req.headers.authorization);
-        console.log(jwt);
-        console.log(jwt.toString());
-        res.send();
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0:
+                projection = {
+                    username: true,
+                    stats: true,
+                    playing: true
+                };
+                return [4 /*yield*/, user.getModel().find({ _id: req.params.userid }, projection).then(function (data) {
+                        if (data.length === 0)
+                            res.status(404).json({ error: true, errormessage: "There is no user with such userId" });
+                        else
+                            res.send(data);
+                    })];
+            case 1:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); });
+// Deletes the user identified by {:userId} 
+// A moderator can delete all users 
+// A regular user can use this endpoint only with his own {:userId}
+router["delete"]('/:userId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var jwt;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 2];
+                return [4 /*yield*/, user.getModel().deleteOne({ _id: req.params.userId }).then(function (data) {
+                        res.send(data);
+                    })];
+            case 1:
+                _a.sent();
+                _a.label = 2;
+            case 2:
+                res.send({ error: "You don't have the authorization to execute this endpoint" }).status(404);
+                return [2 /*return*/];
+        }
     });
 }); });
 module.exports = router;

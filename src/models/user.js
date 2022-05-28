@@ -6,9 +6,8 @@ var mongoose_2 = require("mongoose");
 var crypto = require("crypto");
 var Role;
 (function (Role) {
-    Role[Role["Admin"] = 0] = "Admin";
-    Role[Role["Mod"] = 1] = "Mod";
-    Role[Role["None"] = 2] = "None";
+    Role[Role["Mod"] = 0] = "Mod";
+    Role[Role["None"] = 1] = "None";
 })(Role = exports.Role || (exports.Role = {}));
 exports.StatsSchema = new mongoose_1.Schema({
     wins: {
@@ -187,9 +186,6 @@ exports.UserSchema.methods.validatePassword = function (pwd) {
     hmac.update(pwd);
     var digest = hmac.digest('hex');
     return (this.digest === digest);
-};
-exports.UserSchema.methods.isAdmin = function () {
-    return this.role == Role.Admin;
 };
 exports.UserSchema.methods.isModerator = function () {
     return this.role == Role.Mod;

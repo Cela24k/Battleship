@@ -6,7 +6,6 @@ import * as crypto from "crypto";
 import { Stats } from "fs";
 
 export enum Role {
-    Admin,
     Mod,
     None
 }
@@ -36,9 +35,6 @@ export interface UserInterface extends Document {
     /* Validate the hashed password */
 
     validatePassword(pwd: String): boolean,
-
-    /* Returns true if this user's role field is set to "Role.Admin" */
-    isAdmin(): boolean;
 
     /* Returns true if this user's role field is set to "Role.Admin" */
     isModerator(): boolean;
@@ -303,10 +299,6 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
     hmac.update(pwd);
     var digest = hmac.digest('hex');
     return (this.digest === digest);
-}
-
-UserSchema.methods.isAdmin = function (): boolean {
-    return this.role == Role.Admin;
 }
 
 UserSchema.methods.isModerator = function (): boolean {
