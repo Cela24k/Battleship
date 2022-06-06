@@ -22,7 +22,8 @@ app.use(cors());
 app.use(bodyparser.json());
 app.use(function (req, res, next) {
     console.log("------------------------------------------------".rainbow);
-    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + "StatusCode" + res.statusCode);
+    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + " IP" + req.ip);
+    res.on('finish', function () { console.log("Response Status : " + res.statusCode); });
     next();
 });
 app.get("/", function (req, res) {

@@ -5,6 +5,7 @@ import { Router } from "express";
 import { AsyncLocalStorage } from "async_hooks";
 import jsonwebtoken = require('jsonwebtoken');
 import passport = require("passport");
+import { Types } from "mongoose";
 var router = Router();
 
 /*
@@ -27,44 +28,102 @@ router.get('/list', (req, res) => {
 })
 
 
+// DONE
 // Returns a list of all users' public data: id, username, stats, playing
 router.get('/', async (req, res) => {
-    const projection = {
-        username: true,
-        stats: true,
-        playing:true,
+    try {
+        var result = await user.getAllUsers();
     }
-    await user.getModel().find({}, projection).then(function (data) {
-        res.send(data);
-    })
-
+    catch (err) {
+        if (err === 'Server error')
+            return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+        else
+            return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+    }
+    return res.status(200).json(result);
 })
 
+// DONE
 // Returns the public data of the user identified by {:userId} if it exists, else throws error 404 
-router.get('/:userid', async (req, res)=>{
-    const projection = {
-        username: true,
-        stats: true,
-        playing: true
+router.get('/:userid', async (req, res) => {
+    try {
+        var result = await user.getUser(new Types.ObjectId(req.params.userid));
     }
-    await user.getModel().find({_id: req.params.userid}, projection).then(function(data){
-        if(data.length === 0) res.status(404).json({error:true, errormessage:"There is no user with such userId" })
-        else res.send(data)
-    })
+    catch (err) {
+        if (err === 'Server error')
+            return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+        else
+            return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+    }
+    return res.status(200).json(result)
 })
 
 // Deletes the user identified by {:userId} 
 // A moderator can delete all users 
 // A regular user can use this endpoint only with his own {:userId}
 router.delete('/:userId', async (req, res) => {
-    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ",""), process.env.JWT_SECRET)
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
 
-    if(jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod ){
-        await user.getModel().deleteOne({_id:req.params.userId}).then(function(data){
-            res.send(data)
-        });
+    if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod) {
+        try {
+            var result = await user.deleteUser(new Types.ObjectId(req.params.userId));
+        }
+        catch (err) {
+            if (err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
+        return res.status(200).json(result);
     }
-    res.send({error: "You don't have the authorization to execute this endpoint"}).status(404)
+    else
+        return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
+})
+
+//vedere se farlo
+router.patch('/:userId', async (req, res) => {
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+
+    if (jwt['role'] === Role.Mod) {
+        await user.getModel().findOneAndUpdate({ _id: req.params.userId }, {})
+    }
+})
+
+//Returns a user's list of friends if it exists
+router.get('/:userId/friends', async (req, res) => {
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+
+    if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
+        try {
+            var result = user.getUserFriends(new Types.ObjectId(req.params.userId));
+        } 
+        catch (err) {
+            if(err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
+        if((await result).length === 0)
+            return res.status(200).json({ error: false, errormessage: 'This user has no friends ;(', timestamp: Date.now() });
+        return res.status(200).json(result);
+    }
+    return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
+})
+
+//Inserts a user into the user's friendlist
+
+//FORSE non fare ma fare endpoint per mandare una richiesta di amicizia
+router.put('/users/:userId/friends/:friendId', async (req, res) => {
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+    
+    if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
+        try {
+            var result = user.makeFriendship(req.params.)
+        } catch (err) {
+            
+        }
+    }
+    return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
 
 export = router;

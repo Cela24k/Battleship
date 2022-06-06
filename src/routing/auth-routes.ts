@@ -55,9 +55,11 @@ router.get('/login',passport.authenticate('basic', { session: false }), function
 router.post('/register', async function (req, res, next) {
     const { username, email, password } = req.body;
 
+    console.log(req.body);
+    console.log(username,email);
     // TODO controllo email non solo da parte frontend ma anche da backend
     let userDoc = await user.getModel().findOne({ email: email, username: username })
-
+    
     if (!userDoc) {
         let u = user.newUser({
             username,

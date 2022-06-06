@@ -82,6 +82,8 @@ router.post('/register', function (req, res, next) {
             switch (_b.label) {
                 case 0:
                     _a = req.body, username = _a.username, email = _a.email, password = _a.password;
+                    console.log(req.body);
+                    console.log(username, email);
                     return [4 /*yield*/, user.getModel().findOne({ email: email, username: username })];
                 case 1:
                     userDoc = _b.sent();

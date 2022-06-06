@@ -27,7 +27,8 @@ app.use(bodyparser.json())
 
 app.use((req, res, next) => {
     console.log("------------------------------------------------".rainbow)
-    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + " StatusCode " + res.statusCode);
+    console.log("Method: " + req.method.cyan + " Endpoint : " + req.url.red + " IP" + req.ip);
+    res.on('finish',()=>{console.log("Response Status : " + res.statusCode);}); 
     next();
 })
 

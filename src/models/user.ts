@@ -4,6 +4,7 @@ import { ChatInterface } from "./chat";
 import { NotificationType, NotificationInterface } from "./notification";
 import * as crypto from "crypto";
 import { Stats } from "fs";
+import { DeleteResult, UpdateResult } from "mongodb";
 
 export enum Role {
     Mod,
@@ -20,7 +21,7 @@ export interface UserInterface extends Document {
     //chats: [ChatInterface],  //by copy ?
     stats: StatsInterface,
     notifications: [NotificationInterface],
-    playing:boolean,
+    playing: boolean,
 
     /* this could be useful for the Matchmaking,
     *  a match shouldn't start unless both players are waiting and if 
@@ -66,7 +67,7 @@ export interface UserInterface extends Document {
     // addChat(): void, // vedere che parametri ha bisogno 
     // removeChat(): void,//stessa cosa
 
-    getUserPublicInfo(): void; 
+    getUserPublicInfo(): void;
 
 }
 
@@ -142,110 +143,58 @@ export const StatsSchema = new Schema<StatsInterface>({
     }
 })
 
-StatsSchema.methods.winsAdd = function(): void {
+StatsSchema.methods.winsAdd = function (): void {
     this.wins++;
     this.playedGames++;
 }
 
-StatsSchema.methods.lossesAdd = function(): void {
+StatsSchema.methods.lossesAdd = function (): void {
     this.losses++;
     this.playedGames++;
 }
 
-StatsSchema.methods.winstreakAdd = function(): void {
+StatsSchema.methods.winstreakAdd = function (): void {
     this.winstreak++;
-    if(this.maxWinstreak < this.winstreak) 
+    if (this.maxWinstreak < this.winstreak)
         this.maxWinstreak = this.winstreak;
 }
 
-StatsSchema.methods.winstreakReset = function(): void {
+StatsSchema.methods.winstreakReset = function (): void {
     this.winstreak = 0;
 }
 
-StatsSchema.methods.eloIncrement = function(amount: number): void {
-    if(this.elo + amount < 0 )
+StatsSchema.methods.eloIncrement = function (amount: number): void {
+    if (this.elo + amount < 0)
         this.elo = 0;
     else this.elo += amount;
 }
-StatsSchema.methods.accuracySet = function(): void {
+StatsSchema.methods.accuracySet = function (): void {
     this.accuracy = this.shotsFired / this.shotsHit;
 }
-StatsSchema.methods.shotsHitAdd = function(): void {
+StatsSchema.methods.shotsHitAdd = function (): void {
     this.wins++;
 }
 
 // DA QUA IN POI RIVEDERE
 
-StatsSchema.methods.shotsFiredAdd = function(): void {
+StatsSchema.methods.shotsFiredAdd = function (): void {
     this.shotsFired++;
     /*if(the shot hit the target)*/
-        this.shotsHitAdd();
+    this.shotsHitAdd();
     this.accuracySet();
 }
-StatsSchema.methods.timePlayedAdd = function(amount: Date): void {
+StatsSchema.methods.timePlayedAdd = function (amount: Date): void {
     this.timePlayed += amount;
 }
-StatsSchema.methods.win = function(): void {
+StatsSchema.methods.win = function (): void {
     this.winsAdd();
     this.winstreakAdd();
 }
-StatsSchema.methods.lose = function(): void {
+StatsSchema.methods.lose = function (): void {
     this.lossesAdd();
     this.winstreakReset();
 
     this.timePlayedAdd();
-}
-
-export class EmptyStats implements StatsInterface {
-    wins: 0;
-    losses: 0;
-    winstreak: 0;
-    maxWinstreak: 0;
-    elo: 0;
-    playedGames: 0;
-    shotsFired: 0;
-    shotsHit: 0;
-    accuracy: 0;
-    timePlayed: Date;
-    rank: 0;
-
-    winsAdd(): void {
-        throw new Error("Method not implemented.");
-    }
-    lossesAdd(): void {
-        throw new Error("Method not implemented.");
-    }
-    winstreakAdd(): void {
-        throw new Error("Method not implemented.");
-    }
-    winstreakReset(): void {
-        throw new Error("Method not implemented.");
-    }
-    eloIncrement(value: number): void {
-        throw new Error("Method not implemented.");
-    }
-    shotsFiredAdd(): void {
-        throw new Error("Method not implemented.");
-    }
-    shotsHitAdd(): void {
-        throw new Error("Method not implemented.");
-    }
-    accuracySet(): void {
-        throw new Error("Method not implemented.");
-    }
-    timePlayedAdd(amount: Date): void {
-        throw new Error("Method not implemented.");
-    }
-    rankSet(): void {
-        throw new Error("Method not implemented.");
-    }
-    win(): void {
-        throw new Error("Method not implemented.");
-    }
-    lose(): void {
-        throw new Error("Method not implemented.");
-    }
-    
 }
 
 export const UserSchema = new Schema<UserInterface>({
@@ -275,7 +224,7 @@ export const UserSchema = new Schema<UserInterface>({
     },
     stats: {
         type: StatsSchema,
-        default: new EmptyStats(),
+        default: () => ({}),
     },
     playing: {
         type: SchemaTypes.Boolean,
@@ -285,7 +234,6 @@ export const UserSchema = new Schema<UserInterface>({
 })
 
 UserSchema.methods.setPassword = function (pwd: string): void {
-    console.log('Ghesbor');
     this.salt = crypto.randomBytes(16).toString('hex');
     var hmac = crypto.createHmac('sha512', this.salt);
     hmac.update(pwd);
@@ -310,7 +258,7 @@ UserSchema.methods.isWaiting = function (): boolean {
 }
 
 UserSchema.methods.addFriend = function (friend: Types.ObjectId): void {
-    if (!this.friends.find(friend)) 
+    if (!this.friends.find(friend))
         this.friends.push(friend);
 }
 
@@ -321,7 +269,7 @@ UserSchema.methods.removeFriend = function (): void {
     /* TODO */
 }
 
-UserSchema.methods.getUserPublicInfo = function(): Object {
+UserSchema.methods.getUserPublicInfo = function (): Object {
     let body = {
         username: this.username,
         friends: this.friendlist,
@@ -349,3 +297,74 @@ export function newUser(data: any): UserInterface {
 
     return user;
 }
+
+export async function getUser(userid: Types.ObjectId): Promise<UserInterface> {
+    const projection = {
+        username: true,
+        stats: true,
+        playing: true
+    }
+    let result = await User.findOne({ _id: userid }, projection).catch(
+        (err) => Promise.reject('Server error')
+    );
+    if (result) return Promise.resolve(result);
+    else return Promise.reject('No user with such Id'); //mettere dentro un errore?
+}
+
+export async function getAllUsers(): Promise<UserInterface[]> {
+    const projection = {
+        username: true,
+        stats: true,
+        playing: true,
+    }
+    let result = await User.find({}, projection).catch((err) => {
+        return Promise.reject('Server Error');
+    });
+    if (!result)
+        return Promise.reject('There are no users ;D');
+    return Promise.resolve(result);
+}
+
+export async function deleteUser(userid: Types.ObjectId): Promise<DeleteResult> {
+    let result = await User.deleteOne({ _id: userid }).catch(
+        (err) => Promise.reject('Server Error')
+    );
+    if (!result)
+        return Promise.reject('There are no users with such id')
+    return Promise.resolve(result);
+}
+
+export async function getUserFriends(userid: Types.ObjectId): Promise<Types.ObjectId[]> {
+    let projection = {
+        friends: true,
+    }
+    let result = await User.findById(userid, projection).catch(
+        (err) => Promise.reject('Server Error')
+    );
+    if (!result)
+        return Promise.reject('There are no users with such id');
+    return Promise.resolve(result.friends);
+}
+
+export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectId): Promise<void> {
+    try {
+        var u1 = await getUser(user1);
+        var u2 = await getUser(user2);
+    } catch (err) {
+        Promise.reject(err)
+    }
+    if (!u1.friends.includes(u2.id)) {
+        u1.friends.push(u2.id);
+        u2.friends.push(u1.id);
+        try {
+            await u1.save();
+            await u2.save();
+        } catch (err) {
+            Promise.reject(err)
+        }
+        return Promise.resolve();
+    }
+    return Promise.reject('Users are already friends');
+}
+
+export const User: Model<UserInterface> = getModel();
