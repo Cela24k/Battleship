@@ -146,18 +146,6 @@ export const StatsSchema = new Schema<StatsInterface>({
     }
 })
 
-/*winsAdd(): void,
-    lossesAdd(): void,
-    winstreakAdd(): void,
-    winstreakReset(): void,
-    eloIncrement(value: number): void,
-    shotsFiredAdd(): void,
-    shotsHitAdd(): void,
-    accuracySet(): void,
-    timePlayedAdd(amount: Date): void,
-    win(): void,
-    lose(): void,
-*/
 
 StatsSchema.methods.winsAdd = function (): void {
     this.wins++;
@@ -239,7 +227,12 @@ export const UserSchema = new Schema<UserInterface>({
         type: [SchemaTypes.ObjectId],
     },
     stats: {
-        type: StatsSchema
+        type: StatsSchema,
+        default: () => ({}),
+    },
+    playing: {
+        type: SchemaTypes.Boolean,
+        default: false,
     }
 
 })
