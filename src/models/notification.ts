@@ -6,7 +6,7 @@ export enum NotificationType {
     Others
 }
 
-export interface NotificationInterface extends Document {
+export interface NotificationInterface{
     sender: Object,
     receiver: Object,
     text: string,
@@ -51,11 +51,12 @@ export const NotificationSchema = new Schema<NotificationInterface>({
 
 })
 
+
 export function generateHeader(name: string, ntype: NotificationType): Promise<String> {
     if (ntype === NotificationType.Friend)
-        return Promise.resolve(name + 'sent you a Friend Notification');
+        return Promise.resolve(name + ' sent you a Friend Notification');
     else if (ntype === NotificationType.Game)
-        return Promise.resolve(name = 'invited you to a friendly Match');
+        return Promise.resolve(name = ' invited you to a friendly Match');
     else
         return Promise.reject('Wrong Notification type');
 }
@@ -71,8 +72,8 @@ export function getModel(): Model<NotificationInterface> { // Return Model as si
     return notificationModel;
 }
 
-export function newNotification(sender_name: string, sender: Types.ObjectId, receiver: Types.ObjectId, ntype: NotificationType): NotificationInterface {
-    let header = generateHeader(sender_name, ntype).catch(
+export async function newNotification(sender_name: string, sender: Types.ObjectId, receiver: Types.ObjectId, ntype: NotificationType): Promise<NotificationInterface> {
+    let header = await generateHeader(sender_name, ntype).catch(
         (err)=>Promise.reject(err)
     );
     let data = {
@@ -81,9 +82,8 @@ export function newNotification(sender_name: string, sender: Types.ObjectId, rec
         ntype,
         text:header,
     }
-    const _notificationModel = getModel();
-    var notification = new _notificationModel(data);
-    return notification;
+    var notification = new Notification(data);
+    return Promise.resolve(notification);
 }
 
 export const Notification: Model<NotificationInterface> = getModel();

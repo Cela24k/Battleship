@@ -110,19 +110,22 @@ router.get('/:userId/friends', async (req, res) => {
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
 
-//Inserts a user into the user's friendlist
-//FORSE non fare ma fare endpoint per mandare una richiesta di amicizia
-router.put('/users/:userId/friends/:friendId', async (req, res) => {
+//Sends a friend request 
+router.put('/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
     
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
         try {
-            //var result = user.makeFriendship(req.params.id);
+            var sender = await user.getUser(new Types.ObjectId(req.params.userId));
+            var response = sender.friendNotification(new Types.ObjectId(req.params.friendId));
         } catch (err) {
-            
+            if (err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else 
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
+        return res.status(200).json({ error: false, errormessage: 'Friend request sent', timestamp: Date.now() });
     }
-    res.send({error: "You don't have the authorization to execute this endpoint"}).status(404)
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
 

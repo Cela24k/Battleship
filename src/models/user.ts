@@ -1,7 +1,7 @@
 import { Document, Model, Schema, Types, SchemaTypes, SchemaType } from "mongoose";
 import mongoose from "mongoose";
 import { ChatInterface } from "./chat";
-import { NotificationType, NotificationInterface, newNotification } from "./notification";
+import { NotificationType, NotificationInterface, newNotification, NotificationSchema } from "./notification";
 import * as crypto from "crypto";
 import { Stats } from "fs";
 import { DeleteResult, UpdateResult } from "mongodb";
@@ -60,7 +60,7 @@ export interface UserInterface extends Document {
 
     /* Sends a friend notification, the addFriend function is called 
     *  if it is accepted */
-    friendNotification(friend: Types.ObjectId): void;
+    friendNotification(friend: Types.ObjectId): Promise<boolean>;
 
     /* Sets this User's role */
     setRole(role: Role): void;
@@ -230,6 +230,9 @@ export const UserSchema = new Schema<UserInterface>({
         type: StatsSchema,
         default: () => ({}),
     },
+    notifications: {
+        type: [NotificationSchema],
+    },
     playing: {
         type: SchemaTypes.Boolean,
         default: false,
@@ -294,6 +297,7 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
     return body;
 }
 
+// IDK 
 UserSchema.methods.makeFriendship = async function(userId: Types.ObjectId): Promise<void>{
     try {
         var u1 = await getUser(userId);
@@ -311,14 +315,22 @@ UserSchema.methods.makeFriendship = async function(userId: Types.ObjectId): Prom
     return Promise.resolve();
 }
 
-UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): Promise<void>{
+UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): Promise<boolean>{
     let u = await User.findById(userId,{notifications:true}).catch(
-        ()=> Promise.reject('Server Error')
+        (err)=> Promise.reject('Server Error')
     );  
     if(u){
-        u.notifications.push(newNotification(this.username, this.id, userId, NotificationType.Friend))
+        let n = await newNotification(this.username, this.id, userId, NotificationType.Friend);
+        u.notifications.push(n);
+        let res = await u.save().catch(
+            (err)=>Promise.reject('Server Error')
+        )
+        if(res)
+            return Promise.resolve(true);
+        else 
+            return Promise.reject('Server Error');
     }
-    else Promise.reject('There is no user with such id')
+    else return Promise.reject('There are no users with such id')
 }
 
 export function getSchema() { return UserSchema; }
@@ -343,7 +355,7 @@ export async function getUser(userid: Types.ObjectId): Promise<UserInterface> {
         stats: true,
         playing: true
     }
-    let result = await User.findOne({ _id: userid }, projection).catch(
+    let result = await User.findById({ _id: userid }, projection).catch(
         (err) => Promise.reject('Server error')
     );
     if (result) return Promise.resolve(result);
