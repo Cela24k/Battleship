@@ -70,7 +70,7 @@ export interface UserInterface extends Document {
     getUserPublicInfo(): void;
 
     //the user that will call this 
-    makeFriendship(userId: Types.ObjectId) : Promise<void>;
+    makeFriendship(userId: Types.ObjectId): Promise<void>;
 
 }
 
@@ -145,6 +145,19 @@ export const StatsSchema = new Schema<StatsInterface>({
         default: 0
     }
 })
+
+/*winsAdd(): void,
+    lossesAdd(): void,
+    winstreakAdd(): void,
+    winstreakReset(): void,
+    eloIncrement(value: number): void,
+    shotsFiredAdd(): void,
+    shotsHitAdd(): void,
+    accuracySet(): void,
+    timePlayedAdd(amount: Date): void,
+    win(): void,
+    lose(): void,
+*/
 
 StatsSchema.methods.winsAdd = function (): void {
     this.wins++;
@@ -226,12 +239,7 @@ export const UserSchema = new Schema<UserInterface>({
         type: [SchemaTypes.ObjectId],
     },
     stats: {
-        type: StatsSchema,
-        default: () => ({}),
-    },
-    playing: {
-        type: SchemaTypes.Boolean,
-        default: false,
+        type: StatsSchema
     }
 
 })
@@ -268,8 +276,18 @@ UserSchema.methods.addFriend = function (friend: Types.ObjectId): void {
 UserSchema.methods.setRole = function (role: Role): void {
     if (this.role !== role) this.role = role;
 }
-UserSchema.methods.removeFriend = function (): void {
-    /* TODO */
+UserSchema.methods.removeFriend = async function (friend: Types.ObjectId): Promise<void> {//TODO vedere che pattern mettere sulla save
+    var index = this.friend.indexOf(friend);
+    if (index > -1) {
+        this.friends.splice(index, 1);
+    }
+    try {
+        await this.save();
+    } catch (err) {
+        return Promise.reject(err)
+    }
+
+    return Promise.resolve();
 }
 
 UserSchema.methods.getUserPublicInfo = function (): Object {
@@ -283,7 +301,7 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
     return body;
 }
 
-UserSchema.methods.makeFriendship= async function(userId: Types.ObjectId): Promise<void>{
+UserSchema.methods.makeFriendship = async function (userId: Types.ObjectId): Promise<void> {
 
     try {
         var u1 = await getUser(userId);

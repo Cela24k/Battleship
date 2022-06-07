@@ -39,6 +39,11 @@ router.get('/', async (req, res) => {
     })
 
 })
+router.delete('/:userId', async (req, res) =>{
+    const {userId} = req.params;
+    
+
+})
 
 // Returns the public data of the user identified by {:userId} if it exists, else throws error 404 
 router.get('/:userid', async (req, res)=>{
