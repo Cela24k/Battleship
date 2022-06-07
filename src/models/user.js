@@ -206,6 +206,36 @@ exports.UserSchema.methods.getUserPublicInfo = function () {
     };
     return body;
 };
+exports.UserSchema.methods.makeFriendship = function (userId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var u1, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 6, , 7]);
+                    return [4 /*yield*/, getUser(userId)];
+                case 1:
+                    u1 = _a.sent();
+                    if (!!u1.friends.includes(this._id)) return [3 /*break*/, 4];
+                    this.friends.push(userId);
+                    u1.friends.push(this._id);
+                    return [4 /*yield*/, u1.save()];
+                case 2:
+                    _a.sent();
+                    return [4 /*yield*/, this.save()];
+                case 3:
+                    _a.sent();
+                    return [3 /*break*/, 5];
+                case 4: return [2 /*return*/, Promise.reject('Users are already friends')];
+                case 5: return [3 /*break*/, 7];
+                case 6:
+                    err_1 = _a.sent();
+                    return [2 /*return*/, Promise.reject(err_1)];
+                case 7: return [2 /*return*/, Promise.resolve()];
+            }
+        });
+    });
+};
 function getSchema() { return exports.UserSchema; }
 exports.getSchema = getSchema;
 // Mongoose Model
@@ -218,9 +248,7 @@ function getModel() {
 }
 exports.getModel = getModel;
 function newUser(data) {
-    console.log(data);
-    var _userModel = getModel();
-    var user = new _userModel(data);
+    var user = new exports.User(data);
     return user;
 }
 exports.newUser = newUser;

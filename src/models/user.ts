@@ -69,6 +69,9 @@ export interface UserInterface extends Document {
 
     getUserPublicInfo(): void;
 
+    //the user that will call this 
+    makeFriendship(userId: Types.ObjectId) : Promise<void>;
+
 }
 
 
@@ -279,6 +282,26 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
 
     return body;
 }
+
+UserSchema.methods.makeFriendship= async function(userId: Types.ObjectId): Promise<void>{
+
+    try {
+        var u1 = await getUser(userId);
+        if (!u1.friends.includes(this._id)) {
+            this.friends.push(userId);
+            u1.friends.push(this._id);
+            await u1.save();
+            await this.save();
+        } else {
+            return Promise.reject('Users are already friends');
+        }
+    } catch (err) {
+        return Promise.reject(err)
+    }
+    return Promise.resolve();
+
+}
+
 export function getSchema() { return UserSchema; }
 
 // Mongoose Model
@@ -291,10 +314,7 @@ export function getModel(): Model<UserInterface> { // Return Model as singleton
 }
 
 export function newUser(data: any): UserInterface {
-    console.log(data);
-    const _userModel = getModel();
-    var user = new _userModel(data);
-
+    var user = new User(data);
     return user;
 }
 
@@ -346,25 +366,6 @@ export async function getUserFriends(userid: Types.ObjectId): Promise<Types.Obje
     return Promise.resolve(result.friends);
 }
 
-export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectId): Promise<void> {
-    try {
-        var u1 = await getUser(user1);
-        var u2 = await getUser(user2);
-    } catch (err) {
-        Promise.reject(err)
-    }
-    if (!u1.friends.includes(u2.id)) {
-        u1.friends.push(u2.id);
-        u2.friends.push(u1.id);
-        try {
-            await u1.save();
-            await u2.save();
-        } catch (err) {
-            Promise.reject(err)
-        }
-        return Promise.resolve();
-    }
-    return Promise.reject('Users are already friends');
-}
+
 
 export const User: Model<UserInterface> = getModel();

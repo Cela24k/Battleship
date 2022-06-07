@@ -39,7 +39,6 @@ var user = require("../models/user");
 var user_1 = require("../models/user");
 var express_1 = require("express");
 var jsonwebtoken = require("jsonwebtoken");
-var mongoose_1 = require("mongoose");
 var router = express_1.Router();
 /*
     ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
@@ -58,49 +57,46 @@ router.get('/list', function (req, res) {
     console.log("GIUSTO ED AUTENTICATO"); //Debugging tool for auth
     res.send(202);
 });
-// DONE
 // Returns a list of all users' public data: id, username, stats, playing
 router.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, err_1;
+    var projection;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, user.getAllUsers()];
+                projection = {
+                    username: true,
+                    stats: true,
+                    playing: true
+                };
+                return [4 /*yield*/, user.getModel().find({}, projection).then(function (data) {
+                        res.send(data);
+                    })];
             case 1:
-                result = _a.sent();
-                return [3 /*break*/, 3];
-            case 2:
-                err_1 = _a.sent();
-                if (err_1 === 'Server error')
-                    return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_1, timestamp: Date.now() })];
-                else
-                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_1, timestamp: Date.now() })];
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/, res.status(200).json(result)];
+                _a.sent();
+                return [2 /*return*/];
         }
     });
 }); });
-// DONE
 // Returns the public data of the user identified by {:userId} if it exists, else throws error 404 
 router.get('/:userid', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, err_2;
+    var projection;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, user.getUser(new mongoose_1.Types.ObjectId(req.params.userid))];
+                projection = {
+                    username: true,
+                    stats: true,
+                    playing: true
+                };
+                return [4 /*yield*/, user.getModel().find({ _id: req.params.userid }, projection).then(function (data) {
+                        if (data.length === 0)
+                            res.status(404).json({ error: true, errormessage: "There is no user with such userId" });
+                        else
+                            res.send(data);
+                    })];
             case 1:
-                result = _a.sent();
-                return [3 /*break*/, 3];
-            case 2:
-                err_2 = _a.sent();
-                if (err_2 === 'Server error')
-                    return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_2, timestamp: Date.now() })];
-                else
-                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_2, timestamp: Date.now() })];
-                return [3 /*break*/, 3];
-            case 3: return [2 /*return*/, res.status(200).json(result)];
+                _a.sent();
+                return [2 /*return*/];
         }
     });
 }); });
@@ -108,77 +104,22 @@ router.get('/:userid', function (req, res) { return __awaiter(void 0, void 0, vo
 // A moderator can delete all users 
 // A regular user can use this endpoint only with his own {:userId}
 router["delete"]('/:userId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, result, err_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 5];
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, user.deleteUser(new mongoose_1.Types.ObjectId(req.params.userId))];
-            case 2:
-                result = _a.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                err_3 = _a.sent();
-                if (err_3 === 'Server Error')
-                    return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_3, timestamp: Date.now() })];
-                else
-                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_3, timestamp: Date.now() })];
-                return [3 /*break*/, 4];
-            case 4: return [2 /*return*/, res.status(200).json(result)];
-            case 5: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
-        }
-    });
-}); });
-//vedere se farlo
-router.patch('/:userId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var jwt;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-                if (!(jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 2];
-                return [4 /*yield*/, user.getModel().findOneAndUpdate({ _id: req.params.userId }, {})];
+                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 2];
+                return [4 /*yield*/, user.getModel().deleteOne({ _id: req.params.userId }).then(function (data) {
+                        res.send(data);
+                    })];
             case 1:
                 _a.sent();
                 _a.label = 2;
-            case 2: return [2 /*return*/];
+            case 2:
+                res.send({ error: "You don't have the authorization to execute this endpoint" }).status(404);
+                return [2 /*return*/];
         }
-    });
-}); });
-//Returns a user's list of friends if it exists
-router.get('/:userId/friends', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 2];
-                try {
-                    result = user.getUserFriends(new mongoose_1.Types.ObjectId(req.params.userId));
-                }
-                catch (err) {
-                    if (err === 'Server Error')
-                        return [2 /*return*/, res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() })];
-                    else
-                        return [2 /*return*/, res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() })];
-                }
-                return [4 /*yield*/, result];
-            case 1:
-                if ((_a.sent()).length === 0)
-                    return [2 /*return*/, res.status(200).json({ error: false, errormessage: 'This user has no friends ;(', timestamp: Date.now() })];
-                return [2 /*return*/, res.status(200).json(result)];
-            case 2: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
-        }
-    });
-}); });
-//Inserts a new user into the user's friendlist
-router.put('/users/:userId/friends/:friendId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/];
     });
 }); });
 module.exports = router;
