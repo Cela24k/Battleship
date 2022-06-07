@@ -109,8 +109,8 @@ router.get('/:userId/friends', async (req, res) => {
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
-//Inserts a user into the user's friendlist
 
+//Inserts a user into the user's friendlist
 //FORSE non fare ma fare endpoint per mandare una richiesta di amicizia
 router.put('/users/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);

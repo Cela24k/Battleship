@@ -1,7 +1,7 @@
 import { Document, Model, Schema, Types, SchemaTypes, SchemaType } from "mongoose";
 import mongoose from "mongoose";
 import { ChatInterface } from "./chat";
-import { NotificationType, NotificationInterface } from "./notification";
+import { NotificationType, NotificationInterface, newNotification } from "./notification";
 import * as crypto from "crypto";
 import { Stats } from "fs";
 import { DeleteResult, UpdateResult } from "mongodb";
@@ -301,7 +301,7 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
     return body;
 }
 
-UserSchema.methods.makeFriendship= async function(userId: Types.ObjectId): Promise<void>{
+UserSchema.methods.makeFriendship = async function(userId: Types.ObjectId): Promise<void>{
     try {
         var u1 = await getUser(userId);
         if (!u1.friends.includes(this._id)) {
@@ -316,6 +316,16 @@ UserSchema.methods.makeFriendship= async function(userId: Types.ObjectId): Promi
         return Promise.reject(err)
     }
     return Promise.resolve();
+}
+
+UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): Promise<void>{
+    let u = await User.findById(userId,{notifications:true}).catch(
+        ()=> Promise.reject('Server Error')
+    );  
+    if(u){
+        u.notifications.push(newNotification(this.username, this.id, userId, NotificationType.Friend))
+    }
+    else Promise.reject('There is no user with such id')
 }
 
 export function getSchema() { return UserSchema; }
