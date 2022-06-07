@@ -301,8 +301,7 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
     return body;
 }
 
-UserSchema.methods.makeFriendship = async function (userId: Types.ObjectId): Promise<void> {
-
+UserSchema.methods.makeFriendship= async function(userId: Types.ObjectId): Promise<void>{
     try {
         var u1 = await getUser(userId);
         if (!u1.friends.includes(this._id)) {
@@ -317,7 +316,6 @@ UserSchema.methods.makeFriendship = async function (userId: Types.ObjectId): Pro
         return Promise.reject(err)
     }
     return Promise.resolve();
-
 }
 
 export function getSchema() { return UserSchema; }
