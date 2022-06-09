@@ -53,10 +53,10 @@ export const NotificationSchema = new Schema<NotificationInterface>({
 
 })
 
-NotificationSchema.methods.accept = function(): Promise<void> {
+NotificationSchema.methods.accept = async function(): Promise<void> {
     const myid = this.id;
     if(this.ntype === NotificationType.Friend){
-        makeFriendship(this.sender,this.receiver).catch(
+        await makeFriendship(this.sender,this.receiver).catch(
             (err) => Promise.reject(err)
         );
         return Promise.resolve();
@@ -73,7 +73,7 @@ export function generateHeader(name: string, ntype: NotificationType): Promise<S
     if (ntype === NotificationType.Friend)
         return Promise.resolve(name + ' sent you a Friend Notification');
     else if (ntype === NotificationType.Game)
-        return Promise.resolve(name = ' invited you to a friendly Match');
+        return Promise.resolve(name + ' invited you to a friendly Match');
     else
         return Promise.reject('Wrong Notification type');
 }
@@ -104,7 +104,7 @@ export async function newNotification(sender_name: string, sender: Types.ObjectI
 }
 
 export async function deleteNotification(nid: Types.ObjectId): Promise<void>{
-    Notification.remove({_id:nid}).catch(
+    await Notification.deleteOne({_id:nid}).catch(
         (err)=>Promise.reject('Server Error')
     )
     Promise.resolve()

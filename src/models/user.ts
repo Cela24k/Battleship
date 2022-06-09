@@ -62,6 +62,9 @@ export interface UserInterface extends Document {
     *  if it is accepted */
     friendNotification(friend: Types.ObjectId): Promise<boolean>;
 
+
+    removeNotification(notification: NotificationInterface): Promise<void>;
+
     /* Sets this User's role */
     setRole(role: Role): void;
     // addChat(): void, // vedere che parametri ha bisogno 
@@ -298,6 +301,7 @@ UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): 
     let u = await User.findById(userId,{notifications:true}).catch(
         (err)=> Promise.reject('Server Error')
     );  
+    if(this.id === userId) return Promise.reject('Cannot add yourself as a friend');
     if(u){
         let flag = true;
         u.notifications.forEach(function(x){
@@ -321,6 +325,22 @@ UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): 
     else return Promise.reject('There are no users with such id')
 }
 
+UserSchema.methods.getNotifications = function(): NotificationInterface[] {
+    return this.notifications;
+}
+
+UserSchema.methods.removeNotification = async function (notification: NotificationInterface): Promise<void> {//TODO vedere che pattern mettere sulla save
+    const index = this.notifications.indexOf(notification);
+    if (index > -1) {
+        this.notifications.splice(index, 1);
+    }
+    try {
+        await this.save();
+    } catch (err) {
+        return Promise.reject(err)
+    }
+    return Promise.resolve();
+}
 export function getSchema() { return UserSchema; }
 
 // Mongoose Model
@@ -387,12 +407,12 @@ export async function getUserFriends(userid: Types.ObjectId): Promise<Types.Obje
 
 export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectId): Promise<void> {
     try {
-        var u1 = await getUser(user1);
-        var u2 = await getUser(user2);
+        var u1 = await User.findById(user1);
+        var u2 = await User.findById(user2);
     } catch (err) {
         Promise.reject(err)
     }
-    if (!u1.friends.includes(u2.id)) {
+    if (!u1.friends.includes(u2._id)) {
         u1.friends.push(u2.id);
         u2.friends.push(u1.id);
         try {
@@ -405,5 +425,6 @@ export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectI
     }
     return Promise.reject('Users are already friends');
 }
+
 
 export const User: Model<UserInterface> = getModel();

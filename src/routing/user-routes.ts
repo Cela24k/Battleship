@@ -7,6 +7,7 @@ import jsonwebtoken = require('jsonwebtoken');
 import passport = require("passport");
 import { Types } from "mongoose";
 import { deleteNotification } from "../models/notification";
+import e = require("express");
 var router = Router();
 
 /*
@@ -96,7 +97,7 @@ router.get('/:userId/friends', async (req, res) => {
 
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
         try {
-            var result = user.getUserFriends(new Types.ObjectId(req.params.userId));
+            var result = await user.getUserFriends(new Types.ObjectId(req.params.userId));
         } 
         catch (err) {
             if(err === 'Server Error')
@@ -104,8 +105,8 @@ router.get('/:userId/friends', async (req, res) => {
             else
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
-        if((await result).length === 0)
-            return res.status(200).json({ error: false, errormessage: 'This user has no friends ;(', timestamp: Date.now() });
+        if( result.length === 0)
+            return res.status(200).json({ error: false, message: 'This user has no friends ;(', timestamp: Date.now() });
         return res.status(200).json(result);
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
@@ -126,26 +127,48 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
             else 
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
-        return res.status(200).json({ error: false, errormessage: 'Friend request sent', timestamp: Date.now() });
+        return res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() });
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
 
+router.get('/:userId/notifications', async (req,res)=>{
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+    if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
+        try {
+            var u = await user.User.findById(new Types.ObjectId(req.params.userId));
+        } catch (err) {
+            if(err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
+        //checkare sto passaggio
+        if(u.notifications)
+            return res.status(200).json(u.notifications);
+        else 
+            return res.status(404).json({ error: true, errormessage: 'The user has no notifications', timestamp: Date.now() });
+    }
+    return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
+})
+
+//accept a notification
 router.put('/:userId/notifications/:notificationId',async (req, res) => {
     let action = req.query.action ? req.query.action : undefined;
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
         try {
-            var u = await user.getUser(new Types.ObjectId(req.params.userId));  
-            var notification = u.notifications.find((val)=> (val._id === new Types.ObjectId(req.params.notificationId)))
-            notification.accept();
-            await deleteNotification(notification._id)
+            var u = await user.getModel().findById(new Types.ObjectId(req.params.userId));  
+            var notification = u.notifications.find((val)=>(String(val._id) === req.params.notificationId));
+            await notification.accept();
+            await u.removeNotification(notification);
         } catch (err) {
             if(err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
             else 
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
+        return res.status(200).json({ error: false, message: 'Notification accepted', timestamp: Date.now() });
     }
 })
 
