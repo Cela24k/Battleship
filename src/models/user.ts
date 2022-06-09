@@ -69,9 +69,6 @@ export interface UserInterface extends Document {
 
     getUserPublicInfo(): void;
 
-    //the user that will call this 
-    makeFriendship(userId: Types.ObjectId): Promise<void>;
-
 }
 
 
@@ -297,36 +294,27 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
     return body;
 }
 
-// IDK 
-UserSchema.methods.makeFriendship = async function(userId: Types.ObjectId): Promise<void>{
-    try {
-        var u1 = await getUser(userId);
-        if (!u1.friends.includes(this._id)) {
-            this.friends.push(userId);
-            u1.friends.push(this._id);
-            await u1.save();
-            await this.save();
-        } else {
-            return Promise.reject('Users are already friends');
-        }
-    } catch (err) {
-        return Promise.reject(err)
-    }
-    return Promise.resolve();
-}
-
-UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): Promise<boolean>{
+UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): Promise<void>{
     let u = await User.findById(userId,{notifications:true}).catch(
         (err)=> Promise.reject('Server Error')
     );  
     if(u){
+        let flag = true;
+        u.notifications.forEach(function(x){
+            if(x.sender == this.id)
+            {
+                flag = false;
+            } 
+        }, this)
+        if(!flag) return Promise.reject('Notification already sent');
+
         let n = await newNotification(this.username, this.id, userId, NotificationType.Friend);
         u.notifications.push(n);
         let res = await u.save().catch(
             (err)=>Promise.reject('Server Error')
         )
         if(res)
-            return Promise.resolve(true);
+            return Promise.resolve();
         else 
             return Promise.reject('Server Error');
     }
@@ -397,6 +385,25 @@ export async function getUserFriends(userid: Types.ObjectId): Promise<Types.Obje
     return Promise.resolve(result.friends);
 }
 
-
+export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectId): Promise<void> {
+    try {
+        var u1 = await getUser(user1);
+        var u2 = await getUser(user2);
+    } catch (err) {
+        Promise.reject(err)
+    }
+    if (!u1.friends.includes(u2.id)) {
+        u1.friends.push(u2.id);
+        u2.friends.push(u1.id);
+        try {
+            await u1.save();
+            await u2.save();
+        } catch (err) {
+            Promise.reject(err)
+        }
+        return Promise.resolve();
+    }
+    return Promise.reject('Users are already friends');
+}
 
 export const User: Model<UserInterface> = getModel();

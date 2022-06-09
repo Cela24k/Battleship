@@ -6,6 +6,7 @@ import { AsyncLocalStorage } from "async_hooks";
 import jsonwebtoken = require('jsonwebtoken');
 import passport = require("passport");
 import { Types } from "mongoose";
+import { deleteNotification } from "../models/notification";
 var router = Router();
 
 /*
@@ -113,20 +114,39 @@ router.get('/:userId/friends', async (req, res) => {
 //Sends a friend request 
 router.put('/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-    
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
         try {
             var sender = await user.getUser(new Types.ObjectId(req.params.userId));
-            var response = sender.friendNotification(new Types.ObjectId(req.params.friendId));
+            var response = await sender.friendNotification(new Types.ObjectId(req.params.friendId));
         } catch (err) {
             if (err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else if(err === 'Notification already sent')
+                return res.status(409).json({ error: true, errormessage: err, timestamp: Date.now() });
             else 
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
         return res.status(200).json({ error: false, errormessage: 'Friend request sent', timestamp: Date.now() });
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
+})
+
+router.put('/:userId/notifications/:notificationId',async (req, res) => {
+    let action = req.query.action ? req.query.action : undefined;
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+    if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
+        try {
+            var u = await user.getUser(new Types.ObjectId(req.params.userId));  
+            var notification = u.notifications.find((val)=> (val._id === new Types.ObjectId(req.params.notificationId)))
+            notification.accept();
+            await deleteNotification(notification._id)
+        } catch (err) {
+            if(err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else 
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
+    }
 })
 
 export = router;

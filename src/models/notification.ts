@@ -1,4 +1,5 @@
 import mongoose, { Document, Model, Schema, Types, SchemaTypes } from "mongoose";
+import { makeFriendship, User } from "./user";
 
 export enum NotificationType {
     Game,
@@ -7,6 +8,7 @@ export enum NotificationType {
 }
 
 export interface NotificationInterface{
+    readonly _id: Types.ObjectId,
     sender: Object,
     receiver: Object,
     text: string,
@@ -51,6 +53,21 @@ export const NotificationSchema = new Schema<NotificationInterface>({
 
 })
 
+NotificationSchema.methods.accept = function(): Promise<void> {
+    const myid = this.id;
+    if(this.ntype === NotificationType.Friend){
+        makeFriendship(this.sender,this.receiver).catch(
+            (err) => Promise.reject(err)
+        );
+        return Promise.resolve();
+    }
+    else if(this.ntype === NotificationType.Game){
+        
+        //DO SOMETHING ELSE
+
+    }
+    else return Promise.reject('Wrong notification type')
+}
 
 export function generateHeader(name: string, ntype: NotificationType): Promise<String> {
     if (ntype === NotificationType.Friend)
@@ -86,4 +103,10 @@ export async function newNotification(sender_name: string, sender: Types.ObjectI
     return Promise.resolve(notification);
 }
 
+export async function deleteNotification(nid: Types.ObjectId): Promise<void>{
+    Notification.remove({_id:nid}).catch(
+        (err)=>Promise.reject('Server Error')
+    )
+    Promise.resolve()
+}
 export const Notification: Model<NotificationInterface> = getModel();
