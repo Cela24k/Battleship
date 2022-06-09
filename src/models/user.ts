@@ -277,13 +277,10 @@ UserSchema.methods.removeFriend = async function (friend: Types.ObjectId): Promi
     if (index > -1) {
         this.friends.splice(index, 1);
     }
-    try {
-        await this.save();
-    } catch (err) {
-        return Promise.reject(err)
-    }
-
-    return Promise.resolve();
+    let res = await this.save().catch(//TODO vedere se e' giusto il modo in cui facciamo la save
+        () => Promise.reject('Server Error')
+    )
+    return Promise.resolve(res);
 }
 
 UserSchema.methods.getUserPublicInfo = function (): Object {

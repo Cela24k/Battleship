@@ -39,6 +39,7 @@ exports.__esModule = true;
 exports.User = exports.getUserFriends = exports.deleteUser = exports.getAllUsers = exports.getUser = exports.newUser = exports.getModel = exports.getSchema = exports.UserSchema = exports.StatsSchema = exports.Role = void 0;
 var mongoose_1 = require("mongoose");
 var mongoose_2 = require("mongoose");
+var notification_1 = require("./notification");
 var crypto = require("crypto");
 var Role;
 (function (Role) {
@@ -163,6 +164,9 @@ exports.UserSchema = new mongoose_1.Schema({
         type: exports.StatsSchema,
         "default": function () { return ({}); }
     },
+    notifications: {
+        type: [notification_1.NotificationSchema]
+    },
     playing: {
         type: mongoose_1.SchemaTypes.Boolean,
         "default": false
@@ -194,8 +198,24 @@ exports.UserSchema.methods.setRole = function (role) {
     if (this.role !== role)
         this.role = role;
 };
-exports.UserSchema.methods.removeFriend = function () {
-    /* TODO */
+exports.UserSchema.methods.removeFriend = function (friend) {
+    return __awaiter(this, void 0, void 0, function () {
+        var index, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    index = this.friend.indexOf(friend);
+                    if (index > -1) {
+                        this.friends.splice(index, 1);
+                    }
+                    return [4 /*yield*/, this.save()["catch"](//TODO vedere se e' giusto il modo in cui facciamo la save
+                        function () { return Promise.reject('Server Error'); })];
+                case 1:
+                    res = _a.sent();
+                    return [2 /*return*/, Promise.resolve(res)];
+            }
+        });
+    });
 };
 exports.UserSchema.methods.getUserPublicInfo = function () {
     var body = {
@@ -206,6 +226,7 @@ exports.UserSchema.methods.getUserPublicInfo = function () {
     };
     return body;
 };
+// IDK 
 exports.UserSchema.methods.makeFriendship = function (userId) {
     return __awaiter(this, void 0, void 0, function () {
         var u1, err_1;
@@ -232,6 +253,33 @@ exports.UserSchema.methods.makeFriendship = function (userId) {
                     err_1 = _a.sent();
                     return [2 /*return*/, Promise.reject(err_1)];
                 case 7: return [2 /*return*/, Promise.resolve()];
+            }
+        });
+    });
+};
+exports.UserSchema.methods.friendNotification = function (userId) {
+    return __awaiter(this, void 0, void 0, function () {
+        var u, n, res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.User.findById(userId, { notifications: true })["catch"](function (err) { return Promise.reject('Server Error'); })];
+                case 1:
+                    u = _a.sent();
+                    if (!u) return [3 /*break*/, 4];
+                    return [4 /*yield*/, notification_1.newNotification(this.username, this.id, userId, notification_1.NotificationType.Friend)];
+                case 2:
+                    n = _a.sent();
+                    u.notifications.push(n);
+                    return [4 /*yield*/, u.save()["catch"](function (err) { return Promise.reject('Server Error'); })];
+                case 3:
+                    res = _a.sent();
+                    if (res)
+                        return [2 /*return*/, Promise.resolve(true)];
+                    else
+                        return [2 /*return*/, Promise.reject('Server Error')];
+                    return [3 /*break*/, 5];
+                case 4: return [2 /*return*/, Promise.reject('There are no users with such id')];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -263,7 +311,7 @@ function getUser(userid) {
                         stats: true,
                         playing: true
                     };
-                    return [4 /*yield*/, exports.User.findOne({ _id: userid }, projection)["catch"](function (err) { return Promise.reject('Server error'); })];
+                    return [4 /*yield*/, exports.User.findById({ _id: userid }, projection)["catch"](function (err) { return Promise.reject('Server error'); })];
                 case 1:
                     result = _a.sent();
                     if (result)

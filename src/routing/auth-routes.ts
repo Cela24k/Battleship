@@ -8,71 +8,68 @@ import jsonwebtoken = require('jsonwebtoken');
 
 var router = Router();
 
-passport.use( new passportHTTP.BasicStrategy(
-    function(username: string, password: string, done:any) {
-  
-      // "done" callback (verify callback) documentation:  http://www.passportjs.org/docs/configure/
-      // Delegate function we provide to passport middleware
-      // to verify user credentials 
-  
-      console.log("New login attempt from ".green + username.red );
-      user.getModel().findOne( {username: username} , (err, user: user.UserInterface)=>{
-        console.log('QUI VIENE VALIDATA LA PASS'+password)
+passport.use(new passportHTTP.BasicStrategy(
+  function (username: string, password: string, done: any) {
 
-        if( err ) {
-          return done( {statusCode: 500, error: true, errormessage:err} );
-        }
-  
-        if( !user ) {
-          return done(null,false,{statusCode: 500, error: true, errormessage:"Invalid user!"});
-        }
-  
-        if( user.validatePassword( password ) ) {
-          return done(null, user);
-        }
-  
-        return done(null,false,{statusCode: 500, error: true, errormessage:"Invalid password!"});
-      })
-    }
-  ));
+    // "done" callback (verify callback) documentation:  http://www.passportjs.org/docs/configure/
+    // Delegate function we provide to passport middleware
+    // to verify user credentials 
 
-router.get('/login',passport.authenticate('basic', { session: false }), function (req:any, res) {
-    let {username, email, role, _id} = req.user;
-    let tokendata = {
-        username,
-        role,
-        email,
-        _id
-    }
-    
-    let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, {expiresIn: '3h'});//settare un expires giusto
-    console.log(token.toString());
-    return res.status(200).json({ error: false, errormessage: "", token });
+    console.log("New login attempt from ".green + username.red);
+    user.getModel().findOne({ username: username }, (err, user: user.UserInterface) => {
+      if (err) {
+        return done({ statusCode: 500, error: true, errormessage: err });
+      }
+
+      if (!user) {
+        return done(null, false, { statusCode: 500, error: true, errormessage: "Invalid user!" });
+      }
+
+      if (user.validatePassword(password)) {
+        return done(null, user);
+      }
+
+      return done(null, false, { statusCode: 500, error: true, errormessage: "Invalid password!" });
+    })
+  }
+));
+
+router.get('/login', passport.authenticate('basic', { session: false }), function (req: any, res) {
+  let { username, email, role, _id } = req.user;
+  let tokendata = {
+    username,
+    role,
+    email,
+    _id
+  }
+
+  let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, { expiresIn: '3h' });//settare un expires giusto
+  return res.status(200).json({ error: false, errormessage: "", token });
 })
 /**
  * It registers a user
  */
 router.post('/register', async function (req, res, next) {
-    const { username, email, password } = req.body;
+  const { username, email, password } = req.body;
 
-    // TODO controllo email non solo da parte frontend ma anche da backend
-    let userDoc = await user.getModel().findOne({ email: email, username: username })
-    
-    if (!userDoc) {
-        let u = user.newUser({
-            username,
-            email
-        })
-        u.setPassword(password);
-        await u.save().then((data) => {
-            return res.status(200).json({ error: false, errormessage: "", id: data._id });
-        }).catch(() => {
-            return res.status(400).json({ error: true, errormessage: "Something has been wrong with registration!" });
-        })
+  // TODO controllo email non solo da parte frontend ma anche da backend
+  let userDoc = await user.getModel().findOne({ email: email, username: username })
 
-    } else {
-        return res.status(400).json({ error: true, errormessage: "User already exist" });;
-    }
+  if (!userDoc) {
+    let u = user.newUser({
+      username,
+      email
+    })
+    u.setPassword(password);
+    await u.save().then((data) => {
+      return res.status(200).json({ error: false, errormessage: "", id: data._id });
+    }).catch(() => {
+      return res.status(400).json({ error: true, errormessage: "Something has been wrong with registration!" });
+    })
+
+  } else {
+    return res.status(400).json({ error: true, errormessage: "User already exist" });;
+  }
 
 
 })
