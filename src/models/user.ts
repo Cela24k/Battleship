@@ -1,6 +1,6 @@
 import { Document, Model, Schema, Types, SchemaTypes, SchemaType } from "mongoose";
 import mongoose from "mongoose";
-import { ChatInterface } from "./chat";
+import { ChatInterface, ChatSchema } from "./chat";
 import { NotificationType, NotificationInterface, newNotification, NotificationSchema } from "./notification";
 import * as crypto from "crypto";
 import { Stats } from "fs";
@@ -22,6 +22,7 @@ export interface UserInterface extends Document {
     stats: StatsInterface,
     notifications: [NotificationInterface],
     playing: boolean,
+    chats: [ChatInterface]
 
     /* this could be useful for the Matchmaking,
     *  a match shouldn't start unless both players are waiting and if 
@@ -236,6 +237,9 @@ export const UserSchema = new Schema<UserInterface>({
     playing: {
         type: SchemaTypes.Boolean,
         default: false,
+    },
+    chats: {
+        type: [ChatSchema],
     }
 
 })

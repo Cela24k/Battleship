@@ -5,6 +5,7 @@ export interface MessageInterface {
     time: Date,
     text: string,
 }
+
 export const MessageSchema = new Schema<MessageInterface>({
     sender: {
       type: SchemaTypes.String,
@@ -29,3 +30,12 @@ export interface ChatInterface extends Document{
 
     /* TODO: other methods*/
 }
+
+export const ChatSchema = new Schema<ChatInterface>({
+  messages: {
+    type: [MessageSchema],
+  },
+  users: {
+    type:[Types.ObjectId]
+  }
+})

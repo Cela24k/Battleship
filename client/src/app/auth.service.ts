@@ -41,7 +41,6 @@ export class AuthService {
       }
     };
     
-
     return this.http.get<any>(this.url + '/login', options = options).pipe(
       map(user => {
         this.localHelper.set('token', user.token);

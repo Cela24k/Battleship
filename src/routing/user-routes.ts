@@ -8,6 +8,8 @@ import passport = require("passport");
 import { Types } from "mongoose";
 import { deleteNotification } from "../models/notification";
 import e = require("express");
+import io = require("socket.io");
+
 var router = Router();
 
 /*
@@ -160,7 +162,8 @@ router.put('/:userId/notifications/:notificationId',async (req, res) => {
         try {
             var u = await user.getModel().findById(new Types.ObjectId(req.params.userId));  
             var notification = u.notifications.find((val)=>(String(val._id) === req.params.notificationId));
-            await notification.accept();
+            if(action == 'accept')
+                await notification.accept();
             await u.removeNotification(notification);
         } catch (err) {
             if(err === 'Server Error')

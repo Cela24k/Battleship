@@ -12,4 +12,5 @@ padding-bottom: 1rem;
     </div>
     <div class="submit" (click)="onSubmit(mail.value,pass.value)" class="submit">Submit</div>
   </form>
+  <a *ngIf="errors" style="color:red"> Wrong credentials! </a>
 </div>

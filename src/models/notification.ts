@@ -20,9 +20,6 @@ export interface NotificationInterface{
     */
     accept(): void;
 
-    //rimuove la notifica dal database 
-    refuse(): void;
-
     /* generare il testo della notifica 
     *  User1 + ti ha chiesto + di (Giocare) o (Fare amicizia)
     */

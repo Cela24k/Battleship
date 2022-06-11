@@ -17,20 +17,18 @@ import { LocalStorageService } from '../local-storage.service';
   }]
 })
 export class AccessComponent implements OnInit {
+  errors = false;
 
   constructor(private auth: AuthService, private router: Router, private local: LocalStorageService) { }
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   onSubmit(username: string, password: string) {
-
-
     return this.auth.login(username, password).subscribe({
       next: (d) => {
-        console.log('Login granted: ' + JSON.stringify(d));
+        this.router.navigate(['/play']);
       },
       error: (err) => {//TODO vedere redirect per quando ci sono errori
-        console.log(err);
+        this.errors = true;
       },
       complete: ()=> console.log('Login completed'),
     });
