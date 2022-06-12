@@ -25,13 +25,15 @@ export abstract class Listener {
   providedIn: 'root'
 })
 export class NotificationListenerService extends Listener {
-
+  
   //capire se serve l'id 
-  constructor(client: Socket, room: string) {
-    super(client,room,'notification');
+  /*
+  constructor(client: Socket, room: String) {
+    super(client,String(room),'notification');
   }
 
   public override listen(callback: () => void): void {
     super.listen(callback);
   }
+  */
 }

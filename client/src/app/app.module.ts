@@ -23,7 +23,8 @@ import { NotificationListenerService } from './notification-listener.service';
     HttpClientModule
   ],
   providers: [{ provide: AuthService, useClass: AuthService },
-              { provide: NotificationListenerService, useClass: NotificationListenerService }],
+              //{ provide: NotificationListenerService, useClass: NotificationListenerService }
+            ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

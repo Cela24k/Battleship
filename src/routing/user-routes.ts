@@ -10,7 +10,7 @@ import { deleteNotification } from "../models/notification";
 import e = require("express");
 import { Server } from "socket.io";
 import ios from "..";
-import NotificationEmitter from "../socket/NotificationEmitter";
+import NotificationEmitter from "./NotificationEmitter";
 
 var router = Router();
 

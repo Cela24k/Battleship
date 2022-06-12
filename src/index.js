@@ -10,6 +10,7 @@ var express = require("express");
 var bodyparser = require("body-parser");
 var express_jwt_1 = require("express-jwt");
 var cors = require("cors");
+var socket_io_1 = require("socket.io");
 var authRoutes = require("./routing/auth-routes");
 var userRoutes = require("./routing/user-routes");
 //crezione dell'istanza del modulo Express
@@ -32,12 +33,23 @@ app.get("/", function (req, res) {
 //qui passiamo tutti i middleware(routes) che implementiamo
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
+var server = http.createServer(app);
+var ios = new socket_io_1.Server(server); //qui inizializziamo il web socket, Server e' la creazione del server socket
 mongoose.connect(process.env.DB_URI)
     .then(function () {
     console.log('Connected to DB'.green);
-    var server = http.createServer(app);
+    ios.on('connection', function (client) {
+        console.log("------------------------------------------------".america);
+        console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
+        client.on('disconnect', function () {
+            console.log("------------------------------------------------".america);
+            console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
+        });
+    });
+    //handling socket needed;
     server.listen(8080, function () { return console.log("HTTP Server started at http://localhost:8080".green); });
 })["catch"](function (err) {
     console.log("Error Occurred during initialization".red);
     console.log(err);
 });
+exports["default"] = ios;
