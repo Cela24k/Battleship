@@ -8,6 +8,8 @@ import { PlayGameComponent } from './play-game/play-game.component';
 import { RegisterComponent } from './register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from './auth.service';
+import { NotificationListenerService } from './notification-listener.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -20,7 +22,8 @@ import { AuthService } from './auth.service';
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [ {provide: AuthService, useClass: AuthService} ],
+  providers: [{ provide: AuthService, useClass: AuthService },
+              { provide: NotificationListenerService, useClass: NotificationListenerService }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
