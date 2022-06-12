@@ -17,8 +17,8 @@ export class AppComponent {
 
   constructor(
     private router: Router,
-    private clientSocket: Socket, 
-    //private notificationService: NotificationListenerService, 
+    //private clientSocket: Socket, 
+    private notificationService: NotificationListenerService, 
     private localStorage: LocalStorageService
   ) {  }
 
@@ -28,9 +28,11 @@ export class AppComponent {
     })
 
     //connettere il socket alla stanza
+    /*
     this.clientSocket.on('connection',(socket)=>{
       socket.join(this.localStorage.get('jwt'));
     })
+    */
   }
 
   navigateRegister(): void{
@@ -42,6 +44,6 @@ export class AppComponent {
   }
 
   notificationListener(): void{
-    //this.notificationService.listen( () => alert('Arrivata nuova notifica') );
+    this.notificationService.listen( () => alert('Arrivata nuova notifica') );
   }
 }
