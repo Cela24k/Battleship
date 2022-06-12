@@ -47,7 +47,6 @@ passport.use(new passportHTTP.BasicStrategy(function (username, password, done) 
     // to verify user credentials 
     console.log("New login attempt from ".green + username.red);
     user.getModel().findOne({ username: username }, function (err, user) {
-        console.log('QUI VIENE VALIDATA LA PASS' + password);
         if (err) {
             return done({ statusCode: 500, error: true, errormessage: err });
         }
@@ -69,7 +68,6 @@ router.get('/login', passport.authenticate('basic', { session: false }), functio
         _id: _id
     };
     var token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, { expiresIn: '3h' }); //settare un expires giusto
-    console.log(token.toString());
     return res.status(200).json({ error: false, errormessage: "", token: token });
 });
 /**

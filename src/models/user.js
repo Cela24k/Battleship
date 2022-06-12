@@ -36,9 +36,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.User = exports.getUserFriends = exports.deleteUser = exports.getAllUsers = exports.getUser = exports.newUser = exports.getModel = exports.getSchema = exports.UserSchema = exports.StatsSchema = exports.Role = void 0;
+exports.User = exports.makeFriendship = exports.getUserFriends = exports.deleteUser = exports.getAllUsers = exports.getUser = exports.newUser = exports.getModel = exports.getSchema = exports.UserSchema = exports.StatsSchema = exports.Role = void 0;
 var mongoose_1 = require("mongoose");
 var mongoose_2 = require("mongoose");
+var chat_1 = require("./chat");
 var notification_1 = require("./notification");
 var crypto = require("crypto");
 var Role;
@@ -170,6 +171,9 @@ exports.UserSchema = new mongoose_1.Schema({
     playing: {
         type: mongoose_1.SchemaTypes.Boolean,
         "default": false
+    },
+    chats: {
+        type: [chat_1.ChatSchema]
     }
 });
 exports.UserSchema.methods.setPassword = function (pwd) {
@@ -226,46 +230,25 @@ exports.UserSchema.methods.getUserPublicInfo = function () {
     };
     return body;
 };
-// IDK 
-exports.UserSchema.methods.makeFriendship = function (userId) {
-    return __awaiter(this, void 0, void 0, function () {
-        var u1, err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    _a.trys.push([0, 6, , 7]);
-                    return [4 /*yield*/, getUser(userId)];
-                case 1:
-                    u1 = _a.sent();
-                    if (!!u1.friends.includes(this._id)) return [3 /*break*/, 4];
-                    this.friends.push(userId);
-                    u1.friends.push(this._id);
-                    return [4 /*yield*/, u1.save()];
-                case 2:
-                    _a.sent();
-                    return [4 /*yield*/, this.save()];
-                case 3:
-                    _a.sent();
-                    return [3 /*break*/, 5];
-                case 4: return [2 /*return*/, Promise.reject('Users are already friends')];
-                case 5: return [3 /*break*/, 7];
-                case 6:
-                    err_1 = _a.sent();
-                    return [2 /*return*/, Promise.reject(err_1)];
-                case 7: return [2 /*return*/, Promise.resolve()];
-            }
-        });
-    });
-};
 exports.UserSchema.methods.friendNotification = function (userId) {
     return __awaiter(this, void 0, void 0, function () {
-        var u, n, res;
+        var u, flag_1, n, res;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, exports.User.findById(userId, { notifications: true })["catch"](function (err) { return Promise.reject('Server Error'); })];
                 case 1:
                     u = _a.sent();
+                    if (this.id === userId)
+                        return [2 /*return*/, Promise.reject('Cannot add yourself as a friend')];
                     if (!u) return [3 /*break*/, 4];
+                    flag_1 = true;
+                    u.notifications.forEach(function (x) {
+                        if (x.sender == this.id) {
+                            flag_1 = false;
+                        }
+                    }, this);
+                    if (!flag_1)
+                        return [2 /*return*/, Promise.reject('Notification already sent')];
                     return [4 /*yield*/, notification_1.newNotification(this.username, this.id, userId, notification_1.NotificationType.Friend)];
                 case 2:
                     n = _a.sent();
@@ -274,12 +257,40 @@ exports.UserSchema.methods.friendNotification = function (userId) {
                 case 3:
                     res = _a.sent();
                     if (res)
-                        return [2 /*return*/, Promise.resolve(true)];
+                        return [2 /*return*/, Promise.resolve()];
                     else
                         return [2 /*return*/, Promise.reject('Server Error')];
                     return [3 /*break*/, 5];
                 case 4: return [2 /*return*/, Promise.reject('There are no users with such id')];
                 case 5: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.UserSchema.methods.getNotifications = function () {
+    return this.notifications;
+};
+exports.UserSchema.methods.removeNotification = function (notification) {
+    return __awaiter(this, void 0, void 0, function () {
+        var index, err_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    index = this.notifications.indexOf(notification);
+                    if (index > -1) {
+                        this.notifications.splice(index, 1);
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, this.save()];
+                case 2:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    return [2 /*return*/, Promise.reject(err_1)];
+                case 4: return [2 /*return*/, Promise.resolve()];
             }
         });
     });
@@ -384,4 +395,47 @@ function getUserFriends(userid) {
     });
 }
 exports.getUserFriends = getUserFriends;
+function makeFriendship(user1, user2) {
+    return __awaiter(this, void 0, void 0, function () {
+        var u1, u2, err_2, err_3;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, exports.User.findById(user1)];
+                case 1:
+                    u1 = _a.sent();
+                    return [4 /*yield*/, exports.User.findById(user2)];
+                case 2:
+                    u2 = _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_2 = _a.sent();
+                    Promise.reject(err_2);
+                    return [3 /*break*/, 4];
+                case 4:
+                    if (!!u1.friends.includes(u2._id)) return [3 /*break*/, 10];
+                    u1.friends.push(u2.id);
+                    u2.friends.push(u1.id);
+                    _a.label = 5;
+                case 5:
+                    _a.trys.push([5, 8, , 9]);
+                    return [4 /*yield*/, u1.save()];
+                case 6:
+                    _a.sent();
+                    return [4 /*yield*/, u2.save()];
+                case 7:
+                    _a.sent();
+                    return [3 /*break*/, 9];
+                case 8:
+                    err_3 = _a.sent();
+                    Promise.reject(err_3);
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/, Promise.resolve()];
+                case 10: return [2 /*return*/, Promise.reject('Users are already friends')];
+            }
+        });
+    });
+}
+exports.makeFriendship = makeFriendship;
 exports.User = getModel();

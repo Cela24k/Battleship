@@ -151,33 +151,7 @@ router.patch('/:userId', function (req, res) { return __awaiter(void 0, void 0, 
 }); });
 //Returns a user's list of friends if it exists
 router.get('/:userId/friends', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 2];
-                try {
-                    result = user.getUserFriends(new mongoose_1.Types.ObjectId(req.params.userId));
-                }
-                catch (err) {
-                    if (err === 'Server Error')
-                        return [2 /*return*/, res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() })];
-                    else
-                        return [2 /*return*/, res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() })];
-                }
-                return [4 /*yield*/, result];
-            case 1:
-                if ((_a.sent()).length === 0)
-                    return [2 /*return*/, res.status(200).json({ error: false, errormessage: 'This user has no friends ;(', timestamp: Date.now() })];
-                return [2 /*return*/, res.status(200).json(result)];
-            case 2: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
-        }
-    });
-}); });
-//Sends a friend request 
-router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, sender, response, err_4;
+    var jwt, result, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -186,10 +160,9 @@ router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, user.getUser(new mongoose_1.Types.ObjectId(req.params.userId))];
+                return [4 /*yield*/, user.getUserFriends(new mongoose_1.Types.ObjectId(req.params.userId))];
             case 2:
-                sender = _a.sent();
-                response = sender.friendNotification(new mongoose_1.Types.ObjectId(req.params.friendId));
+                result = _a.sent();
                 return [3 /*break*/, 4];
             case 3:
                 err_4 = _a.sent();
@@ -198,8 +171,112 @@ router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(
                 else
                     return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_4, timestamp: Date.now() })];
                 return [3 /*break*/, 4];
-            case 4: return [2 /*return*/, res.status(200).json({ error: false, errormessage: 'Friend request sent', timestamp: Date.now() })];
+            case 4:
+                if (result.length === 0)
+                    return [2 /*return*/, res.status(200).json({ error: false, message: 'This user has no friends ;(', timestamp: Date.now() })];
+                return [2 /*return*/, res.status(200).json(result)];
             case 5: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
+        }
+    });
+}); });
+//Sends a friend request 
+router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var jwt, sender, response, err_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 6];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 4, , 5]);
+                return [4 /*yield*/, user.getUser(new mongoose_1.Types.ObjectId(req.params.userId))];
+            case 2:
+                sender = _a.sent();
+                return [4 /*yield*/, sender.friendNotification(new mongoose_1.Types.ObjectId(req.params.friendId))];
+            case 3:
+                response = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                err_5 = _a.sent();
+                if (err_5 === 'Server Error')
+                    return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
+                else if (err_5 === 'Notification already sent')
+                    return [2 /*return*/, res.status(409).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
+                else
+                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/, res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() })];
+            case 6: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
+        }
+    });
+}); });
+router.get('/:userId/notifications', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var jwt, u, err_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 5];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, user.User.findById(new mongoose_1.Types.ObjectId(req.params.userId))];
+            case 2:
+                u = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                err_6 = _a.sent();
+                if (err_6 === 'Server Error')
+                    return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_6, timestamp: Date.now() })];
+                else
+                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_6, timestamp: Date.now() })];
+                return [3 /*break*/, 4];
+            case 4:
+                //checkare sto passaggio
+                if (u.notifications)
+                    return [2 /*return*/, res.status(200).json(u.notifications)];
+                else
+                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: 'The user has no notifications', timestamp: Date.now() })];
+                _a.label = 5;
+            case 5: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
+        }
+    });
+}); });
+//accept a notification
+router.put('/:userId/notifications/:notificationId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var action, jwt, u, notification, err_7;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                action = req.query.action ? req.query.action : undefined;
+                jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 8];
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 6, , 7]);
+                return [4 /*yield*/, user.getModel().findById(new mongoose_1.Types.ObjectId(req.params.userId))];
+            case 2:
+                u = _a.sent();
+                notification = u.notifications.find(function (val) { return (String(val._id) === req.params.notificationId); });
+                if (!(action == 'accept')) return [3 /*break*/, 4];
+                return [4 /*yield*/, notification.accept()];
+            case 3:
+                _a.sent();
+                _a.label = 4;
+            case 4: return [4 /*yield*/, u.removeNotification(notification)];
+            case 5:
+                _a.sent();
+                return [3 /*break*/, 7];
+            case 6:
+                err_7 = _a.sent();
+                if (err_7 === 'Server Error')
+                    return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_7, timestamp: Date.now() })];
+                else
+                    return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_7, timestamp: Date.now() })];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/, res.status(200).json({ error: false, message: 'Notification accepted', timestamp: Date.now() })];
+            case 8: return [2 /*return*/];
         }
     });
 }); });

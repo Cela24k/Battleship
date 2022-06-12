@@ -8,7 +8,9 @@ import passport = require("passport");
 import { Types } from "mongoose";
 import { deleteNotification } from "../models/notification";
 import e = require("express");
-import io = require("socket.io");
+import { Server } from "socket.io";
+import ios from "..";
+import NotificationEmitter from "../socket/NotificationEmitter";
 
 var router = Router();
 
@@ -115,12 +117,14 @@ router.get('/:userId/friends', async (req, res) => {
 })
 
 //Sends a friend request 
+// TODO use websocket
 router.put('/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
+        let emitter: NotificationEmitter<void> = new NotificationEmitter(ios,req.params.friendId);
         try {
             var sender = await user.getUser(new Types.ObjectId(req.params.userId));
-            var response = await sender.friendNotification(new Types.ObjectId(req.params.friendId));
+            await sender.friendNotification(new Types.ObjectId(req.params.friendId));
         } catch (err) {
             if (err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
@@ -129,6 +133,11 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
             else 
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
+        //creare una room tra il sender e il receiver? No, non serve crearla fa automaticamente 
+        // notificare il receiver 
+        // receiver fa un update? o i dati gli vengono mandati direttamente?
+        //ios.to('room-id').emit('notification-event',{somedata:'data'});
+        emitter.emit();
         return res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() });
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
@@ -145,7 +154,6 @@ router.get('/:userId/notifications', async (req,res)=>{
             else
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
-        //checkare sto passaggio
         if(u.notifications)
             return res.status(200).json(u.notifications);
         else 
@@ -155,6 +163,7 @@ router.get('/:userId/notifications', async (req,res)=>{
 })
 
 //accept a notification
+//TODO use websocket
 router.put('/:userId/notifications/:notificationId',async (req, res) => {
     let action = req.query.action ? req.query.action : undefined;
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);

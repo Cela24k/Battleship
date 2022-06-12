@@ -13,7 +13,6 @@ import { Server } from "socket.io";
 import authRoutes = require('./routing/auth-routes');
 import userRoutes = require('./routing/user-routes');
 
-
 //crezione dell'istanza del modulo Express
 const app = express();
 var auth = expressjwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] });
@@ -40,12 +39,13 @@ app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
 
 
+var server = http.createServer(app);
+var ios = new Server(server); //qui inizializziamo il web socket, Server e' la creazione del server socket
+
 mongoose.connect(process.env.DB_URI)
     .then(
         () => {
             console.log('Connected to DB'.green);
-            let server = http.createServer(app);
-            var ios = new Server(server); //qui inizializziamo il web socket, Server e' la creazione del server socket
             ios.on('connection', (client) => {
                 console.log("------------------------------------------------".america)
                 console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
@@ -56,7 +56,7 @@ mongoose.connect(process.env.DB_URI)
                 })
             })
             //handling socket needed;
-
+            
 
             server.listen(8080, () => console.log("HTTP Server started at http://localhost:8080".green));
         }
@@ -66,3 +66,5 @@ mongoose.connect(process.env.DB_URI)
             console.log(err);
         }
     )
+
+export default ios;

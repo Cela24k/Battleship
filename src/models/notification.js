@@ -36,8 +36,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 exports.__esModule = true;
-exports.Notification = exports.newNotification = exports.getModel = exports.getSchema = exports.generateHeader = exports.NotificationSchema = exports.NotificationType = void 0;
+exports.Notification = exports.deleteNotification = exports.newNotification = exports.getModel = exports.getSchema = exports.generateHeader = exports.NotificationSchema = exports.NotificationType = void 0;
 var mongoose_1 = require("mongoose");
+var user_1 = require("./user");
 var NotificationType;
 (function (NotificationType) {
     NotificationType[NotificationType["Game"] = 0] = "Game";
@@ -65,11 +66,35 @@ exports.NotificationSchema = new mongoose_1.Schema({
         "default": new Date(0)
     }
 });
+exports.NotificationSchema.methods.accept = function () {
+    return __awaiter(this, void 0, void 0, function () {
+        var myid;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    myid = this.id;
+                    if (!(this.ntype === NotificationType.Friend)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, user_1.makeFriendship(this.sender, this.receiver)["catch"](function (err) { return Promise.reject(err); })];
+                case 1:
+                    _a.sent();
+                    return [2 /*return*/, Promise.resolve()];
+                case 2:
+                    if (this.ntype === NotificationType.Game) {
+                        //DO SOMETHING ELSE
+                    }
+                    else
+                        return [2 /*return*/, Promise.reject('Wrong notification type')];
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+};
 function generateHeader(name, ntype) {
     if (ntype === NotificationType.Friend)
         return Promise.resolve(name + ' sent you a Friend Notification');
     else if (ntype === NotificationType.Game)
-        return Promise.resolve(name = ' invited you to a friendly Match');
+        return Promise.resolve(name + ' invited you to a friendly Match');
     else
         return Promise.reject('Wrong Notification type');
 }
@@ -105,4 +130,18 @@ function newNotification(sender_name, sender, receiver, ntype) {
     });
 }
 exports.newNotification = newNotification;
+function deleteNotification(nid) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, exports.Notification.deleteOne({ _id: nid })["catch"](function (err) { return Promise.reject('Server Error'); })];
+                case 1:
+                    _a.sent();
+                    Promise.resolve();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.deleteNotification = deleteNotification;
 exports.Notification = getModel();

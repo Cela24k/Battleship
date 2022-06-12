@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Socket } from 'socket.io';
 //import UserHttpService 
 
 @Component({
@@ -13,7 +14,7 @@ export class AppComponent {
   title = 'client';  
   route = '';
 
-  constructor(private router: Router  ) {  }
+  constructor(private router: Router, private clientSocket: Socket   ) {  }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
