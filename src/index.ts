@@ -40,7 +40,11 @@ app.use('/user', auth, userRoutes);
 
 
 var server = http.createServer(app);
-var ios = new Server(server); //qui inizializziamo il web socket, Server e' la creazione del server socket
+var ios = new Server(server, {
+    cors:{
+        origin: "http://localhost:4200"
+    }
+}); //qui inizializziamo il web socket, Server e' la creazione del server socket
 
 mongoose.connect(process.env.DB_URI)
     .then(
@@ -54,6 +58,10 @@ mongoose.connect(process.env.DB_URI)
                     console.log("------------------------------------------------".america);
                     console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
                 })
+            })
+
+            ios.on('notification', (data) => {
+                console.log(data);
             })
             //handling socket needed;
             
