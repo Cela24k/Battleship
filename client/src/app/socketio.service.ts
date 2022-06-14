@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root'
@@ -9,24 +9,21 @@ import { io } from 'socket.io-client';
 export class SocketioService {
 
   readonly uri = "ws://localhost:8080";
-  private socket: any = null;
+  private socket: Socket;
 
   constructor() {
+    this.socket = io(this.uri);
     console.log("costruiamo un nuvo socket");
   }
 
   listen(eventName: string): Observable<any> {
-    if (this.socket === null) {
-      this.socket = io(this.uri);
-    }
-
+    
     return new Observable((observer) => {
 
       this.socket.on(eventName, (data: any) => {
         console.log(eventName);
         observer.next(data);
       })
-
 
       this.socket.on('error', (err: any) => {
         console.log('Socket.io error: ' + err);
@@ -43,9 +40,9 @@ export class SocketioService {
   }
 
   disconnect() {
-    if (this.socket === null) {
-      this.socket.disconnect();
-    }
+    
+    this.socket.disconnect();
+    
   }
 
 }
