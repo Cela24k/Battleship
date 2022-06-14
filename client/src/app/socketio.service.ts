@@ -11,15 +11,15 @@ export class SocketioService {
   readonly uri = "ws://localhost:8080";
   private socket: any = null;
 
-  constructor() { 
+  constructor() {
     console.log("costruiamo un nuvo socket");
   }
 
   listen(eventName: string): Observable<any> {
     if (this.socket === null) {
-      this.socket = io(this.uri); 
+      this.socket = io(this.uri);
     }
-    
+
     return new Observable((observer) => {
 
       this.socket.on(eventName, (data: any) => {
@@ -37,7 +37,7 @@ export class SocketioService {
   }
 
   emit(eventName: string, data: any) {
-
+    
     this.socket.emit(eventName, data);
 
   }

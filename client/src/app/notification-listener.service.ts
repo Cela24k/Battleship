@@ -1,21 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { SocketioService } from './socketio.service';
 
 @Injectable()
 export class NotificationListenerService {
-  private socket: Socket;
 
-  constructor() {
-    this.socket = io('http://localhost:8080');
+  constructor(private sio: SocketioService) {
   }
 
   onNewMessage() {
-    return new Observable(observer => {
-      this.socket.on('notification', msg => {
-        observer.next(msg);
-      });
-    });
+    return this.sio.listen('notification');
   }
 }
 

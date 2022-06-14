@@ -52,9 +52,7 @@ mongoose.connect(process.env.DB_URI)
         client.on('notification', function (data) {
             console.log(data);
         });
-        client.on('notificationa', function (data) {
-            console.log('ciao');
-        });
+        client.emit('notification', { mimmo: "el mimmo server" });
     });
     //handling socket needed;
     server.listen(8080, function () { return console.log("HTTP Server started at http://localhost:8080".green); });
