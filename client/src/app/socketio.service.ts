@@ -8,23 +8,23 @@ import { io } from 'socket.io-client';
 //TODO sperare e pregare che funzioni.
 export class SocketioService {
 
-  public url = "http://localhost:8080";
+  readonly uri = "ws://localhost:8080";
   private socket: any = null;
 
-  constructor() { }
+  constructor() { 
+    console.log("costruiamo un nuvo socket");
+  }
 
-  connect(event: string): Observable<any> {
+  listen(eventName: string): Observable<any> {
     if (this.socket === null) {
-      this.socket = io(this.url);
+      this.socket = io(this.uri); 
     }
-
+    
     return new Observable((observer) => {
 
-
-
-      this.socket.on(event, (arg: any) => {
-        console.log(event.toString);
-        observer.next(arg)
+      this.socket.on(eventName, (data: any) => {
+        console.log(eventName);
+        observer.next(data);
       })
 
 
@@ -36,8 +36,14 @@ export class SocketioService {
 
   }
 
-  disconnect(){
-    if(this.socket === null){
+  emit(eventName: string, data: any) {
+
+    this.socket.emit(eventName, data);
+
+  }
+
+  disconnect() {
+    if (this.socket === null) {
       this.socket.disconnect();
     }
   }

@@ -53,14 +53,15 @@ mongoose.connect(process.env.DB_URI)
             ios.on('connection', (client) => {
                 console.log("------------------------------------------------".america)
                 console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
+                //client.emit("mimmetto", "TEST MIMMETTO");
 
                 client.on('disconnect', () => {
                     console.log("------------------------------------------------".america);
                     console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
                 })
-                client.on('notification', (data) => {
-                    console.log(data);
-                })
+                // client.on('mimmetto', (data) => {
+                //     console.log(data);
+                // })
             })
 
             
