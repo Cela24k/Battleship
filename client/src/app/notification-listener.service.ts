@@ -1,4 +1,25 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { io, Socket } from 'socket.io-client';
+
+@Injectable()
+export class NotificationListenerService {
+  private socket: Socket;
+
+  constructor() {
+    this.socket = io('http://localhost:8080');
+  }
+
+  onNewMessage() {
+    return new Observable(observer => {
+      this.socket.on('notification', msg => {
+        observer.next(msg);
+      });
+    });
+  }
+}
+
+/*import { Injectable } from '@angular/core';
 import { Socket } from "socket.io";
 
 export abstract class Listener {
@@ -35,5 +56,5 @@ export class NotificationListenerService extends Listener {
   public override listen(callback: () => void): void {
     super.listen(callback);
   }
-  */
 }
+*/

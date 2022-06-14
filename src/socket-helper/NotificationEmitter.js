@@ -7,7 +7,7 @@ var NotificationEmitter = /** @class */ (function () {
         this.receiver = receiver;
     }
     NotificationEmitter.prototype.emit = function (payload) {
-        this.ios.emit(this.event);
+        this.ios.to(this.receiver).emit(this.event);
     };
     return NotificationEmitter;
 }());

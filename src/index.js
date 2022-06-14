@@ -34,7 +34,11 @@ app.get("/", function (req, res) {
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
 var server = http.createServer(app);
-var ios = new socket_io_1.Server(server); //qui inizializziamo il web socket, Server e' la creazione del server socket
+var ios = new socket_io_1.Server(server, {
+    cors: {
+        origin: "*"
+    }
+}); //qui inizializziamo il web socket, Server e' la creazione del server socket
 mongoose.connect(process.env.DB_URI)
     .then(function () {
     console.log('Connected to DB'.green);
@@ -44,6 +48,12 @@ mongoose.connect(process.env.DB_URI)
         client.on('disconnect', function () {
             console.log("------------------------------------------------".america);
             console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
+        });
+        client.on('notification', function (data) {
+            console.log(data);
+        });
+        client.on('notificationa', function (data) {
+            console.log('ciao');
         });
     });
     //handling socket needed;

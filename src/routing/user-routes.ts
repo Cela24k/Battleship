@@ -121,7 +121,7 @@ router.get('/:userId/friends', async (req, res) => {
 router.put('/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod){
-        let emitter: NotificationEmitter<void> = new NotificationEmitter(ios,req.params.friendId);
+        let emitter: NotificationEmitter<String> = new NotificationEmitter(ios,req.params.friendId);
         try {
             var sender = await user.getUser(new Types.ObjectId(req.params.userId));
             await sender.friendNotification(new Types.ObjectId(req.params.friendId));
@@ -137,7 +137,8 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
         // notificare il receiver 
         // receiver fa un update? o i dati gli vengono mandati direttamente?
         //ios.to('room-id').emit('notification-event',{somedata:'data'});
-        emitter.emit();
+        //ios.emit('notification',{somedata:'data'});
+        emitter.emit('ciao');
         return res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() });
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });

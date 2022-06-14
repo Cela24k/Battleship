@@ -41,7 +41,7 @@ var express_1 = require("express");
 var jsonwebtoken = require("jsonwebtoken");
 var mongoose_1 = require("mongoose");
 var __1 = require("..");
-var NotificationEmitter_1 = require("./NotificationEmitter");
+var NotificationEmitter_1 = require("../socket-helper/NotificationEmitter");
 var router = express_1.Router();
 /*
     ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
@@ -215,7 +215,8 @@ router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(
                 // notificare il receiver 
                 // receiver fa un update? o i dati gli vengono mandati direttamente?
                 //ios.to('room-id').emit('notification-event',{somedata:'data'});
-                emitter.emit();
+                //ios.emit('notification',{somedata:'data'});
+                emitter.emit('ciao');
                 return [2 /*return*/, res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() })];
             case 6: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
         }

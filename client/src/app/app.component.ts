@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { Socket } from 'socket.io';
-import { NotificationListenerService } from './notification-listener.service';
 import { LocalStorageService } from './local-storage.service';
+import io, { Socket } from 'socket.io-client'
+import { Observable } from 'rxjs';
+import { NotificationListenerService } from './notification-listener.service';
 
 @Component({
   selector: 'app-root',
@@ -14,24 +15,26 @@ import { LocalStorageService } from './local-storage.service';
 export class AppComponent {
   title = 'client';  
   route = '';
+  client: Socket;
 
   constructor(
     private router: Router,
-    //private clientSocket: Socket, 
-    private notificationService: NotificationListenerService, 
-    private localStorage: LocalStorageService
-  ) {  }
+    //private socket: NotificationListenerService,
+    private localStorage: LocalStorageService,
+  ) { 
+    this.client = io('http://localhost:8080'); // funziona
+    //this.client.on('notification',() =>  console.log('object'));
+   }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       event instanceof NavigationEnd ? this.route = this.router.url : null
     })
 
-    //connettere il socket alla stanza
-    /*
-    this.clientSocket.on('connection',(socket)=>{
-      socket.join(this.localStorage.get('jwt'));
-    })
+    /*//Servizio che fa connessione e tutto in automatico
+    this.socket.onNewMessage().subscribe(() => {
+      console.log('got a msg: ');
+    });
     */
   }
 
@@ -43,7 +46,4 @@ export class AppComponent {
     this.router.navigate(['/login']);
   }
 
-  notificationListener(): void{
-    this.notificationService.listen( () => alert('Arrivata nuova notifica') );
-  }
 }
