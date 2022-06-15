@@ -61,6 +61,7 @@ mongoose.connect(process.env.DB_URI)
                 client.on('notification', (data) => {
                     //client.broadcast.to('id').emit('notification','mimmetto a tutti');
                     console.log(data);
+                    client.broadcast.emit('notification',"MIMMO BROADCASTATO")
                 })
                 client.emit('notification',{mimmo: "el mimmo server"});
             })

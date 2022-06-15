@@ -53,6 +53,7 @@ mongoose.connect(process.env.DB_URI)
             client.broadcast.emit('notification', 'Arriva una notification da un certo client');
             //client.broadcast.to('id').emit('notification','mimmetto a tutti');
             console.log(data);
+            client.broadcast.emit('notification', "MIMMO BROADCASTATO");
         });
         client.emit('notification', { mimmo: "el mimmo server" });
     });
