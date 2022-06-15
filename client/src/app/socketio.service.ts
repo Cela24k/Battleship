@@ -13,7 +13,6 @@ export class SocketioService {
 
   constructor() {
     this.socket = io(this.uri);
-    console.log("costruiamo un nuvo socket");
   }
 
   listen(eventName: string): Observable<any> {
@@ -21,7 +20,7 @@ export class SocketioService {
     return new Observable((observer) => {
 
       this.socket.on(eventName, (data: any) => {
-        console.log(eventName);
+        console.log('Socket listening to '+eventName);
         observer.next(data);
       })
 

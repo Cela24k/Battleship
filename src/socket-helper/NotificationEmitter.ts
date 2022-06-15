@@ -11,7 +11,8 @@ class NotificationEmitter<T>{
     }
 
     emit(payload?: T ): void{
-        this.ios.to(this.receiver).emit(this.event);
+        //this.ios.to(this.receiver).emit(this.event);
+        this.ios.emit(this.event);
     }
 }
 

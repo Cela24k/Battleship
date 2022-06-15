@@ -29,7 +29,7 @@ export class AppComponent {
     })
  
     this.socket.onNewMessage().subscribe((data)=>{
-      console.log(data);
+      console.log('notification caught: ',data);
     })
   }
 

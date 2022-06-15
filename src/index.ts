@@ -59,7 +59,6 @@ mongoose.connect(process.env.DB_URI)
                     console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
                 })
                 client.on('notification', (data) => {
-                    client.broadcast.emit('notification','>> {Content} <<');
                     //client.broadcast.to('id').emit('notification','mimmetto a tutti');
                     console.log(data);
                 })
