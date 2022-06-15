@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import jwtdecode from 'jwt-decode';
 
-
 interface Token{
   id : string;
   username: string,
@@ -10,13 +9,13 @@ interface Token{
   _id: string
 }
 
-
 @Injectable({
   providedIn: 'root'
 })
 export class LocalStorageService {
-  private token= '';
-  constructor() { }
+  private token;
+  constructor() { this.token = localStorage.getItem('token') }
+
   set(key: string, value: string) {
     localStorage.setItem(key, value);
     this.token = value;
@@ -31,18 +30,26 @@ export class LocalStorageService {
   }
 
   getId(){
-    return (jwtdecode(this.token )as Token)._id;
+    if(this.token)
+      return (jwtdecode(this.token )as Token)._id;
+    return 'no jwt stored';
   }
 
   getUsername(){
-    return (jwtdecode(this.token )as Token).username;
+    if(this.token)
+      return (jwtdecode(this.token )as Token).username;
+    return 'no jwt stored';
   }
 
   getEmail(){
-    return (jwtdecode(this.token )as Token).email;
+    if(this.token)
+      return (jwtdecode(this.token )as Token).email;
+    return 'no jwt stored';
   }
 
   getRole(){
-    return (jwtdecode(this.token )as Token).role;
+    if(this.token)
+      return (jwtdecode(this.token )as Token).role;
+    return 'no jwt stored';
   }
 }

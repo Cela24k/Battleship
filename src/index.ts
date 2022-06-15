@@ -53,17 +53,20 @@ mongoose.connect(process.env.DB_URI)
             ios.on('connection', (client) => {
                 console.log("------------------------------------------------".america)
                 console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
-                
+    
+                console.log('Auth ',client.handshake.auth);
+                //client.join(client.handshake.auth['userid']);
+
                 client.on('disconnect', () => {
                     console.log("------------------------------------------------".america);
                     console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
                 })
                 client.on('notification', (data) => {
                     //client.broadcast.to('id').emit('notification','mimmetto a tutti');
-                    console.log(data);
-                    client.broadcast.emit('notification',"MIMMO BROADCASTATO")
+                    console.log('Il server socket ha captato: ',data);
+                    //client.broadcast.emit('notification',"MIMMO BROADCASTATO")
                 })
-                client.emit('notification',{mimmo: "el mimmo server"});
+                //client.emit('notification',{mimmo: "el mimmo server"});
             })
 
             //handling socket needed;

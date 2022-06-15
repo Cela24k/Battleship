@@ -125,7 +125,8 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
         try {
             var sender = await user.getUser(new Types.ObjectId(req.params.userId));
             await sender.friendNotification(new Types.ObjectId(req.params.friendId));
-            ios.emit('notification', 'yo update');
+            ios.in(req.params.friendId).emit('notification',{notification:'placeholder'});
+            
         } catch (err) {
             if (err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });

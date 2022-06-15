@@ -9,6 +9,8 @@ import { RegisterComponent } from './register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { NotificationListenerService } from './notification-listener.service';
+import { SocketioService } from './socketio.service';
+import { LocalStorageService } from './local-storage.service';
 
 @NgModule({
   declarations: [
@@ -23,6 +25,8 @@ import { NotificationListenerService } from './notification-listener.service';
     HttpClientModule
   ],
   providers: [{ provide: AuthService, useClass: AuthService },
+              { provide: LocalStorageService, useClass: LocalStorageService },
+              { provide: SocketioService, useClass: SocketioService },
               { provide: NotificationListenerService, useClass: NotificationListenerService }
             ],
   bootstrap: [AppComponent]

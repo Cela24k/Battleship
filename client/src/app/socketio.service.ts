@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,8 +12,8 @@ export class SocketioService {
   readonly uri = "ws://localhost:8080";
   private socket: Socket;
 
-  constructor() {
-    this.socket = io(this.uri);
+  constructor(private ls: LocalStorageService) {
+    this.socket = io(this.uri, {auth:{userid: ls.getId()}});
   }
 
   listen(eventName: string): Observable<any> {
@@ -20,7 +21,7 @@ export class SocketioService {
     return new Observable((observer) => {
 
       this.socket.on(eventName, (data: any) => {
-        console.log('Socket listening to '+eventName);
+        console.log('Socket listening to '+ eventName);
         observer.next(data);
       })
 
