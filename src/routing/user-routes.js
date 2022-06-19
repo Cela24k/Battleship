@@ -41,7 +41,6 @@ var express_1 = require("express");
 var jsonwebtoken = require("jsonwebtoken");
 var mongoose_1 = require("mongoose");
 var __1 = require("..");
-var NotificationEmitter_1 = require("../socket-helper/NotificationEmitter");
 var router = express_1.Router();
 /*
     ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
@@ -184,13 +183,12 @@ router.get('/:userId/friends', function (req, res) { return __awaiter(void 0, vo
 //Sends a friend request 
 // TODO use websocket
 router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, emitter, sender, err_5;
+    var jwt, sender, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
                 if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 6];
-                emitter = new NotificationEmitter_1["default"](__1["default"], req.params.friendId);
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
@@ -200,6 +198,7 @@ router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(
                 return [4 /*yield*/, sender.friendNotification(new mongoose_1.Types.ObjectId(req.params.friendId))];
             case 3:
                 _a.sent();
+                __1["default"]["in"](req.params.friendId).emit('notification', { notification: 'placeholder' });
                 return [3 /*break*/, 5];
             case 4:
                 err_5 = _a.sent();
@@ -210,14 +209,7 @@ router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(
                 else
                     return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
                 return [3 /*break*/, 5];
-            case 5:
-                //creare una room tra il sender e il receiver? No, non serve crearla fa automaticamente 
-                // notificare il receiver 
-                // receiver fa un update? o i dati gli vengono mandati direttamente?
-                //ios.to('room-id').emit('notification-event',{somedata:'data'});
-                //ios.emit('notification',{somedata:'data'});
-                emitter.emit('ciao');
-                return [2 /*return*/, res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() })];
+            case 5: return [2 /*return*/, res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() })];
             case 6: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
         }
     });
@@ -287,7 +279,7 @@ router.put('/:userId/notifications/:notificationId', function (req, res) { retur
                     return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_7, timestamp: Date.now() })];
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/, res.status(200).json({ error: false, message: 'Notification accepted', timestamp: Date.now() })];
-            case 8: return [2 /*return*/];
+            case 8: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
         }
     });
 }); });

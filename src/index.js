@@ -45,17 +45,18 @@ mongoose.connect(process.env.DB_URI)
     ios.on('connection', function (client) {
         console.log("------------------------------------------------".america);
         console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
+        console.log('Auth ', client.handshake.auth);
+        client.join(client.handshake.auth['userid']);
         client.on('disconnect', function () {
             console.log("------------------------------------------------".america);
             console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
         });
         client.on('notification', function (data) {
-            client.broadcast.emit('notification', 'Arriva una notification da un certo client');
             //client.broadcast.to('id').emit('notification','mimmetto a tutti');
-            console.log(data);
-            client.broadcast.emit('notification', "MIMMO BROADCASTATO");
+            console.log('Il server socket ha captato: ', data);
+            //client.broadcast.emit('notification',"MIMMO BROADCASTATO")
         });
-        client.emit('notification', { mimmo: "el mimmo server" });
+        //client.emit('notification',{mimmo: "el mimmo server"});
     });
     //handling socket needed;
     server.listen(8080, function () { return console.log("HTTP Server started at http://localhost:8080".green); });

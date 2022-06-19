@@ -5,3 +5,22 @@
     font-size: 64px;
     text-align: left;
 }
+
+.spacer{
+    width: 25%;
+    height: 100vh;
+    background-color: #CAE8E7;
+}
+.track-container{
+    width: 25%;
+    height: 100vh;
+    filter: drop-shadow(4px 4px 10px 0px rgba(2, 1, 0, .78));
+    margin-bottom: 0;
+}
+
+.triangle{
+    height: 100vh;
+    width: 50%;
+    background:url(../../assets/panel.svg);
+    background-size: 100% auto;
+}

@@ -55,7 +55,7 @@ mongoose.connect(process.env.DB_URI)
                 console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
     
                 console.log('Auth ',client.handshake.auth);
-                //client.join(client.handshake.auth['userid']);
+                client.join(client.handshake.auth['userid']);
 
                 client.on('disconnect', () => {
                     console.log("------------------------------------------------".america);

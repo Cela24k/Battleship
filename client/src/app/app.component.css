@@ -5,40 +5,10 @@
     font-family: 'Press Start 2P', cursive;
 }
 
-.scene{
-    width:100vw; 
-    height:100vh - 500px;
-    position:absolute;
-    top:300px;
-    text-align: center;
-}
-
 .button{
-    color:white; 
+    color:black; 
     margin-right: 16px;
     text-decoration: underline; 
-    background-color: #DB9D47; 
-    border: #DB9D47;
+    background-color: transparent; 
+    border: solid 1px;
 }
-
-/* capire perché non me lo prende nelle componenti children register e access*/
-
-.submit{
-    display: inline-block;
-    padding: 5px;
-    background-color: #3A3042; 
-    color: #DB9D47;
-    border: solid;
-    border-color: #DB9D47;
-    border-radius:10px;
-}
-.submit:hover{
-    display: inline-block;
-    padding: 5px;
-    background-color: #DB9D47; 
-    color: #3A3042;
-    border: 1px solid;
-    border-color: #DB9D47;
-    border-radius:10px;
-    cursor: pointer;
-}  

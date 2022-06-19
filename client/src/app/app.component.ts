@@ -33,6 +33,9 @@ export class AppComponent {
     })
   }
 
+  isLoggedIn():boolean {
+    return !(this.route === '/login' || this.route ==='/register');
+  }
   navigateRegister(): void{
     this.router.navigate(['/register']);
   }
