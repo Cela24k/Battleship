@@ -1,11 +1,3 @@
-.play_button{
-    width: 100vw;
-    height: 33vh;
-    color:#1976d2;
-    font-size: 64px;
-    text-align: left;
-}
-
 .spacer{
     width: 25%;
     height: 100vh;
@@ -21,6 +13,6 @@
 .triangle{
     height: 100vh;
     width: 50%;
-    background:url(../../assets/panel.svg);
+    background:url(../../../assets/panel.svg);
     background-size: 100% 100%;
 }

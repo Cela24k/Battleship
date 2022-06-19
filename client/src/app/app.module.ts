@@ -11,13 +11,15 @@ import { AuthService } from './auth.service';
 import { NotificationListenerService } from './notification-listener.service';
 import { SocketioService } from './socketio.service';
 import { LocalStorageService } from './local-storage.service';
+import { PlayGamePanelComponent } from './play-game/play-game-panel/play-game-panel.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AccessComponent,
     PlayGameComponent,
-    RegisterComponent
+    RegisterComponent,
+    PlayGamePanelComponent
   ],
   imports: [
     BrowserModule,
