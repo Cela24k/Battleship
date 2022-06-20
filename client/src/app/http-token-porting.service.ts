@@ -12,6 +12,7 @@ export class HttpTokenPortingService implements HttpInterceptor{
   constructor(private ls: LocalStorageService) { }
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const token = this.ls.get('token');
+    if(req.url === 'http://localhost:8080/auth/login') return next.handle(req);
     req = req.clone({
       url:  req.url,
       setHeaders: {

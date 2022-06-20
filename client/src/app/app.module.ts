@@ -35,7 +35,8 @@ import { HttpTokenPortingService } from './http-token-porting.service';
     MatBadgeModule,
     BrowserAnimationsModule,
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
+  providers: [
+              { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
               { provide: AuthService, useClass: AuthService },
               { provide: LocalStorageService, useClass: LocalStorageService },
               { provide: SocketioService, useClass: SocketioService },

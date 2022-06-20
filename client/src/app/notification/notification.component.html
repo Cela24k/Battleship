@@ -12,5 +12,10 @@
             </div>
             <mat-icon class="close-button" (click)="toggleStatus()">close</mat-icon>
         </div>
+        <div class="list-container">
+            <li *ngFor="let x of stored_notifications">
+                <div>{{x}}</div>
+            </li>
+        </div>
     </div>
 </ng-template>
