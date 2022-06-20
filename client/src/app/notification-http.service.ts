@@ -15,8 +15,6 @@ export class NotificationHttpService {
   }
 
   getNotifications(): Observable<any> { 
-    //debugger;
-    console.log(this.httpclient.get(this.url + '/' + this.localstorage.getId() + '/notifications').pipe(map(notification => console.log('qui + ' + notification) )));
-    return this.httpclient.get(this.url + '/' + this.localstorage.getId() + '/notifications').pipe(map(notification => console.log('qui + ' + notification) ));
+    return this.httpclient.get(this.url + '/' + this.localstorage.getId() + '/notifications');
   }
 }

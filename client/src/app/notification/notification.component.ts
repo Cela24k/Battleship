@@ -31,12 +31,17 @@ export class NotificationComponent implements OnInit {
     this.status = this.status === State.Closed ? State.Open : State.Closed;
     if(this.status === State.Open)
     {
-      this.httpservice.getNotifications();
+      this.httpservice.getNotifications().subscribe({
+        next: (d) => {
+          console.log('Notifications: ' + JSON.stringify(d));
+        },
+        error: (err) => {
+          console.log(err);
+          console.log('Error: ' + JSON.stringify(err));
+        },
+        complete: () => console.log('Notifications gotten'),
+      });
       console.log('object');
     }  
-  }
-  
-  getNotifications(): void {
-    
   }
 }

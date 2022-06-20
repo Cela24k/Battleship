@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { AccessComponent } from './access/access.component';
 import { PlayGameComponent } from './play-game/play-game.component';
 import { RegisterComponent } from './register/register.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { NotificationListenerService } from './notification-listener.service';
 import { SocketioService } from './socketio.service';
@@ -35,7 +35,7 @@ import { HttpTokenPortingService } from './http-token-porting.service';
     MatBadgeModule,
     BrowserAnimationsModule,
   ],
-  providers: [{ provide: HttpTokenPortingService, useClass: HttpTokenPortingService},
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
               { provide: AuthService, useClass: AuthService },
               { provide: LocalStorageService, useClass: LocalStorageService },
               { provide: SocketioService, useClass: SocketioService },
