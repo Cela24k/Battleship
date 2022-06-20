@@ -12,6 +12,11 @@ import { NotificationListenerService } from './notification-listener.service';
 import { SocketioService } from './socketio.service';
 import { LocalStorageService } from './local-storage.service';
 import { PlayGamePanelComponent } from './play-game/play-game-panel/play-game-panel.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { NotificationComponent } from './notification/notification.component';
+import {MatBadgeModule} from '@angular/material/badge';
+import { HttpTokenPortingService } from './http-token-porting.service';
 
 @NgModule({
   declarations: [
@@ -19,14 +24,19 @@ import { PlayGamePanelComponent } from './play-game/play-game-panel/play-game-pa
     AccessComponent,
     PlayGameComponent,
     RegisterComponent,
-    PlayGamePanelComponent
+    PlayGamePanelComponent,
+    NotificationComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    MatIconModule,
+    MatBadgeModule,
+    BrowserAnimationsModule,
   ],
-  providers: [{ provide: AuthService, useClass: AuthService },
+  providers: [{ provide: HttpTokenPortingService, useClass: HttpTokenPortingService},
+              { provide: AuthService, useClass: AuthService },
               { provide: LocalStorageService, useClass: LocalStorageService },
               { provide: SocketioService, useClass: SocketioService },
               { provide: NotificationListenerService, useClass: NotificationListenerService }

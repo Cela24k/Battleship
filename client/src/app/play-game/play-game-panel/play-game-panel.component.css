@@ -1,3 +1,14 @@
+@font-face {
+    font-family: "'89 Speed Affair";
+    src: url(../../../assets/fonts/89speedaffair.ttf);
+    font-stretch: 1% 500%;
+}
+
+@font-face {
+    font-family: "'89 Speed Affair 3d";
+    src: url(../../../assets/fonts/89speedaffair3d.ttf);
+}
+
 .triangle{
     height: 100vh;
     width: 75%;
@@ -8,10 +19,49 @@
 
 .fiocco{
     position: absolute;
-    top: -5%;
-    width: 50%;
-    height: 70%;
+    left: 0;
+    width: 55%;
+    height: 65%;
     background:url(../../../assets/fiocco.svg);
     background-size: 100% 100%;
     z-index: 2;
+}
+
+.title{
+    /*position: absolute;*/
+    z-index: 3;
+    font-family: "'89 Speed Affair";
+    font-size: 8vw;
+    /*top:100px;*/
+    left: 10px;
+    transform: scale(1, 1);
+    margin-bottom: 2vh;
+}
+
+.play-button{
+    width: 100%;
+    left: 10px;
+    /*position: absolute;*/
+    z-index: 3;
+    font-family: "'89 Speed Affair 3d";
+    font-size: 5vh;
+    /* top:330px; */
+    margin-bottom: 3vh;
+}
+
+.play-button:hover{
+    color: #FFA127  ;
+    width: 100%;
+    left: 10px;
+    /*position: absolute;*/
+    z-index: 3;
+    font-family: "'89 Speed Affair 3d";
+    font-size: 5vh;
+    /* top:330px; */
+    cursor: pointer;
+}
+
+.top-spacer{
+    width: 100%;
+    height: 10vh;
 }

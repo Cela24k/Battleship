@@ -1,0 +1,60 @@
+.box{
+    position: fixed;
+    width: 25vw;
+    height: 100vh;
+    right: -10px;
+    top: 0;
+    margin-right: 10px;
+    background-color: #133A39;
+    z-index: 1;
+    box-shadow: 0px 0px 15px 0px rgba(0,0,0,0.76);
+}
+
+.notification {
+    position:relative;
+    padding-left: 10px;
+    margin-right: 20px;
+    color: white;
+}
+
+.notification-symbol {
+    margin-left: 20px;
+    top: 20px;
+    color: white;
+}
+
+.notification:hover{
+    color: #FFA127;
+}
+
+.banner{
+    display: flex;
+    height: 8vh;
+    width: inherit;
+    background-color: #205B59;
+    top: 0;
+    z-index: 2;
+    box-shadow: #133A39;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.wrapper{
+    display: flex;
+    align-items: center;
+}   
+
+.header{
+    color: white;
+    font-size: large;
+    margin-left: 20px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.close-button{
+    color: white;
+    font-size: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+}

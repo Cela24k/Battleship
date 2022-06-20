@@ -6,6 +6,7 @@ import io, { Socket } from 'socket.io-client'
 import { Observable } from 'rxjs';
 import { NotificationListenerService } from './notification-listener.service';
 import { SocketioService } from './socketio.service';
+import { HttpTokenPortingService } from './http-token-porting.service';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ export class AppComponent {
     private router: Router,
     private socket: NotificationListenerService,
     private localStorage: LocalStorageService,
+    private interceptor: HttpTokenPortingService
   ) { }
 
   ngOnInit(): void {

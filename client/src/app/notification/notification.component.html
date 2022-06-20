@@ -1,0 +1,16 @@
+<div *ngIf="!isOpened(); else isOpen" (click)="toggleStatus()">
+    <mat-icon *ngIf="n_pending != 0" class="notification" [matBadge]="n_pending" matBadgeColor="warn"
+        matBadgeSize="small">notifications_active</mat-icon>
+    <mat-icon *ngIf="n_pending == 0" class="notification">notifications</mat-icon>
+</div>
+<ng-template #isOpen>
+    <div class="box">
+        <div class="banner">
+            <div class="wrapper">
+                <mat-icon class="notification-symbol" fill="true">notifications</mat-icon>
+                <h1 class="header">Notifications</h1>
+            </div>
+            <mat-icon class="close-button" (click)="toggleStatus()">close</mat-icon>
+        </div>
+    </div>
+</ng-template>
