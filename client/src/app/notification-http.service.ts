@@ -11,10 +11,18 @@ export class NotificationHttpService {
   url: string;
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) {
-    this.url = 'http://localhost:8080/user'
+    this.url = 'http://localhost:8080/user';
   }
 
   getNotifications(): Observable<any> { 
     return this.httpclient.get(this.url + '/' + this.localstorage.getId() + '/notifications');
+  }
+
+  accept(id: string): Observable<any>{
+    return this.httpclient.put(this.url + '/' + this.localstorage.getId() + '/notifications/' + id +  '?action=accept',{});
+  }
+
+  refuse(id: string): Observable<any>{
+    return this.httpclient.put(this.url + '/' + this.localstorage.getId() + '/notifications/' + id +  '?action=refuse',{});
   }
 }

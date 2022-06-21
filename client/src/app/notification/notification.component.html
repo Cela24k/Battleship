@@ -3,6 +3,7 @@
         matBadgeSize="small">notifications_active</mat-icon>
     <mat-icon *ngIf="n_pending == 0" class="notification">notifications</mat-icon>
 </div>
+
 <ng-template #isOpen>
     <div class="box">
         <div class="banner">
@@ -16,22 +17,22 @@
         <div *ngIf="socket_notifications.length > 0" class="list-container-socket">
             <div class="divider">
                 <hr class="line-left">
-                <div class="bubble">News</div>
+                <div class="bubble">New</div>
                 <hr class="line-right">
             </div>
             <li class="list-element" *ngFor="let x of socket_notifications" >
-                <app-profile-banner [text]="x.text"></app-profile-banner>
+                <app-profile-banner [notification]="x"></app-profile-banner>
             </li>
         </div>
         <!-- db notifications  -->
         <div class="list-container-stored">
             <div class="divider">
                 <hr class="line-left">
-                <div class="bubble">Stored</div>
+                <div class="bubble">Old</div>
                 <hr class="line-right">
             </div>
             <li class="list-element" *ngFor="let x of stored_notifications" >
-                <app-profile-banner [text]="x.text"></app-profile-banner>
+                <app-profile-banner [notification]="x"></app-profile-banner>
             </li>
         </div>
     </div>

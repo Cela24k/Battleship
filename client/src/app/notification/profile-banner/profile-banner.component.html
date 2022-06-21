@@ -1,7 +1,17 @@
-<div class="banner">
-    <p>{{text}}</p>
+<div *ngIf="isNone();" class="banner">
+    <p>{{notification.text}}</p>
     <div class="buttons">
-        <mat-icon class="accept-button">check_box</mat-icon>
-        <mat-icon class="refuse-button">disabled_by_default</mat-icon>
+        <mat-icon class="accept-button" (click)="accept()">check_box</mat-icon>
+        <mat-icon class="refuse-button" (click)="refuse()">disabled_by_default</mat-icon>
     </div>
+</div>
+
+<div *ngIf="isAccepted();" class="banner">
+    <p>You are now friend with {{sender}}</p>
+    <mat-icon>done</mat-icon>
+</div>
+
+<div *ngIf="isRefused();" class="banner">
+    <p>Friend request refused!</p>
+    <mat-icon>close</mat-icon>
 </div>

@@ -1,16 +1,54 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { NotificationHttpService } from 'src/app/notification-http.service';
+import { NotificationInterface } from '../notification.component';
+
+enum State {
+  Accepted,
+  Refused,
+  None
+}
 
 @Component({
   selector: 'app-profile-banner',
   templateUrl: './profile-banner.component.html',
   styleUrls: ['./profile-banner.component.css']
 })
+
 export class ProfileBannerComponent implements OnInit {
   @Input('text') text!: string;
-  
-  constructor(  ) { }
+  @Input('notification') notification!: NotificationInterface;
+  state: State;
+  sender: string;
+
+  constructor( private httpservice: NotificationHttpService ) { 
+    this.state = State.None;
+    this.sender = '';
+  }
 
   ngOnInit(): void {
+    this.sender = this.notification.text.split(' ')[0];
+  }
+
+  accept(): void{
+    this.httpservice.accept(this.notification._id);
+    this.state = State.Accepted;
+  }
+
+  refuse(): void{
+    this.httpservice.refuse(this.notification._id);
+    this.state = State.Refused;
+  }
+
+  isNone(): boolean {
+    return this.state === State.None;
+  }
+
+  isAccepted(): boolean {
+    return this.state === State.Accepted;
+  }
+  
+  isRefused(): boolean {
+    return this.state === State.Refused;
   }
 
 }

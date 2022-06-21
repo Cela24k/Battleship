@@ -1,0 +1,18 @@
+<div *ngIf="!isOpened(); else open" class="menu">
+    <mat-icon (click)="toggleStatus()">menu</mat-icon>
+</div>
+
+<ng-template #open>
+    <div class="container">
+        <div class="header">
+            <div class="close-container" (click)="toggleStatus()">
+                <mat-icon>close</mat-icon>
+            </div>
+            <div class="propic">
+            </div>
+        </div>
+        <div class="content">
+
+        </div>
+    </div>
+</ng-template>

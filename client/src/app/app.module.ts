@@ -18,6 +18,7 @@ import { NotificationComponent } from './notification/notification.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { ProfileBannerComponent } from './notification/profile-banner/profile-banner.component';
+import { MenuComponent } from './menu/menu.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { ProfileBannerComponent } from './notification/profile-banner/profile-ba
     PlayGamePanelComponent,
     NotificationComponent,
     ProfileBannerComponent,
+    MenuComponent,
   ],
   imports: [
     BrowserModule,

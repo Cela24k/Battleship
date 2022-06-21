@@ -1,0 +1,48 @@
+.menu{
+    cursor: pointer;
+}
+.menu:hover{
+    color:#DB9D47;
+    cursor: pointer;
+}
+
+.container{
+    position: absolute;
+    top: 0;
+    width: 70vw;
+    height: 100vh;
+    right: 0;
+    background-color: #133A39;
+}
+.header{
+    background-color: #205B59;
+    position: fixed;
+    height: 20vh;
+    width: 100%;
+}
+
+.close-container{
+    align-items: right;
+    display: flex;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.content{
+    position: fixed;
+    width: 33vw;
+    height: 80vh;
+    right: 0;
+    top:20vh;
+}
+
+.propic{
+    position: fixed;
+    width: 10vh;
+    height: 10vh;
+    right:50px;
+    top:30px;
+    background-image: url(../../assets/blank-profile-picture-png-transparent.png);
+}

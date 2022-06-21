@@ -36,7 +36,6 @@
     background-color: transparent;
     color: black;
     font-weight: 600;
-    z-index: 10;
   }
 
   .toolbar img {
@@ -296,7 +295,7 @@
 </style>
 
 <div class="toolbar" role="banner">
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="92" height="91" viewBox="0 0 92 91">
+  <svg style="z-index: 10" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="92" height="91" viewBox="0 0 92 91">
     <defs>
       <pattern id="pattern" preserveAspectRatio="none" width="100%" height="100%" viewBox="0 0 200 200">
         <image width="200" height="200" xlink:href="data:image/png;base64,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"/>
@@ -313,7 +312,7 @@
       <rect id="_1597474-200-2" data-name="1597474-200" width="74" height="73" transform="translate(9 6)" fill="url(#pattern)"/>
     </g>
   </svg>  
-  <span>Battleship</span>
+  <span style="z-index: 10">Battleship</span>
   <div class="spacer"></div>
   <button *ngIf="route === '/login'" class="button" (click)="navigateRegister()">Registrati</button>
   <button *ngIf="route === '/register'" class="button" (click)="navigateLogin()">Accedi</button>
@@ -321,7 +320,7 @@
     <app-notification></app-notification>
   </a>
   <a *ngIf="isLoggedIn()" aria-label="Menu" target="_blank" rel="noopener" title="YouTube" style="margin-right: 10px; color: white">
-    <mat-icon>menu</mat-icon>
+    <app-menu></app-menu>
   </a>
 </div>
 <router-outlet></router-outlet> 
