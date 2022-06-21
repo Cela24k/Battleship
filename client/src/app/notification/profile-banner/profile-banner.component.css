@@ -1,0 +1,16 @@
+.banner{
+    display: flex;
+    padding: 10px;
+    padding-left: 20px;
+    padding-top: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.accept-button{
+    cursor: pointer;
+}
+
+.refuse-button{
+    cursor: pointer;
+}

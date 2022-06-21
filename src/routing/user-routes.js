@@ -40,6 +40,7 @@ var user_1 = require("../models/user");
 var express_1 = require("express");
 var jsonwebtoken = require("jsonwebtoken");
 var mongoose_1 = require("mongoose");
+var notifications = require("../models/notification");
 var __1 = require("..");
 var router = express_1.Router();
 /*
@@ -183,24 +184,27 @@ router.get('/:userId/friends', function (req, res) { return __awaiter(void 0, vo
 //Sends a friend request 
 // TODO use websocket
 router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var jwt, sender, err_5;
+    var jwt, sender, n, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
-                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 6];
+                if (!(jwt['_id'] === req.params.userId || jwt['role'] === user_1.Role.Mod)) return [3 /*break*/, 7];
                 _a.label = 1;
             case 1:
-                _a.trys.push([1, 4, , 5]);
+                _a.trys.push([1, 5, , 6]);
                 return [4 /*yield*/, user.getUser(new mongoose_1.Types.ObjectId(req.params.userId))];
             case 2:
                 sender = _a.sent();
                 return [4 /*yield*/, sender.friendNotification(new mongoose_1.Types.ObjectId(req.params.friendId))];
             case 3:
                 _a.sent();
-                __1["default"]["in"](req.params.friendId).emit('notification', { notification: 'placeholder' });
-                return [3 /*break*/, 5];
+                return [4 /*yield*/, notifications.newNotification(sender.username, sender._id, new mongoose_1.Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)];
             case 4:
+                n = _a.sent();
+                __1["default"]["in"](req.params.friendId).emit('notification', n);
+                return [3 /*break*/, 6];
+            case 5:
                 err_5 = _a.sent();
                 if (err_5 === 'Server Error')
                     return [2 /*return*/, res.status(500).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
@@ -208,9 +212,9 @@ router.put('/:userId/friends/:friendId', function (req, res) { return __awaiter(
                     return [2 /*return*/, res.status(409).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
                 else
                     return [2 /*return*/, res.status(404).json({ error: true, errormessage: err_5, timestamp: Date.now() })];
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/, res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() })];
-            case 6: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/, res.status(200).json({ error: false, message: 'Friend request sent', timestamp: Date.now() })];
+            case 7: return [2 /*return*/, res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() })];
         }
     });
 }); });

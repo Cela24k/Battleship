@@ -2,9 +2,27 @@ import { TOUCH_BUFFER_MS } from '@angular/cdk/a11y/input-modality/input-modality
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NotificationHttpService } from '../notification-http.service';
+import { NotificationListenerService } from '../notification-listener.service';
+
 enum State {
   Closed,
   Open
+}
+
+// vedere come riutilizzare le interfacce del model
+export enum NotificationType {
+  Game,
+  Friend,
+  Others
+}
+
+export interface NotificationInterface{
+  readonly _id: string,
+  sender: Object,
+  receiver: Object,
+  text: string,
+  ntype: NotificationType,
+  expire_time: Date,
 }
 
 @Component({
@@ -15,16 +33,23 @@ enum State {
 export class NotificationComponent implements OnInit {
   status: number;
   n_pending: number;
-  stored_notifications: Object[];
-
-  constructor(private httpservice: NotificationHttpService) {
+  stored_notifications: NotificationInterface[];
+  socket_notifications: NotificationInterface[];
+  
+  constructor(private httpservice: NotificationHttpService,private socket: NotificationListenerService) {
     this.status = State.Closed;
     this.n_pending = 0;
     this.stored_notifications = [];
+    this.socket_notifications = [];
   }
 
   ngOnInit(): void {
-    this.loadNotifications();
+    this.loadDBNotifications();
+    this.socket.onNewMessage().subscribe((data)=>{
+      this.socket_notifications.push(data);
+      this.n_pending++;
+      console.log('notification caught: ',data);
+    })
   }
 
   isOpened(): boolean {
@@ -35,7 +60,7 @@ export class NotificationComponent implements OnInit {
     this.status = this.status === State.Closed ? State.Open : State.Closed;
   }
 
-  loadNotifications(): void {
+  loadDBNotifications(): void {
     this.httpservice.getNotifications().subscribe({
       next: (d) => {
         this.stored_notifications = d;

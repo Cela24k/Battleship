@@ -314,7 +314,7 @@ UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): 
         if(!flag) return Promise.reject('Notification already sent');
 
         let n = await newNotification(this.username, this.id, userId, NotificationType.Friend);
-        
+
         u.notifications.push(n);
         let res = await u.save().catch(
             (err)=>Promise.reject('Server Error')

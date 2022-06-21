@@ -20,7 +20,6 @@ export class AppComponent {
 
   constructor(
     private router: Router,
-    private socket: NotificationListenerService,
     private localStorage: LocalStorageService,
     private interceptor: HttpTokenPortingService
   ) { }
@@ -28,10 +27,6 @@ export class AppComponent {
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
       event instanceof NavigationEnd ? this.route = this.router.url : null
-    })
- 
-    this.socket.onNewMessage().subscribe((data)=>{
-      console.log('notification caught: ',data);
     })
   }
 

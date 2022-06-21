@@ -7,6 +7,7 @@ import jsonwebtoken = require('jsonwebtoken');
 import passport = require("passport");
 import { Types } from "mongoose";
 import { deleteNotification } from "../models/notification";
+import * as notifications from "../models/notification";
 import e = require("express");
 import { Server } from "socket.io";
 import ios from "..";
@@ -121,12 +122,19 @@ router.get('/:userId/friends', async (req, res) => {
 router.put('/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod) {
-        //let emitter: NotificationEmitter<String> = new NotificationEmitter(ios,req.params.friendId);
         try {
             var sender = await user.getUser(new Types.ObjectId(req.params.userId));
             await sender.friendNotification(new Types.ObjectId(req.params.friendId));
-            ios.in(req.params.friendId).emit('notification',{notification:'placeholder'});
-            
+
+            //fare una classe
+            // ios.in(req.params.friendId).emit('notification', notifications.newNotification(
+            // sender.username,
+            // sender._id,
+            // new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend 
+            // ));
+            let n = await notifications.newNotification(sender.username,sender._id,new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)
+            ios.in(req.params.friendId).emit('notification', n);
+
         } catch (err) {
             if (err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });

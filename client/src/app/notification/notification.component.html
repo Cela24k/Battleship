@@ -12,9 +12,26 @@
             </div>
             <mat-icon class="close-button" (click)="toggleStatus()">close</mat-icon>
         </div>
-        <div class="list-container">
-            <li *ngFor="let x of stored_notifications">
-                <div>{{x}}</div>
+        <!-- socket notifications  -->
+        <div *ngIf="socket_notifications.length > 0" class="list-container-socket">
+            <div class="divider">
+                <hr class="line-left">
+                <div class="bubble">News</div>
+                <hr class="line-right">
+            </div>
+            <li class="list-element" *ngFor="let x of socket_notifications" >
+                <app-profile-banner [text]="x.text"></app-profile-banner>
+            </li>
+        </div>
+        <!-- db notifications  -->
+        <div class="list-container-stored">
+            <div class="divider">
+                <hr class="line-left">
+                <div class="bubble">Stored</div>
+                <hr class="line-right">
+            </div>
+            <li class="list-element" *ngFor="let x of stored_notifications" >
+                <app-profile-banner [text]="x.text"></app-profile-banner>
             </li>
         </div>
     </div>

@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { NotificationComponent } from './notification/notification.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { HttpTokenPortingService } from './http-token-porting.service';
+import { ProfileBannerComponent } from './notification/profile-banner/profile-banner.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { HttpTokenPortingService } from './http-token-porting.service';
     RegisterComponent,
     PlayGamePanelComponent,
     NotificationComponent,
+    ProfileBannerComponent,
   ],
   imports: [
     BrowserModule,
