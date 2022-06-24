@@ -11,7 +11,7 @@ import * as notifications from "../models/notification";
 import e = require("express");
 import { Server } from "socket.io";
 import ios from "..";
-import NotificationEmitter from "../socket-helper/NotificationEmitter";
+import NotificationEmitter from "../socket-helper/Emitter/NotificationEmitter";
 
 var router = Router();
 
