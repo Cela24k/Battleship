@@ -18,7 +18,6 @@ export interface UserInterface extends Document {
     salt: string,
     role: Role,
     friends: [Types.ObjectId], // by reference ?
-    //chats: [ChatInterface],  //by copy ?
     stats: StatsInterface,
     notifications: [NotificationInterface],
     playing: boolean,
@@ -72,6 +71,8 @@ export interface UserInterface extends Document {
     // removeChat(): void,//stessa cosa
 
     getUserPublicInfo(): void;
+
+    addChat(chat: ChatInterface): void;
 
 }
 
@@ -343,6 +344,25 @@ UserSchema.methods.removeNotification = async function (notification: Notificati
     }
     return Promise.resolve();
 }
+
+UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>{//TODO need a look on the condition
+    let flag = false;
+    this.chats.forEach(c =>{
+        if(c.users.every(u => chat.users.includes(u))){// check if the same ids of the param chat are included on my own chats. All of this involves that when a chat is destroyed, it is destroyed for both users.
+            flag = true;
+        }
+    })
+    if(!flag){
+        this.chats.push(chat);
+        try {
+            await this.save();
+        } catch (err) {
+            return Promise.reject(err)
+        }
+    }
+    return Promise.resolve();
+}
+
 export function getSchema() { return UserSchema; }
 
 // Mongoose Model
@@ -427,6 +447,8 @@ export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectI
     }
     return Promise.reject('Users are already friends');
 }
+
+
 
 
 export const User: Model<UserInterface> = getModel();

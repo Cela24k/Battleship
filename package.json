@@ -15,9 +15,8 @@
     "http": "^0.0.1-security",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^4.5.0",
     "mongoose": "^6.3.3",
-    "passport": "^0.5.2",
+    "passport": "^0.5.3",
     "passport-http": "^0.3.0",
     "socket.io": "^4.5.1"
   },
@@ -32,8 +31,7 @@
     "typescript": "^3.9.10"
   },
   "scripts": {
-    "compile": "tsc ./src/index.ts",
-    "dev-start": "supervisor ./src/index",
-    "start": "node ./src/index"
+    "compile": "tsc",
+    "start": "node ./dist/index"
   }
 }

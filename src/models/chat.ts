@@ -75,7 +75,7 @@ ChatSchema.methods.addMessage = async function (sender: Types.ObjectId, time: Da
   return Promise.resolve(message);
 }
 
-export function createChat(users: [Types.ObjectId]): ChatInterface{ //manca la fasse di creazione delle chat, vedere come e dove implementarla
+export function createChat(users: Types.ObjectId[]): ChatInterface{ //manca la fasse di creazione delle chat, vedere come e dove implementarla
   var chat = new ChatModel({users});
   return chat;
 }

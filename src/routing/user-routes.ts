@@ -12,6 +12,7 @@ import e = require("express");
 import { Server } from "socket.io";
 import ios from "..";
 import NotificationEmitter from "../socket-helper/Emitter/NotificationEmitter";
+import { ChatModel, createChat } from "../models/chat";
 
 var router = Router();
 
@@ -132,7 +133,7 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
             // sender._id,
             // new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend 
             // ));
-            let n = await notifications.newNotification(sender.username,sender._id,new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)
+            let n = await notifications.newNotification(sender.username, sender._id, new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)
             ios.in(req.params.friendId).emit('notification', n);
 
         } catch (err) {
@@ -188,6 +189,42 @@ router.put('/:userId/notifications/:notificationId', async (req, res) => {
         return res.status(200).json({ error: false, message: 'Notification accepted', timestamp: Date.now() });
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
+})
+
+router.post('/:userId/newchat/:friendId', async (req, res) => {
+    //TODO try to find out if newchat should include a 
+    //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message?
+    // see if is good pract send friend id in the url.
+    let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
+    let userId = req.params.userId;
+    let friendId = req.params.friendId;
+    if (jwt['_id'] == userId) {
+        try {
+            
+
+            var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
+            var chat = createChat(users);
+            await user.User.find({
+                '_id': {
+                    $in: [userId,
+                        friendId]
+                }
+            }).then(data => {
+                data.forEach(element => {
+                    element.addChat(chat);// even if the chat is not created due the fact it already exists, it doesn't throw an error.
+                });
+                
+            });
+        } catch (err) {
+            if (err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
+
+        return res.status(200).json({ error: false, message: 'Chat created', timestamp: Date.now() });
+    }
+    return res.status(404).json({ error: true, message: 'No create chat', timestamp: Date.now() });
 })
 
 export = router;
