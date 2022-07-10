@@ -347,8 +347,8 @@ UserSchema.methods.removeNotification = async function (notification: Notificati
 
 UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>{//TODO need a look on the condition
     let flag = false;
-    this.chats.forEach(c =>{
-        if(c.users.every(u => chat.users.includes(u))){// check if the same ids of the param chat are included on my own chats. All of this involves that when a chat is destroyed, it is destroyed for both users.
+    this.chats.forEach((c: ChatInterface) =>{
+        if(c.users.every((u : Types.ObjectId) => chat.users.includes(u))){// check if the same ids of the param chat are included on my own chats. All of this involves that when a chat is destroyed, it is destroyed for both users.
             flag = true;
         }
     })
@@ -359,7 +359,9 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
         } catch (err) {
             return Promise.reject(err)
         }
-    }
+    }else{
+        return Promise.reject("Already Exist");
+    }  // TODO need to see how to handle this rejection according to POST request returning state.
     return Promise.resolve();
 }
 

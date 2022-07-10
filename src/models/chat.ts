@@ -75,9 +75,20 @@ ChatSchema.methods.addMessage = async function (sender: Types.ObjectId, time: Da
   return Promise.resolve(message);
 }
 
+
+export function getSchema() { return ChatSchema; }
+
+
+var userModel;  // This is not exposed outside the model
+export function getModel(): Model<ChatInterface> { // Return Model as singleton
+    if (!userModel) {
+        userModel = mongoose.model('Chat', getSchema())
+    }
+    return userModel;
+} 
 export function createChat(users: Types.ObjectId[]): ChatInterface{ //manca la fasse di creazione delle chat, vedere come e dove implementarla
   var chat = new ChatModel({users});
   return chat;
 }
 
-export const ChatModel: Model<ChatInterface> = mongoose.model('Chat', ChatSchema);
+export const ChatModel: Model<ChatInterface> = getModel();

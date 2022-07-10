@@ -200,8 +200,6 @@ router.post('/:userId/newchat/:friendId', async (req, res) => {
     let friendId = req.params.friendId;
     if (jwt['_id'] == userId) {
         try {
-            
-
             var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
             var chat = createChat(users);
             await user.User.find({
@@ -210,11 +208,12 @@ router.post('/:userId/newchat/:friendId', async (req, res) => {
                         friendId]
                 }
             }).then(data => {
+                let promises = [];
                 data.forEach(element => {
-                    element.addChat(chat);// even if the chat is not created due the fact it already exists, it doesn't throw an error.
+                    promises.push(element.addChat(chat));
                 });
-                
-            });
+                return Promise.all(promises);
+            }).catch(err => { throw err; });
         } catch (err) {
             if (err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
@@ -224,7 +223,7 @@ router.post('/:userId/newchat/:friendId', async (req, res) => {
 
         return res.status(200).json({ error: false, message: 'Chat created', timestamp: Date.now() });
     }
-    return res.status(404).json({ error: true, message: 'No create chat', timestamp: Date.now() });
+    return res.status(404).json({ error: true, message: 'Not allowed to create chat', timestamp: Date.now() });
 })
 
 export = router;
