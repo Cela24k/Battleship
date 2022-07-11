@@ -1,20 +1,13 @@
-import * as express from "express";
 import * as user from '../models/user'
 import { Role } from "../models/user";
 import { Router } from "express";
-import { AsyncLocalStorage } from "async_hooks";
 import jsonwebtoken = require('jsonwebtoken');
-import passport = require("passport");
 import { Types } from "mongoose";
-import { deleteNotification } from "../models/notification";
 import * as notifications from "../models/notification";
-import e = require("express");
-import { Server } from "socket.io";
 import ios from "..";
-import NotificationEmitter from "../socket-helper/Emitter/NotificationEmitter";
 import { ChatModel, createChat } from "../models/chat";
 
-var router = Router();
+export const router = Router();
 
 /*
     ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
@@ -226,4 +219,4 @@ router.post('/:userId/newchat/:friendId', async (req, res) => {
     return res.status(404).json({ error: true, message: 'Not allowed to create chat', timestamp: Date.now() });
 })
 
-export = router;
+

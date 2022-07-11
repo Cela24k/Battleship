@@ -6,7 +6,7 @@ import passport = require('passport');           // authentication middleware fo
 import passportHTTP = require('passport-http');  // implements Basic and Digest authentication for HTTP (used for /login endpoint)
 import jsonwebtoken = require('jsonwebtoken');
 
-var router = Router();
+export const router = Router();
 
 passport.use(new passportHTTP.BasicStrategy(
   function (username: string, password: string, done: any) {
@@ -43,7 +43,7 @@ router.get('/login', passport.authenticate('basic', { session: false }), functio
     _id
   }
 
-  let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, { expiresIn: '3h' });//settare un expires giusto
+  let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, { expiresIn: '24h' });//settare un expires giusto
   return res.status(200).json({ error: false, errormessage: "", token });
 })
 /**
@@ -75,5 +75,3 @@ router.post('/register', async function (req, res, next) {
 })
 
 
-
-export = router;

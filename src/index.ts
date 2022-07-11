@@ -10,8 +10,9 @@ import bodyparser = require('body-parser');
 import { expressjwt, Request as JWTrequest } from "express-jwt";
 import cors = require('cors');
 import { Server } from "socket.io";
-import authRoutes = require('./routing/auth-routes');
-import userRoutes = require('./routing/user-routes');
+import { router as authRoutes } from './routing/auth-routes';
+import { router as userRoutes } from './routing/user-routes';
+import { router as chatRoutes } from './routing/chat-routing';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -37,11 +38,12 @@ app.get("/", (req, res) => {
 //qui passiamo tutti i middleware(routes) che implementiamo
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
+app.use('/chat', auth, chatRoutes);
 
 
 var server = http.createServer(app);
 var ios = new Server(server, {
-    cors:{
+    cors: {
         origin: "*"
     }
 }); //qui inizializziamo il web socket, Server e' la creazione del server socket
@@ -53,8 +55,8 @@ mongoose.connect(process.env.DB_URI)
             ios.on('connection', (client) => {
                 console.log("------------------------------------------------".america)
                 console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
-    
-                console.log('Auth ',client.handshake.auth);
+
+                console.log('Auth ', client.handshake.auth);
                 client.join(client.handshake.auth['userid']);
 
                 client.on('disconnect', () => {
@@ -63,14 +65,14 @@ mongoose.connect(process.env.DB_URI)
                 })
                 client.on('notification', (data) => {
                     //client.broadcast.to('id').emit('notification','mimmetto a tutti');
-                    console.log('Il server socket ha captato: ',data);
+                    console.log('Il server socket ha captato: ', data);
                     //client.broadcast.emit('notification',"MIMMO BROADCASTATO")
                 })
                 //client.emit('notification',{mimmo: "el mimmo server"});
             })
 
             //handling socket needed;
-            
+
             server.listen(8080, () => console.log("HTTP Server started at http://localhost:8080".green));
         }
     ).catch(

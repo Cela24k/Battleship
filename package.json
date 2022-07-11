@@ -15,6 +15,7 @@
     "http": "^0.0.1-security",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^4.7.0",
     "mongoose": "^6.3.3",
     "passport": "^0.5.3",
     "passport-http": "^0.3.0",
