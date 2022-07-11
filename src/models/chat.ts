@@ -27,10 +27,10 @@ export interface ChatInterface extends Document {
 
   /* add a specific user to the chat */
   addUser(id: Types.ObjectId): void;
-  /* remove a specific user to the chat */
+  /* remove a specific user from the chat */
   removeUser(id: Types.ObjectId): void;
   /* add a message into the chat*/
-  addMessage(sender: Types.ObjectId, text: string): void;
+  addMessage(sender: Types.ObjectId, text: string): Promise<MessageInterface>;
 
   /* TODO: other methods*/
 }
@@ -64,7 +64,8 @@ ChatSchema.methods.removeUser = async function (id: Types.ObjectId): Promise<any
   return Promise.reject("UserId: " + id + " is already removed or is undefiend");
 }
 
-ChatSchema.methods.addMessage = async function (sender: Types.ObjectId, time: Date, text: string): Promise<MessageInterface> {
+ChatSchema.methods.addMessage = async function (sender: Types.ObjectId,text: string): Promise<MessageInterface> {
+  const time =  new Date();
   var message: MessageInterface = {
     sender,
     text,
@@ -79,14 +80,14 @@ ChatSchema.methods.addMessage = async function (sender: Types.ObjectId, time: Da
 export function getSchema() { return ChatSchema; }
 
 
-var userModel;  // This is not exposed outside the model
+var chatModel;  // This is not exposed outside the model
 export function getModel(): Model<ChatInterface> { // Return Model as singleton
-    if (!userModel) {
-        userModel = mongoose.model('Chat', getSchema())
+    if (!chatModel) {
+        chatModel = mongoose.model('Chat', getSchema());
     }
-    return userModel;
+    return chatModel;
 } 
-export function createChat(users: Types.ObjectId[]): ChatInterface{ //manca la fasse di creazione delle chat, vedere come e dove implementarla
+export function createChat(users: Types.ObjectId[]): ChatInterface{ 
   var chat = new ChatModel({users});
   return chat;
 }
