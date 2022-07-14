@@ -67,7 +67,9 @@ router.post('/:chatId/send', async (req, res) => {//TODO sending message throw a
         const {sender, text} = req.body;
         const chat = await ChatModel.findById(chatId).then(async data => {
             return await data.addMessage(new Types.ObjectId(sender), text);
+            
         }).catch(err => { throw err });
+        //socket messageemitter call here.
         return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
 
     } catch (err) {

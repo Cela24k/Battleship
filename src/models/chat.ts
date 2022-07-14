@@ -7,7 +7,7 @@ export interface MessageInterface {
 }
 
 export const MessageSchema = new Schema<MessageInterface>({
-  sender: {
+  text: {
     type: SchemaTypes.String,
     required: true,
   },
@@ -15,7 +15,7 @@ export const MessageSchema = new Schema<MessageInterface>({
     type: SchemaTypes.Date,
     default: () => Date.now()
   },
-  text: {
+  sender: {
     type: SchemaTypes.ObjectId,
     required: true,
   },
