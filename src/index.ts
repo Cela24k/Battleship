@@ -42,7 +42,7 @@ app.use('/chat', auth, chatRoutes);
 
 
 var server = http.createServer(app);
-var ios = new Server(server, {
+export const ios = new Server(server, {
     cors: {
         origin: "*"
     }

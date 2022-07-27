@@ -7,16 +7,16 @@ export interface MessageInterface {
 }
 
 export const MessageSchema = new Schema<MessageInterface>({
-  text: {
-    type: SchemaTypes.String,
+  sender: {
+    type: SchemaTypes.ObjectId,
     required: true,
   },
   time: {
     type: SchemaTypes.Date,
     default: () => Date.now()
   },
-  sender: {
-    type: SchemaTypes.ObjectId,
+  text: {
+    type: SchemaTypes.String,
     required: true,
   },
 });

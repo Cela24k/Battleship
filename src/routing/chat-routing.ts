@@ -3,11 +3,14 @@ import { Types } from "mongoose";
 import { ChatInterface, ChatModel, createChat } from "../models/chat";
 import { User } from "../models/user";
 import jsonwebtoken = require('jsonwebtoken');
+import { ChatMessageListener } from "../socket-helper/Listener/ChatMessageListener";
+import ChatEmitter from "../socket-helper/Emitter/ChatEmitter";
+import ios from "..";
 
 
 export const router = Router();
 
-// Create a new chat for 2 players, response with chatId 
+// Create a new chat for 2 players, response with chatId
 router.post('/newchat', async (req, res) => {
     //TODO try to find out if newchat should include a 
     //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message?
@@ -50,7 +53,7 @@ router.get('/:chatId', async (req, res) => {
     try {
         const chatId = req.params.chatId;
         const chat = await ChatModel.findById(chatId).catch(err => { throw err; });
-        return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
+        return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });// should we either return the entire chat, or split the chat into multiple attributes? Such as charId: chat._id, chatUsers: chat.users...
 
     } catch (err) {
         if (err === 'Server Error')
@@ -61,16 +64,23 @@ router.get('/:chatId', async (req, res) => {
 
 })
 
-router.post('/:chatId/send', async (req, res) => {//TODO sending message throw a casting error for the text argument line 69.
+router.post('/:chatId/send', async (req, res) => {//TODO socket integration
     try {
         const chatId = req.params.chatId;
         const {sender, text} = req.body;
         const chat = await ChatModel.findById(chatId).then(async data => {
             return await data.addMessage(new Types.ObjectId(sender), text);
             
-        }).catch(err => { throw err });
-        //socket messageemitter call here.
+        }
+        
+        ).catch(err => { throw err });
+        
+        const messageEmitter = new ChatEmitter(ios, chatId);
+        messageEmitter.emit(chat);
+        console.log("Socket inviato");
+        
         return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
+        
 
     } catch (err) {
         if (err === 'Server Error')
