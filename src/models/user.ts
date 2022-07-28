@@ -21,7 +21,7 @@ export interface UserInterface extends Document {
     stats: StatsInterface,
     notifications: [NotificationInterface],
     playing: boolean,
-    chats: [ChatInterface]//TODO it should be an objectId due the fact that this is probably saved by copy and when i send a message this chat won't be updated
+    chats: [Types.ObjectId],
 
     /* this could be useful for the Matchmaking,
     *  a match shouldn't start unless both players are waiting and if 
@@ -240,7 +240,7 @@ export const UserSchema = new Schema<UserInterface>({
         default: false,
     },
     chats: {
-        type: [ChatSchema],
+        type: [SchemaTypes.ObjectId],
     }
 
 })
@@ -277,7 +277,7 @@ UserSchema.methods.addFriend = function (friend: Types.ObjectId): void {
 UserSchema.methods.setRole = function (role: Role): void {
     if (this.role !== role) this.role = role;
 }
-UserSchema.methods.removeFriend = async function (friend: Types.ObjectId): Promise<void> {//TODO vedere che pattern mettere sulla save
+UserSchema.methods.removeFriend = async function (friend: Types.ObjectId): Promise<void> {
     var index = this.friend.indexOf(friend);
     if (index > -1) {
         this.friends.splice(index, 1);
@@ -353,7 +353,7 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
         }
     })
     if(!flag){
-        this.chats.push(chat);
+        this.chats.push(chat._id);
         try {
             await this.save();
         } catch (err) {

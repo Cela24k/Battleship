@@ -10,7 +10,9 @@ import ios from "..";
 
 export const router = Router();
 
-// Create a new chat for 2 players, response with chatId
+/*  Creates a chat between two users and store chatId into both models.
+*   Returns the chatInterface or 404/500 if an error occurs.
+*/
 router.post('/newchat', async (req, res) => {
     //TODO try to find out if newchat should include a 
     //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message?
@@ -48,7 +50,9 @@ router.post('/newchat', async (req, res) => {
     }
     return res.status(404).json({ error: true, message: 'Not allowed to create chat', timestamp: Date.now() });
 })
-
+/*  Retrieves the chat referred by the chatId.
+*   Returns the chatInterface or 404/500 if an error occurs.
+*/
 router.get('/:chatId', async (req, res) => {
     try {
         const chatId = req.params.chatId;
@@ -63,7 +67,9 @@ router.get('/:chatId', async (req, res) => {
     }
 
 })
-
+/*  Adds a message in the chatInterface.
+*   Returns the chatInterface or 404/500 if an error occurs.
+*/
 router.post('/:chatId/send', async (req, res) => {//TODO socket integration
     try {
         const chatId = req.params.chatId;
