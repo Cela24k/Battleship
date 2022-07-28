@@ -21,7 +21,7 @@ export interface UserInterface extends Document {
     stats: StatsInterface,
     notifications: [NotificationInterface],
     playing: boolean,
-    chats: [ChatInterface]
+    chats: [ChatInterface]//TODO it should be an objectId due the fact that this is probably saved by copy and when i send a message this chat won't be updated
 
     /* this could be useful for the Matchmaking,
     *  a match shouldn't start unless both players are waiting and if 

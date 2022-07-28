@@ -77,7 +77,7 @@ router.post('/:chatId/send', async (req, res) => {//TODO socket integration
         
         const messageEmitter = new ChatEmitter(ios, chatId);
         messageEmitter.emit(chat);
-        console.log("Socket inviato");
+        console.log("Socket inviato");//TODO frontend test, or in postman.
         
         return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
         
@@ -90,3 +90,4 @@ router.post('/:chatId/send', async (req, res) => {//TODO socket integration
     }
 
 })
+//TODO think about a delete, is it useful to delete a private chat? moreover a game chat might be deleted when the game ends.
