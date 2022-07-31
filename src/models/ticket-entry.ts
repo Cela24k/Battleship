@@ -19,24 +19,32 @@ export const TicketEntrySchema = new Schema<TicketEntryInterface>({
         type: SchemaTypes.Number,
         required: true
     },
-    ticketTime:{
+    ticketTime: {
         type: SchemaTypes.Date,
         default: () => new Date()
     }
 })
 
 
-export async function createTicket(userId: Types.ObjectId): Promise<void>{
+export async function createTicket(userId: Types.ObjectId): Promise<void> {
     const playerQueued: UserInterface = await getUser(userId);
     const ticketEntry: any = { // if i put TicketEntryInterface as type gets me some errors, see that.
         userId: userId,
         elo: playerQueued.stats.elo,
-        ticketTime : new Date()
+        ticketTime: new Date()
     }
 
-    const ticketEntryDoc : TicketEntryInterface = new TicketEntry(ticketEntry);
+    const ticketEntryDoc: TicketEntryInterface = new TicketEntry(ticketEntry);
     await ticketEntryDoc.save();
 
+}
+
+export async function removeTicket(userId: Types.ObjectId): Promise<void> {
+    try{
+        await TicketEntry.deleteOne({userId});
+    }catch(error){
+        throw error;
+    }
 }
 
 var ticketEntryModel;  // This is not exposed outside the model

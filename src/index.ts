@@ -13,6 +13,7 @@ import { Server } from "socket.io";
 import { router as authRoutes } from './routing/auth-routes';
 import { router as userRoutes } from './routing/user-routes';
 import { router as chatRoutes } from './routing/chat-routing';
+import { router as matchMakingRoutes } from './routing/matchmaking-routes';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -39,6 +40,7 @@ app.get("/", (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
 app.use('/chat', auth, chatRoutes);
+app.use('/matchmaking', auth, matchMakingRoutes);
 
 
 var server = http.createServer(app);
