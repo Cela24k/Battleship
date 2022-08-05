@@ -3,6 +3,7 @@ import * as mongoose from "mongoose";
 import { getUser, UserInterface } from "./user";
 
 export interface TicketEntryInterface extends Document {
+    readonly _id: Types.ObjectId;
     userId: Types.ObjectId;
     elo: number;
     ticketTime: Date;
@@ -26,7 +27,7 @@ export const TicketEntrySchema = new Schema<TicketEntryInterface>({
 })
 
 
-export async function createTicket(userId: Types.ObjectId): Promise<void> {
+export async function createTicket(userId: Types.ObjectId): Promise<TicketEntryInterface> {
     const playerQueued: UserInterface = await getUser(userId);
     const ticketEntry: any = { // if i put TicketEntryInterface as type gets me some errors, see that.
         userId: userId,
@@ -35,7 +36,7 @@ export async function createTicket(userId: Types.ObjectId): Promise<void> {
     }
 
     const ticketEntryDoc: TicketEntryInterface = new TicketEntry(ticketEntry);
-    await ticketEntryDoc.save();
+    return await ticketEntryDoc.save();
 
 }
 
