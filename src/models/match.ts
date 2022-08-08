@@ -7,16 +7,41 @@ export enum MatchTurn {
     playerTwoTurn
 }
 
+export interface BattleGrid{
+    //TODO vedere in che modo implementarla, vogliamo implementare una grid 10x10 e la logica si basera su tutta la griglia, oppure vogliamo 
+    //      un semplice array di coordinate, contenti le barche e quindi basare la logica solo sulle coordinate delle barchette.
+    //      il primo metodo penso sia comodo per i colpi sparati (spari un colpo, vedi nella grid se in quella posizione ci sta una barca)
+    //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
+
+}
+
+export interface Coordinates{
+    row : number,
+    col : number
+}
+
+export interface MatchPlayer {
+    userId: Types.ObjectId,
+    board: BattleGrid,
+    shotsFired: Number,
+    
+
+}
+export interface MatchResults{
+    winner : Types.ObjectId,
+    shotsFired : number,
+    playingTime : Date
+}
+
 
 export interface MatchInterface {
     readonly _id: Types.ObjectId,
-    playerOne: UserInterface,//vedere se utilizzare l'interfaccio o solo l'Id
-    playerTwo: Object,//TODO se mettessimo all'interno del model solo la user interface, dovremmo avere sempre due statistiche del game per ogni stats(ex. colpi tirati nel gioco). Vedere se creare una nuova interface per proiettare il contenuto all'interno di essa
-    boardOne: Object,//da vedere in che modo rappresentare la board
-    boardTwo: Object,
+    playerOne: MatchPlayer,//vedere se utilizzare l'interfaccio o solo l'Id
+    playerTwo: MatchPlayer,
     turn: MatchTurn,//palyerOne, o playerTwo possibile utilizzo di un enum e vedere se mettere di default sempre il primo oppure lancio della monetina, oppure vedere se basare la posizione del giocatore in base all'elo
-    result: String,
-    chats: [ChatInterface],//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
+    result: MatchResults,
+    playersChat: ChatInterface,//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
+    observersChat: ChatInterface,
     isGameOver : () => Boolean, //vede se ci sta un vincitore, vedere se returnarlo
     isValidMove : () => Boolean, //vede se una mossa fatta e' giusta
     updateBoard : () => void //funzione da chiamare quando finisce un turno di sicuro
