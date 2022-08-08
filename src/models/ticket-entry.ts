@@ -42,7 +42,10 @@ export async function createTicket(userId: Types.ObjectId): Promise<TicketEntryI
 
 export async function removeTicket(userId: Types.ObjectId): Promise<void> {
     try{
-        await TicketEntry.deleteOne({userId});
+        const deleted = await TicketEntry.deleteOne({userId});
+        if ( deleted.deletedCount == 0){
+            throw new Error("Ticket not founded");
+        }
     }catch(error){
         throw error;
     }
