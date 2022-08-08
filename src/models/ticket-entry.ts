@@ -26,7 +26,7 @@ export const TicketEntrySchema = new Schema<TicketEntryInterface>({
     }
 })
 
-
+// Creates a ticket entry for entering in the queue, with userId as parameter that will be unique one ticket by one.
 export async function createTicket(userId: Types.ObjectId): Promise<TicketEntryInterface> {
     const playerQueued: UserInterface = await getUser(userId);
     const ticketEntry: any = { // if i put TicketEntryInterface as type gets me some errors, see that.
@@ -39,7 +39,7 @@ export async function createTicket(userId: Types.ObjectId): Promise<TicketEntryI
     return await ticketEntryDoc.save();
 
 }
-
+//Removes the ticket entry from the queue
 export async function removeTicket(userId: Types.ObjectId): Promise<void> {
     try{
         const deleted = await TicketEntry.deleteOne({userId});
