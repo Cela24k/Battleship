@@ -15,10 +15,12 @@ import { PlayGamePanelComponent } from './play-game/play-game-panel/play-game-pa
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationComponent } from './notification/notification.component';
-import {MatBadgeModule} from '@angular/material/badge';
+import { MatBadgeModule } from '@angular/material/badge';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { ProfileBannerComponent } from './notification/profile-banner/profile-banner.component';
 import { MenuComponent } from './menu/menu.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { ChatComponent } from './chat/chat.component';
 
 @NgModule({
   declarations: [
@@ -30,11 +32,13 @@ import { MenuComponent } from './menu/menu.component';
     NotificationComponent,
     ProfileBannerComponent,
     MenuComponent,
+    ChatComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    MatTabsModule,
     MatIconModule,
     MatBadgeModule,
     BrowserAnimationsModule,

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {MatTabsModule} from '@angular/material/tabs';
+import { ChatComponent } from '../chat/chat.component';
 
 enum State{
   Open,
