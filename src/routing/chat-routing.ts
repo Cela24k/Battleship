@@ -15,8 +15,9 @@ export const router = Router();
 */
 router.post('/newchat', async (req, res) => {
     //TODO try to find out if newchat should include a 
-    //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message?
-    //Test if a user deletes the chat, should the chat being destroyed also for his friend?
+    //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message? --> "/newchat" called 
+    // only when the first message is sent
+    //Test if a user deletes the chat, should the chat being destroyed also for his friend? --> NO
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
     let userId = req.body.userId;
     let friendId = req.body.friendId;

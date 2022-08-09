@@ -161,8 +161,8 @@ router.get('/:userId/notifications', async (req, res) => {
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
 
-//accept a notification
-//TODO use websocket
+//accept or refuse a notification (?action=accept - ?action=refuse)
+//TODO use websocket 
 router.put('/:userId/notifications/:notificationId', async (req, res) => {
     let action = req.query.action ? req.query.action : undefined;
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);

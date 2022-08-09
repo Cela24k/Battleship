@@ -50,7 +50,7 @@ ChatSchema.methods.addUser = async function (id: Types.ObjectId): Promise<any> {
     this.users.push(id);
     return await this.save();
   }
-  return Promise.reject("UserId: " + id + " is already in the chat or is undefiend");
+  return Promise.reject("UserId: " + id + " is already in the chat or is undefined");
 }
 
 ChatSchema.methods.removeUser = async function (id: Types.ObjectId): Promise<any> {
@@ -61,7 +61,7 @@ ChatSchema.methods.removeUser = async function (id: Types.ObjectId): Promise<any
       return await this.save();
     }
   }
-  return Promise.reject("UserId: " + id + " is already removed or is undefiend");
+  return Promise.reject("UserId: " + id + " is already removed or is undefined");
 }
 
 ChatSchema.methods.addMessage = async function (sender: Types.ObjectId,text: string): Promise<MessageInterface> {
