@@ -57,7 +57,9 @@ router.post('/newchat', async (req, res) => {
                     promises.push(element.addChat(chat));
                 });
                 return Promise.all(promises);
-            }).catch(err => { throw err; });
+            }).catch(err => {
+                throw err;
+            });
             await chat.save();
 
         } catch (err) {
@@ -95,7 +97,7 @@ router.get('/user/:userId', async (req, res) => {
         const user = await getUserById(new Types.ObjectId(userId));
         const chats = await user.getChats();
         res.status(200).json(chats);
-    }catch (err) {
+    } catch (err) {
         if (err === 'Server Error')
             return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
         else
