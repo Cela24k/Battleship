@@ -1,6 +1,6 @@
 import { Document, Model, Schema, Types, SchemaTypes, SchemaType } from "mongoose";
 import mongoose from "mongoose";
-import { ChatInterface, ChatSchema } from "./chat";
+import { ChatInterface, ChatModel, ChatSchema } from "./chat";
 import { NotificationType, NotificationInterface, newNotification, NotificationSchema } from "./notification";
 import * as crypto from "crypto";
 import { Stats } from "fs";
@@ -73,6 +73,8 @@ export interface UserInterface extends Document {
     getUserPublicInfo(): void;
 
     addChat(chat: ChatInterface): void;
+
+    getChats() : Promise<ChatInterface[]>;
 
 }
 
@@ -347,7 +349,7 @@ UserSchema.methods.removeNotification = async function (notification: Notificati
 
 UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>{//TODO need a look on the condition
     let flag = false;
-    this.chats.forEach((c: ChatInterface) =>{
+    this.chats.forEach((c: ChatInterface) =>{//TODO change this.chats with this.getChats when it's done
         if(c.users.every((u : Types.ObjectId) => chat.users.includes(u))){// check if the same ids of the param chat are included on my own chats. All of this involves that when a chat is destroyed, it is destroyed for both users.
             flag = true;
         }
@@ -365,9 +367,14 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
     return Promise.resolve();
 }
 
-UserSchema.methods.getChats = function(): ChatInterface[] {
-    return this.chats;
+
+UserSchema.methods.getChats = async function (): Promise<ChatInterface[]>{
+    const chatList = await ChatModel.find({_id: [this.chats]});
+    return Promise.resolve(chatList);
 }
+
+
+
 
 export function getSchema() { return UserSchema; }
 
