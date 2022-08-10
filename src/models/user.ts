@@ -17,11 +17,11 @@ export interface UserInterface extends Document {
     digest: string,
     salt: string,
     role: Role,
-    friends: [Types.ObjectId], // by reference ?
+    friends: Types.ObjectId[], // by reference ?
     stats: StatsInterface,
-    notifications: [NotificationInterface],
+    notifications: NotificationInterface[],
     playing: boolean,
-    chats: [Types.ObjectId],
+    chats: Types.ObjectId[],
 
     /* this could be useful for the Matchmaking,
     *  a match shouldn't start unless both players are waiting and if 
@@ -74,7 +74,7 @@ export interface UserInterface extends Document {
 
     addChat(chat: ChatInterface): void;
 
-    getChats() : Promise<ChatInterface[]>;
+    getChats(): Promise<ChatInterface[]>;
 
 }
 
@@ -301,36 +301,35 @@ UserSchema.methods.getUserPublicInfo = function (): Object {
     return body;
 }
 
-UserSchema.methods.friendNotification = async function(userId: Types.ObjectId): Promise<void>{
-    let u = await User.findById(userId,{notifications:true}).catch(
-        (err)=> Promise.reject('Server Error')
-    );  
-    if(this.id === userId) return Promise.reject('Cannot add yourself as a friend');
-    if(u){
+UserSchema.methods.friendNotification = async function (userId: Types.ObjectId): Promise<void> {
+    let u = await User.findById(userId, { notifications: true }).catch(
+        (err) => Promise.reject('Server Error')
+    );
+    if (this.id === userId) return Promise.reject('Cannot add yourself as a friend');
+    if (u) {
         let flag = true;
-        u.notifications.forEach(function(x){
-            if(x.sender == this.id)
-            {
+        u.notifications.forEach(function (x) {
+            if (x.sender == this.id) {
                 flag = false;
-            } 
+            }
         }, this)
-        if(!flag) return Promise.reject('Notification already sent');
+        if (!flag) return Promise.reject('Notification already sent');
 
         let n = await newNotification(this.username, this.id, userId, NotificationType.Friend);
 
         u.notifications.push(n);
         let res = await u.save().catch(
-            (err)=>Promise.reject('Server Error')
+            (err) => Promise.reject('Server Error')
         )
-        if(res)
+        if (res)
             return Promise.resolve();
-        else 
+        else
             return Promise.reject('Server Error');
     }
     else return Promise.reject('There are no users with such id')
 }
 
-UserSchema.methods.getNotifications = function(): NotificationInterface[] {
+UserSchema.methods.getNotifications = function (): NotificationInterface[] {
     return this.notifications;
 }
 
@@ -347,29 +346,34 @@ UserSchema.methods.removeNotification = async function (notification: Notificati
     return Promise.resolve();
 }
 
-UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>{//TODO need a look on the condition
+UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void> {//TODO need a look on the condition
     let flag = false;
-    this.chats.forEach((c: ChatInterface) =>{//TODO change this.chats with this.getChats when it's done
-        if(c.users.every((u : Types.ObjectId) => chat.users.includes(u))){// check if the same ids of the param chat are included on my own chats. All of this involves that when a chat is destroyed, it is destroyed for both users.
+    this.getChats().forEach((c: ChatInterface) => {//TODO change this.chats with this.getChats when it's done
+        if (c.users.every((u: Types.ObjectId) => chat.users.includes(u))) {// check if the same ids of the param chat are included on my own chats. All of this involves that when a chat is destroyed, it is destroyed for both users.
             flag = true;
         }
     })
-    if(!flag){
+    if (!flag) {
         this.chats.push(chat._id);
         try {
             await this.save();
         } catch (err) {
             return Promise.reject(err)
         }
-    }else{
+    } else {
         return Promise.reject("Already Exist");
     }  // TODO need to see how to handle this rejection according to POST request returning state.
     return Promise.resolve();
 }
 
 
-UserSchema.methods.getChats = async function (): Promise<ChatInterface[]>{
-    const chatList = await ChatModel.find({_id: [this.chats]});
+UserSchema.methods.getChats = async function (): Promise<ChatInterface[]> {
+    const chatList = await ChatModel.find({
+        '_id': {
+            $in: this.chats
+        }
+    });
+
     return Promise.resolve(chatList);
 }
 
@@ -399,6 +403,15 @@ export async function getUser(userid: Types.ObjectId): Promise<UserInterface> {
         playing: true
     }
     let result = await User.findById({ _id: userid }, projection).catch(
+        (err) => Promise.reject('Server error')
+    );
+    if (result) return Promise.resolve(result);
+    else return Promise.reject('No user with such Id'); //mettere dentro un errore?
+}
+
+export async function getUserById(userid: Types.ObjectId): Promise<UserInterface> {
+   
+    let result = await User.findById({ _id: userid }).catch(
         (err) => Promise.reject('Server error')
     );
     if (result) return Promise.resolve(result);

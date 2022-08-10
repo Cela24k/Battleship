@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { Types } from "mongoose";
 import { ChatInterface, ChatModel, createChat } from "../models/chat";
-import { getUser, User } from "../models/user";
+import { getUser, getUserById, User } from "../models/user";
 import jsonwebtoken = require('jsonwebtoken');
 import { ChatMessageListener } from "../socket-helper/Listener/ChatMessageListener";
 import ChatEmitter from "../socket-helper/Emitter/ChatEmitter";
@@ -89,12 +89,11 @@ router.get('/:chatId', async (req, res) => {
 
 })
 
-router.get('/:userId', async (req, res) => {
+router.get('/user/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
-        const user = await getUser(new Types.ObjectId(userId));
+        const user = await getUserById(new Types.ObjectId(userId));
         const chats = await user.getChats();
-        console.log(chats.toString());//TODO doenst log anything, need to go now let's swag later
         res.status(200).json(chats);
     }catch (err) {
         if (err === 'Server Error')
