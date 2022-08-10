@@ -6,13 +6,33 @@ import jsonwebtoken = require('jsonwebtoken');
 import { ChatMessageListener } from "../socket-helper/Listener/ChatMessageListener";
 import ChatEmitter from "../socket-helper/Emitter/ChatEmitter";
 import ios from "..";
+import { parseJwt } from "./user-routes";
 
 
 export const router = Router();
 
+
+router.get('/', async (req, res) => {
+    let jwt = parseJwt(req.headers.authorization);
+    let userId = req.body.userId;
+    if (userId && jwt['_id'] == userId) {
+
+        await User.findById(userId)
+        .then((data) => {
+            return res.status(200).json(data.chats);
+        })
+        .catch((e) => {
+            return res.status(500).json({error: e, timestamp: Date.now()})
+        })
+    }
+    return res.status(201).json({ error: "Authenticate pls" });
+})
+
+
 /*  Creates a chat between two users and store chatId into both models.
 *   Returns the chatInterface or 404/500 if an error occurs.
 */
+
 router.post('/newchat', async (req, res) => {
     //TODO try to find out if newchat should include a 
     //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message? --> "/newchat" called 
@@ -74,20 +94,20 @@ router.get('/:chatId', async (req, res) => {
 router.post('/:chatId/send', async (req, res) => {//TODO socket integration
     try {
         const chatId = req.params.chatId;
-        const {sender, text} = req.body;
+        const { sender, text } = req.body;
         const chat = await ChatModel.findById(chatId).then(async data => {
             return await data.addMessage(new Types.ObjectId(sender), text);
-            
+
         }
-        
+
         ).catch(err => { throw err });
-        
+
         const messageEmitter = new ChatEmitter(ios, chatId);
         messageEmitter.emit(chat);
         console.log("Socket inviato");//TODO frontend test, or in postman.
-        
+
         return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
-        
+
 
     } catch (err) {
         if (err === 'Server Error')

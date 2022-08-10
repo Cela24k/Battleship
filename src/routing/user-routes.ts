@@ -9,6 +9,9 @@ import { ChatModel, createChat } from "../models/chat";
 
 export const router = Router();
 
+export function parseJwt(auth){
+    return auth ? jsonwebtoken.decode(auth.replace("Bearer ", "")) : null;
+}
 /*
     ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
     /users		                        GET	        Returns a list of all users if the client is a moderator

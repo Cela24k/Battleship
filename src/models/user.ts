@@ -365,6 +365,10 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
     return Promise.resolve();
 }
 
+UserSchema.methods.getChats = function(): ChatInterface[] {
+    return this.chats;
+}
+
 export function getSchema() { return UserSchema; }
 
 // Mongoose Model
