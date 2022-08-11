@@ -9,8 +9,9 @@ enum State {
   Open
 }
 
-// vedere come riutilizzare le interfacce del model
-export enum NotificationType {
+// vedere come riutilizzare le interfacce del model -> niente, vanno ricopiate
+
+enum NotificationType {
   Game,
   Friend,
   Others
@@ -44,7 +45,7 @@ export class NotificationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadDBNotifications();
+    this.fetchNotifications();
     this.socket.onNewMessage().subscribe((data)=>{
       this.socket_notifications.push(data);
       this.n_pending++;
@@ -60,7 +61,7 @@ export class NotificationComponent implements OnInit {
     this.status = this.status === State.Closed ? State.Open : State.Closed;
   }
 
-  loadDBNotifications(): void {
+  fetchNotifications(): void {
     this.httpservice.getNotifications().subscribe({
       next: (d) => {
         this.stored_notifications = d;

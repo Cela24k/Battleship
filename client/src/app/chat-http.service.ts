@@ -11,11 +11,12 @@ export class ChatHttpService {
   url: string;
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) {
-    this.url = 'http://localhost:8080/user';
+    this.url = 'http://localhost:8080/chat';
   }
 
-  getNotifications(): Observable<any> {
-    return this.httpclient.get(this.url + '/' + this.localstorage.getId() + '/chats');
+  getChats(): Observable<any> {
+    console.log(this.url + '/user/' + this.localstorage.getId());
+    return this.httpclient.get(this.url + '/user/' + this.localstorage.getId());
   }
 
 }

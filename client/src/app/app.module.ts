@@ -20,7 +20,9 @@ import { HttpTokenPortingService } from './http-token-porting.service';
 import { ProfileBannerComponent } from './notification/profile-banner/profile-banner.component';
 import { MenuComponent } from './menu/menu.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { CommonModule } from '@angular/common';  
 import { ChatComponent } from './chat/chat.component';
+import { MessageComponent } from './chat/message/message.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +35,7 @@ import { ChatComponent } from './chat/chat.component';
     ProfileBannerComponent,
     MenuComponent,
     ChatComponent,
+    MessageComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ import { ChatComponent } from './chat/chat.component';
     MatIconModule,
     MatBadgeModule,
     BrowserAnimationsModule,
+    CommonModule
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},

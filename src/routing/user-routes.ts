@@ -187,13 +187,13 @@ router.put('/:userId/notifications/:notificationId', async (req, res) => {
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
 })
 
-router.post('/:userId/newchat/:friendId', async (req, res) => {
+router.post('/:userId/chat', async (req, res) => {
     //TODO try to find out if newchat should include a 
     //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message?
     // see if is good pract send friend id in the url.
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
     let userId = req.params.userId;
-    let friendId = req.params.friendId;
+    let friendId = req.body.friendId;
     if (jwt['_id'] == userId) {
         try {
             var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
@@ -221,5 +221,4 @@ router.post('/:userId/newchat/:friendId', async (req, res) => {
     }
     return res.status(404).json({ error: true, message: 'Not allowed to create chat', timestamp: Date.now() });
 })
-
 

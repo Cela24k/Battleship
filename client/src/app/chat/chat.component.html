@@ -1,1 +1,7 @@
-<p>chat works!</p>
+<div>
+    <li class="message" *ngFor="let x of stored_chats;">
+        <div *ngFor="let y of x.messages">
+            <app-message [props]="x"></app-message>
+        </div>
+    </li>
+</div>

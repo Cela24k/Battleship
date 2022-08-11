@@ -8,9 +8,7 @@ import ChatEmitter from "../socket-helper/Emitter/ChatEmitter";
 import ios from "..";
 import { parseJwt } from "./user-routes";
 
-
 export const router = Router();
-
 
 router.get('/', async (req, res) => {
     let jwt = parseJwt(req.headers.authorization);
