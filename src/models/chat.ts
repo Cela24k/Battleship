@@ -22,8 +22,8 @@ export const MessageSchema = new Schema<MessageInterface>({
 });
 
 export interface ChatInterface extends Document {
-  messages: [MessageInterface];
-  users: [Types.ObjectId];
+  messages: MessageInterface[];
+  users: Types.ObjectId[];
 
   /* add a specific user to the chat */
   addUser(id: Types.ObjectId): void;
