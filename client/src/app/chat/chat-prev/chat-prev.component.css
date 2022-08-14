@@ -1,0 +1,12 @@
+.rows{
+    display: flex;
+    align-items: center;
+}
+
+.propic{
+    height: 5vh;
+}
+
+h5{
+    margin-bottom: 0;
+}

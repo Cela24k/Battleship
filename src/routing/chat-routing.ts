@@ -94,7 +94,7 @@ router.get('/user/:userId', async (req, res) => {
         const userId = req.params.userId;
         const user = await getUserById(new Types.ObjectId(userId));
         const chats = await user.getChats();
-        res.status(200).json(chats);
+        return res.status(200).json(chats);
     } catch (err) {
         if (err === 'Server Error')
             return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });

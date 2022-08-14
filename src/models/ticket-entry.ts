@@ -7,7 +7,6 @@ export interface TicketEntryInterface extends Document {
     userId: Types.ObjectId;
     elo: number;
     ticketTime: Date;
-
 }
 
 export const TicketEntrySchema = new Schema<TicketEntryInterface>({

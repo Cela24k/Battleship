@@ -49,7 +49,6 @@ export class NotificationComponent implements OnInit {
     this.socket.onNewMessage().subscribe((data)=>{
       this.socket_notifications.push(data);
       this.n_pending++;
-      console.log('notification caught: ',data);
     })
   }
 
@@ -66,7 +65,6 @@ export class NotificationComponent implements OnInit {
       next: (d) => {
         this.stored_notifications = d;
         this.n_pending = this.stored_notifications.length;
-        console.log(this.stored_notifications);
       },
       error: (err) => {
         console.log(err);

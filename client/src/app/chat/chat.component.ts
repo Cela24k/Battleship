@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ChatHttpService } from '../chat-http.service';
 import { ChatListenerService } from '../chat-listener.service';
-import { MessageComponent } from "./message/message.component";
 
 interface MessageInterface {
   sender: string;

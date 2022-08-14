@@ -22,7 +22,8 @@ import { MenuComponent } from './menu/menu.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';  
 import { ChatComponent } from './chat/chat.component';
-import { MessageComponent } from './chat/message/message.component';
+import { ChatPrevComponent } from './chat/chat-prev/chat-prev.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; //vedere se importare solo le singole componenti
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { MessageComponent } from './chat/message/message.component';
     ProfileBannerComponent,
     MenuComponent,
     ChatComponent,
-    MessageComponent,
+    ChatPrevComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,7 +46,8 @@ import { MessageComponent } from './chat/message/message.component';
     MatIconModule,
     MatBadgeModule,
     BrowserAnimationsModule,
-    CommonModule
+    CommonModule,
+    NgbModule //anche qui
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
