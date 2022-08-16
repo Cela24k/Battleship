@@ -14,6 +14,7 @@ import { router as authRoutes } from './routing/auth-routes';
 import { router as userRoutes } from './routing/user-routes';
 import { router as chatRoutes } from './routing/chat-routing';
 import { router as matchMakingRoutes } from './routing/matchmaking-routes';
+import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -72,6 +73,10 @@ mongoose.connect(process.env.DB_URI)
                 })
                 //client.emit('notification',{mimmo: "el mimmo server"});
             })
+
+            const matchmakingEngine = new MatchMakingEngine(ios, 5000);
+            //matchmakingEngine.start();
+
 
             //handling socket needed;
 
