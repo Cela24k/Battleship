@@ -50,6 +50,8 @@ export async function removeTicket(userId: Types.ObjectId): Promise<void> {
     }
 }
 
+
+
 var ticketEntryModel;  // This is not exposed outside the model
 export function getModel(): Model<TicketEntryInterface> { // Return Model as singleton
     if (!ticketEntryModel) {

@@ -75,7 +75,7 @@ mongoose.connect(process.env.DB_URI)
             })
 
             const matchmakingEngine = new MatchMakingEngine(ios, 5000);
-            //matchmakingEngine.start();
+            matchmakingEngine.start();
 
 
             //handling socket needed;
