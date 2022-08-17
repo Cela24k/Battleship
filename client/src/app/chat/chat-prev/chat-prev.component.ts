@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatHttpService } from 'src/app/chat-http.service';
 import { LocalStorageService } from 'src/app/local-storage.service';
-import { ChatInterface } from '../chat.component';
+import { ChatInterface, emptyChat } from '../chat.component';
 
 @Component({
   selector: 'app-chat-prev',
@@ -9,15 +9,19 @@ import { ChatInterface } from '../chat.component';
   styleUrls: ['./chat-prev.component.css']
 })
 export class ChatPrevComponent implements OnInit {
-  @Input() props: ChatInterface = {messages:[{sender:"", text:"", time:new Date()}], users:[]};
+  @Input() props: ChatInterface = emptyChat();
+
+  @Output() openChatEvent = new EventEmitter<ChatInterface>();
+
   username: string; 
+  open: boolean;
 
   constructor(private client: ChatHttpService, private localstorage: LocalStorageService) {
     this.username = ''
+    this.open = false;
   }
 
   ngOnInit(): void {
-    console.log(this.props);
     this.fetchInfo();
   }
 
@@ -32,6 +36,11 @@ export class ChatPrevComponent implements OnInit {
         console.log(e);
       }
     })
+  }
+
+  openChat(){
+    console.log('emitting');
+    this.openChatEvent.emit(this.props);
   }
 
 }

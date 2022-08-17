@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {MatTabsModule} from '@angular/material/tabs';
-import { ChatComponent } from '../chat/chat.component';
+import { ChatComponent, ChatInterface } from '../chat/chat.component';
 
 enum State{
   Open,
@@ -14,6 +14,9 @@ enum State{
 })
 
 export class MenuComponent implements OnInit {
+
+  @Output() openChatEvent = new EventEmitter<ChatInterface>();
+
   state: State;
 
   constructor() {
@@ -29,5 +32,10 @@ export class MenuComponent implements OnInit {
 
   toggleStatus(): void{
     this.state === State.Open ? this.state = State.Closed : this.state = State.Open;
+  }
+  
+  bridge(chat: ChatInterface){
+    console.log('bridge2');
+    this.openChatEvent.emit(chat);
   }
 }

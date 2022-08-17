@@ -25,6 +25,7 @@ import { ChatComponent } from './chat/chat.component';
 import { ChatPrevComponent } from './chat/chat-prev/chat-prev.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; //vedere se importare solo le singole componenti
 import { ChatWindowComponent } from './chat/chat-window/chat-window.component'; 
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { ChatWindowComponent } from './chat/chat-window/chat-window.component';
     MatBadgeModule,
     BrowserAnimationsModule,
     CommonModule,
-    NgbModule //anche qui
+    NgbModule, //anche qui
+    DragDropModule
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},

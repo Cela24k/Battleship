@@ -1,5 +1,5 @@
 <div>
     <li class="message" *ngFor="let x of stored_chats;">
-        <app-chat-prev [props]="x"></app-chat-prev>
+        <app-chat-prev (openChatEvent)="bridge($event)" [props]="x"></app-chat-prev>
     </li>
 </div>

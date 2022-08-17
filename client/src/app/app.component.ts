@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { NotificationListenerService } from './notification-listener.service';
 import { SocketioService } from './socketio.service';
 import { HttpTokenPortingService } from './http-token-porting.service';
+import { ChatInterface, emptyChat } from './chat/chat.component';
 
 @Component({
   selector: 'app-root',
@@ -17,12 +18,15 @@ import { HttpTokenPortingService } from './http-token-porting.service';
 export class AppComponent {
   title = 'client';  
   route = '';
+  open_chats: ChatInterface [];
 
   constructor(
     private router: Router,
     private localStorage: LocalStorageService,
     private interceptor: HttpTokenPortingService
-  ) { }
+  ) { 
+    this.open_chats = [];
+  }
 
   ngOnInit(): void {
     this.router.events.subscribe((event) => {
@@ -39,6 +43,10 @@ export class AppComponent {
 
   navigateLogin(): void{
     this.router.navigate(['/login']);
+  }
+
+  updateChats(event: ChatInterface){
+    this.open_chats.push(event);
   }
 
 }

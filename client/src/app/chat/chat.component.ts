@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ChatHttpService } from '../chat-http.service';
 import { ChatListenerService } from '../chat-listener.service';
 
@@ -13,12 +13,20 @@ export interface ChatInterface {
   users: string[];
 }
 
+export function emptyChat(){
+  return {messages:[{sender:"", text:"", time:new Date()}], users:[]};
+}
+
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
 export class ChatComponent implements OnInit {
+
+  @Output() openChatEvent = new EventEmitter<ChatInterface>();
+
+
   n_pending: number;
   stored_chats: ChatInterface[];
 
@@ -44,4 +52,9 @@ export class ChatComponent implements OnInit {
       complete: () => {},
     });
   } 
+
+  bridge(chat: ChatInterface){
+    console.log('bridge');
+    this.openChatEvent.emit(chat);
+  }
 }

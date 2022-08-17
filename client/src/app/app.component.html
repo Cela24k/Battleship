@@ -320,7 +320,10 @@
     <app-notification></app-notification>
   </a>
   <a *ngIf="isLoggedIn()" aria-label="Menu" target="_blank" rel="noopener" title="YouTube" style="margin-right: 10px; color: white">
-    <app-menu></app-menu>
+    <app-menu (openChatEvent)="updateChats($event)"></app-menu>
   </a>
+</div>
+<div *ngFor="let x of open_chats; let i = index">
+  <app-chat-window ></app-chat-window>
 </div>
 <router-outlet></router-outlet> 
