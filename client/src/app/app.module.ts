@@ -24,6 +24,7 @@ import { CommonModule } from '@angular/common';
 import { ChatComponent } from './chat/chat.component';
 import { ChatPrevComponent } from './chat/chat-prev/chat-prev.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; //vedere se importare solo le singole componenti
+import { ChatWindowComponent } from './chat/chat-window/chat-window.component'; 
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; //vedere se importare so
     MenuComponent,
     ChatComponent,
     ChatPrevComponent,
+    ChatWindowComponent,
   ],
   imports: [
     BrowserModule,
