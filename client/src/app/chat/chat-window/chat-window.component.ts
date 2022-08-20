@@ -1,5 +1,5 @@
-import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChatInterface, emptyChat } from '../chat.component';
 
 @Component({
   selector: 'app-chat-window',
@@ -7,6 +7,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
   styleUrls: ['./chat-window.component.css']
 })
 export class ChatWindowComponent implements OnInit{
+  @Input() props: ChatInterface = emptyChat();
+  @Output() closeChatEvent = new EventEmitter<ChatInterface>();
 
   constructor() {
   }
@@ -14,4 +16,7 @@ export class ChatWindowComponent implements OnInit{
   ngOnInit(): void {
   }
 
+  closeChat(){
+    this.closeChatEvent.emit(this.props);
+  }
 }

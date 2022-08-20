@@ -49,4 +49,9 @@ export class AppComponent {
     this.open_chats.push(event);
   }
 
+  closeChat(chat: ChatInterface){
+    const i = this.open_chats.indexOf(chat);
+    this.open_chats.splice(i,1);
+  }
+
 }
