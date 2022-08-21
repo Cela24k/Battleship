@@ -29,7 +29,6 @@ export class ChatPrevComponent implements OnInit {
     const friendId = this.props.users[0] === this.localstorage.getId() ? this.props.users[1] : this.props.users[0];
     this.client.getUser(friendId).subscribe({
       next: (data)=>{
-        console.log(data);
         this.username = data.username;
       },
       error: (e)=>{

@@ -33,6 +33,7 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
+    this.signOut();
     let options = {
       headers: {
         'cache-control': 'no-cache',
@@ -49,4 +50,10 @@ export class AuthService {
     );
   }
 
+  signOut(){
+    if(this.localHelper.get('token') != null){
+      console.log("logging out");
+      this.localHelper.remove('token');
+    }
+  }
 }

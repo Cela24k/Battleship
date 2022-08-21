@@ -90,17 +90,24 @@ router.get('/:chatId', async (req, res) => {
 })
 
 router.get('/user/:userId', async (req, res) => {
-    try {
-        const userId = req.params.userId;
-        const user = await getUserById(new Types.ObjectId(userId));
-        const chats = await user.getChats();
-        return res.status(200).json(chats);
-    } catch (err) {
-        if (err === 'Server Error')
-            return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
-        else
-            return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+    let jwt = parseJwt(req.headers.authorization);
+    const userId = req.params.userId;
+    if(userId && jwt['_id'] == userId){
+        try {
+            const user = await getUserById(new Types.ObjectId(userId));
+            const chats = await user.getChats();
+            const response = {chats, timestamp:Date.now()};
+            console.log(response);
+            return res.status(200).json(response);
+        } catch (err) {
+            if (err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
     }
+    return res.status(401).json({error: false, errormessage:"Unauthorized", timestamp:Date.now()})
+    
 })
 
 

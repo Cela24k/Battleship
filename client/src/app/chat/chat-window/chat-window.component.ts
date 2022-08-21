@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output } from '@angular/core';
+import { ChatHttpService } from 'src/app/chat-http.service';
+import { LocalStorageService } from 'src/app/local-storage.service';
 import { ChatInterface, emptyChat } from '../chat.component';
 
 @Component({
@@ -10,10 +12,27 @@ export class ChatWindowComponent implements OnInit{
   @Input() props: ChatInterface = emptyChat();
   @Output() closeChatEvent = new EventEmitter<ChatInterface>();
 
-  constructor() {
+  username: string;
+
+  constructor(private client: ChatHttpService,private localstorage: LocalStorageService) {
+    this.username = ''
   }
 
   ngOnInit(): void {
+    this.fetchInfo();
+  }
+
+  fetchInfo(): void {
+    const friendId = this.props.users[0] === this.localstorage.getId() ? this.props.users[1] : this.props.users[0];
+    console.log(friendId);
+    this.client.getUser(friendId).subscribe({
+      next: (data)=>{
+        this.username = data.username;
+      },
+      error: (e)=>{
+        console.log(e);
+      }
+    })
   }
 
   closeChat(){
