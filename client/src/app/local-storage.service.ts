@@ -13,12 +13,10 @@ interface Token{
   providedIn: 'root'
 })
 export class LocalStorageService {
-  private token;
-  constructor() { this.token = localStorage.getItem('token') }
+  constructor() {  }
 
   set(key: string, value: string) {
     localStorage.setItem(key, value);
-    this.token = value;
   }
 
   get(key: string) {
@@ -34,26 +32,30 @@ export class LocalStorageService {
   }
 
   getId(){
-    if(this.token)
-      return (jwtdecode(this.token )as Token)._id;
+    const token = this.getToken();
+    if(token)
+      return (jwtdecode(token )as Token)._id;
     return 'no jwt stored';
   }
 
   getUsername(){
-    if(this.token)
-      return (jwtdecode(this.token )as Token).username;
+    const token = this.getToken();
+    if(token)
+      return (jwtdecode(token )as Token).username;
     return 'no jwt stored';
   }
 
   getEmail(){
-    if(this.token)
-      return (jwtdecode(this.token )as Token).email;
+    const token = this.getToken();
+    if(token)
+      return (jwtdecode(token )as Token).email;
     return 'no jwt stored';
   }
 
   getRole(){
-    if(this.token)
-      return (jwtdecode(this.token )as Token).role;
+    const token = this.getToken();
+    if(token)
+      return (jwtdecode(token )as Token).role;
     return 'no jwt stored';
   }
 
