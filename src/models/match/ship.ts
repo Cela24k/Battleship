@@ -1,5 +1,5 @@
 import { Schema, SchemaType, SchemaTypes, Types } from "mongoose";
-import { Cell, CellSchema } from "./cell";
+import { Cell, CellSchema, CellType } from "./cell";
 
 export enum ShipType {
     Carrier = "Carrier",
@@ -35,12 +35,21 @@ export const ShipSchema = new Schema<Ship>({
         required: true,
     },
     shipType: {
-    type: SchemaTypes.String,
-    enum: ShipType,
-    required: true,
+        type: SchemaTypes.String,
+        enum: ShipType,
+        required: true,
     }
 })
 
+ShipSchema.methods.isDestroyed = function (): boolean {
+    this.position.forEach((c: Cell) => {
+        if (c.cellType != CellType.Hit)
+            return false;
+    })
+
+    return true;
+
+}
 
 
 
