@@ -18,7 +18,7 @@ enum ShipLenght {
 }
 
 export interface Ship extends Types.Subdocument {
-    position: Cell[][];
+    position: Cell[];
     length: ShipLenght;
     shipType: ShipType;
     isDestroyed(): boolean;
@@ -40,6 +40,7 @@ export const ShipSchema = new Schema<Ship>({
     required: true,
     }
 })
+
 
 
 

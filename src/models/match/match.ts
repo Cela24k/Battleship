@@ -1,18 +1,14 @@
-import { Document, Model, Schema, Types, SchemaTypes } from "mongoose";
-import { ChatInterface } from "../chat";
+import { Document, Model, Schema, Types, SchemaTypes, trusted } from "mongoose";
+import { ChatInterface, ChatSchema } from "../chat";
 import { UserInterface } from "../user";
-import { MatchPlayer } from "../match/match-player";
+import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
+import { MatchResults, MatchResultsSchema } from "../match/match-result";
 
 export enum MatchTurn {
     playerOneTurn,
     playerTwoTurn
 }
 
-export interface MatchResults{
-    winner : Types.ObjectId,
-    startTime : Date,
-    finishTime : Date,
-}
 
 export interface MatchInterface extends Document {
     readonly _id: Types.ObjectId,
@@ -29,5 +25,25 @@ export interface MatchInterface extends Document {
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
+    playerOne: {
+        type: MatchPlayerSchema,
+        required: true
+    },
+    playerTwo: {
+        type: MatchPlayerSchema,
+        required: true
+    },
+    result: {
+        type: MatchResultsSchema,
+        required: true
+    },
+    playersChat: {
+        type: ChatSchema,
+        required: true
+    } ,
+    observersChat: {
+        type: ChatSchema,
+        required: true
+    }
 });
   
