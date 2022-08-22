@@ -1,5 +1,13 @@
-<div>
+<div *ngIf="stored_chats.length != 0; else empty">
     <li class="message" *ngFor="let x of stored_chats;">
         <app-chat-prev (openChatEvent)="bridge($event)" [props]="x"></app-chat-prev>
     </li>
 </div>
+<ng-template #empty>
+    <div class="content">
+        <h4 class="empty">
+            It's all empty here...
+        </h4>
+        <mat-icon>smart_toy</mat-icon>
+    </div> 
+</ng-template>
