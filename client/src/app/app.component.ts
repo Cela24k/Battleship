@@ -8,6 +8,7 @@ import { NotificationListenerService } from './notification-listener.service';
 import { SocketioService } from './socketio.service';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { ChatInterface, emptyChat } from './chat/chat.component';
+import { AuthService } from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -22,7 +23,7 @@ export class AppComponent {
 
   constructor(
     private router: Router,
-    private localStorage: LocalStorageService,
+    private authHelper: AuthService,
     private interceptor: HttpTokenPortingService
   ) { 
     this.open_chats = [];
@@ -35,7 +36,7 @@ export class AppComponent {
   }
 
   isLoggedIn():boolean {
-    return !(this.route === '/login' || this.route ==='/register');
+    return this.authHelper.isLoggedIn();
   }
   navigateRegister(): void{
     this.router.navigate(['/register']);
@@ -54,4 +55,7 @@ export class AppComponent {
     this.open_chats.splice(i,1);
   }
 
+  logOut(): void{
+    this.authHelper.logOut();
+  }
 }

@@ -29,6 +29,10 @@ export class LocalStorageService {
     localStorage.removeItem(key);
   }
 
+  getToken(): string | null{
+    return localStorage.getItem('token')
+  }
+
   getId(){
     if(this.token)
       return (jwtdecode(this.token )as Token)._id;
@@ -51,5 +55,9 @@ export class LocalStorageService {
     if(this.token)
       return (jwtdecode(this.token )as Token).role;
     return 'no jwt stored';
+  }
+
+  logoOut(){
+    this.remove('token');
   }
 }

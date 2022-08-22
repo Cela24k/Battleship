@@ -55,8 +55,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
-              { provide: AuthService, useClass: AuthService },
               { provide: LocalStorageService, useClass: LocalStorageService },
+              { provide: AuthService, useClass: AuthService },
               { provide: SocketioService, useClass: SocketioService },
               { provide: NotificationListenerService, useClass: NotificationListenerService }
             ],

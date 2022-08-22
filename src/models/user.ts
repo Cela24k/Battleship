@@ -347,7 +347,6 @@ UserSchema.methods.removeNotification = async function (notification: Notificati
 }
 
 
-
 UserSchema.methods.getChats = async function (): Promise<ChatInterface[]> {
     const chatList = await ChatModel.find({
         '_id': {

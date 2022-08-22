@@ -42,6 +42,7 @@ export class ChatComponent implements OnInit {
   fetchChats(): void{
     this.httpService.getChats().subscribe({
       next: (d) => {
+        console.log(d);
         this.stored_chats = d.chats;
         this.n_pending = this.stored_chats.length;
       },
