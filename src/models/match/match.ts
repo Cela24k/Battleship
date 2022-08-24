@@ -3,6 +3,7 @@ import { ChatInterface, ChatSchema } from "../chat";
 import { UserInterface } from "../user";
 import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
 import { MatchResults, MatchResultsSchema } from "../match/match-result";
+import { Cell } from "./cell";
 
 export enum MatchTurn {
     playerOneTurn,
@@ -18,10 +19,9 @@ export interface MatchInterface extends Document {
     result: MatchResults,
     playersChat: ChatInterface,//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
     observersChat: ChatInterface,
+    gameTurn: Types.ObjectId, // which player has the turn.
     isGameOver : () => Boolean, //vede se ci sta un vincitore, vedere se returnarlo
-    isValidMove : () => Boolean, //vede se una mossa fatta e' giusta
-    updateBoard : () => void //funzione da chiamare quando finisce un turno di sicuro
-
+    makePlayerMove : (player: Types.ObjectId) => void //funzione da chiamare quando finisce un turno di sicuro
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
@@ -46,4 +46,16 @@ export const MatchSchema = new Schema<MatchInterface>({
         required: true
     }
 });
+
+MatchSchema.methods.makePlayerMove = async function(playerId: Types.ObjectId, shot: Cell){
+    if(playerId!==this.gameTurn){
+        throw new Error("Not your turn");
+    }
+    try{
+        const player = playerId===this.playerOne.userId ? this.playerOne : this.playerTwo; 
+        const opponent = playerId!==this.playerOne.userId ? this.playerOne : this.playerTwo; 
+        //TODO see if the shot has the same row and col of the opponent ship
+    }
+    
+}
   

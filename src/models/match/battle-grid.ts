@@ -10,7 +10,7 @@ export interface BattleGrid{
     //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
     shots: Cell[], // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
     shipPosition : Ship[],// Ships array that could be studied for the opponent shots.
-    areAllShipsDestroyed : () => boolean
+    areAllShipsDestroyed : () => boolean,
 }
 
 
@@ -26,7 +26,7 @@ export const BattleGridSchema = new Schema<BattleGrid>({
 })
 
 BattleGridSchema.methods.areAllShipsDestroyed = function(){
-    this.ships.forEach((s)=>{
+    this.ships.forEach((s: Ship)=>{
         if(!s.isDestroyed()){
             return false;
         }
