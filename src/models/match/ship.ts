@@ -22,6 +22,7 @@ export interface Ship extends Types.Subdocument {
     length: ShipLenght;
     shipType: ShipType;
     isDestroyed(): boolean;
+    hasBeenHit(shot: Cell): boolean;
 }
 
 export const ShipSchema = new Schema<Ship>({
@@ -49,6 +50,16 @@ ShipSchema.methods.isDestroyed = function (): boolean {
 
     return true;
 
+}
+
+ShipSchema.methods.hasBeenHit = function(shot: Cell): boolean{
+    this.position.forEach((c: Cell) => {
+        if(c.row === shot.row && c.col === shot.col){
+            c.cellType = CellType.Hit;
+            return true;
+        } 
+    })
+    return false;
 }
 
 

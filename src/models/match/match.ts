@@ -1,9 +1,9 @@
-import { Document, Model, Schema, Types, SchemaTypes, trusted } from "mongoose";
+import mongoose, { Document, Model, Schema, Types, SchemaTypes, trusted } from "mongoose";
 import { ChatInterface, ChatSchema } from "../chat";
 import { UserInterface } from "../user";
 import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
 import { MatchResults, MatchResultsSchema } from "../match/match-result";
-import { Cell } from "./cell";
+import { Cell, CellType } from "./cell";
 
 export enum MatchTurn {
     playerOneTurn,
@@ -55,7 +55,28 @@ MatchSchema.methods.makePlayerMove = async function(playerId: Types.ObjectId, sh
         const player = playerId===this.playerOne.userId ? this.playerOne : this.playerTwo; 
         const opponent = playerId!==this.playerOne.userId ? this.playerOne : this.playerTwo; 
         //TODO see if the shot has the same row and col of the opponent ship
+        if(opponent.shipHasBeenHit()){
+            shot.cellType = CellType.Hit;
+            //should we emit the listener her for shot hitted?
+        }
+        player.addShot(shot);
+    }catch(err){
+        throw err;
     }
     
 }
-  
+
+export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId){
+    
+}
+
+var matchModel: Model<MatchInterface>;
+function getModel(): Model<MatchInterface> { // Return Model as singleton
+    if (!matchModel) {
+        matchModel = mongoose.model('Match', MatchSchema);
+    }
+    return matchModel;
+}
+
+export const Match: Model<MatchInterface> = getModel();
+
