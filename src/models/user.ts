@@ -92,7 +92,7 @@ export interface StatsInterface {
     accuracy: number,
     timePlayed: Date,
     rank: number,
-
+    //TODO see if it's worth call just one method to update everystats.
     winsAdd(): void,
     lossesAdd(): void,
     winstreakAdd(): void,
