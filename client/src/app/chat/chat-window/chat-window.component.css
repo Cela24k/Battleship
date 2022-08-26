@@ -2,3 +2,12 @@
     left: 0;
     max-height: 100%;
 }
+
+.close{
+    cursor: pointer;
+}
+
+.container{
+    overflow-y: scroll;
+    height: 360px;
+}

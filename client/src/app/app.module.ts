@@ -26,6 +26,9 @@ import { ChatPrevComponent } from './chat/chat-prev/chat-prev.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; //vedere se importare solo le singole componenti
 import { ChatWindowComponent } from './chat/chat-window/chat-window.component'; 
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import { MessageBubbleComponent } from './chat/chat-window/message-bubble/message-bubble.component';
+import {MatCardModule} from '@angular/material/card';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -40,6 +43,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     ChatComponent,
     ChatPrevComponent,
     ChatWindowComponent,
+    MessageBubbleComponent,
   ],
   imports: [
     BrowserModule,
@@ -48,6 +52,8 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatTabsModule,
     MatIconModule,
     MatBadgeModule,
+    MatCardModule,
+    MatDividerModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui

@@ -1,0 +1,41 @@
+<!-- <mat-card class="example-card">
+    <mat-card-title>{{props.sender}}</mat-card-title>
+    <mat-card-content>
+        <p>{{ props.text }}</p>
+    </mat-card-content>
+    <mat-divider inset></mat-divider>
+    <mat-card-actions>
+        {{props.time}}
+    </mat-card-actions> 
+</mat-card> -->
+<div *ngIf="isSelfSent(); else other" class="d-flex flex-row p-3" style="align-items: baseline; justify-content: right;">
+    <div class="chat ml-2 p-3">
+        <mat-card class="example-card">
+            <mat-card-title>{{this.username}}</mat-card-title>
+            <mat-card-content>
+                <p>{{ props.text }}</p>
+            </mat-card-content>
+            <mat-divider inset></mat-divider>
+            <mat-card-actions>
+                {{this.time}}
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
+</div>
+
+<ng-template #other class="d-flex flex-row p-3" style="align-items: baseline; justify-content: left;">
+    <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
+    <div class="chat ml-2 p-3">
+        <mat-card class="example-card">
+            <mat-card-title>{{this.username}}</mat-card-title>
+            <mat-card-content>
+                <p>{{ props.text }}</p>
+            </mat-card-content>
+            <mat-divider inset></mat-divider>
+            <mat-card-actions>
+                {{this.time}}
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</ng-template>

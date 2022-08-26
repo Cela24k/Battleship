@@ -3,6 +3,7 @@ import { ChatHttpService } from 'src/app/chat-http.service';
 import { LocalStorageService } from 'src/app/local-storage.service';
 import { ChatInterface, emptyChat } from '../chat.component';
 
+
 @Component({
   selector: 'app-chat-window',
   templateUrl: './chat-window.component.html',
@@ -20,11 +21,11 @@ export class ChatWindowComponent implements OnInit{
 
   ngOnInit(): void {
     this.fetchInfo();
+    console.log(this.props)
   }
 
   fetchInfo(): void {
     const friendId = this.props.users[0] === this.localstorage.getId() ? this.props.users[1] : this.props.users[0];
-    console.log(friendId);
     this.client.getUser(friendId).subscribe({
       next: (data)=>{
         this.username = data.username;

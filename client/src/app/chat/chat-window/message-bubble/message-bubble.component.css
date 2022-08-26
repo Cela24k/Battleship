@@ -1,0 +1,12 @@
+.example-card {
+    max-width: 400px;
+    margin-bottom: 8px;
+}
+
+.mat-card-title{
+    font-size: inherit;
+}
+
+.mat-card-actions{
+    font-size: x-small;
+}

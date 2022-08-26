@@ -7,14 +7,14 @@
         <i class="fas fa-chevron-left"></i>
         <span class="pb-3">{{this.username}}</span>
         <i class="fas fa-times"></i>
-        <mat-icon (click)="closeChat()">close</mat-icon>
+        <mat-icon class="close" (click)="closeChat()">close</mat-icon>
       </div>
-      <div class="d-flex flex-row p-3">
-        <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
-        <div class="chat ml-2 p-3">Hello and thank you for visiting birdlymind. Please click the video above</div>
+      <div class="container">
+        <div *ngFor="let x of props.messages; let i = index">
+          <app-message-bubble [props]="this.props.messages[i]"></app-message-bubble>
+        </div>
       </div>
-
-      <div class="d-flex flex-row p-3">
+      <!-- <div class="d-flex flex-row p-3">
         <div class="bg-white mr-2 p-3"><span class="text-muted">Hello and thankyou for visiting birdlynind.</span></div>
         <img src="https://img.icons8.com/color/48/000000/circled-user-male-skin-type-7.png" width="30" height="30">
       </div>
@@ -27,7 +27,7 @@
       <div class="d-flex flex-row p-3">
         <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
         <div class="chat ml-2 p-3"><span class="text-muted dot">. . .</span></div>
-      </div>
+      </div> -->
 
       <div class="form-group px-3">
         <textarea class="form-control" rows="5" placeholder="Type your message"></textarea>

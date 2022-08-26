@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ChatHttpService } from '../chat-http.service';
 import { ChatListenerService } from '../chat-listener.service';
 
-interface MessageInterface {
+export interface MessageInterface {
   sender: string;
   time: Date,
   text: string,
@@ -13,8 +13,12 @@ export interface ChatInterface {
   users: string[];
 }
 
-export function emptyChat(){
+export function emptyChat() {
   return {messages:[{sender:"", text:"", time:new Date()}], users:[]};
+}
+
+export function emptyMessage(){
+  return {sender:'', time:new Date(), text:''}
 }
 
 @Component({
