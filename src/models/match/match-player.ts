@@ -18,7 +18,6 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
     },
     board : {
         type: BattleGridSchema,
-        required: true
     },
     shotsFired: {
         type: SchemaTypes.Number,
@@ -30,7 +29,6 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
     },
     elo: {
         type: SchemaTypes.Number,
-        default: 0,
         required: true
     },
 
