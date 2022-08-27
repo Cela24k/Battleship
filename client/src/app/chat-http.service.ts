@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { concatMap, map, Observable } from 'rxjs';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
+
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +16,24 @@ export class ChatHttpService {
   }
 
   getChats(): Observable<any> {
-    return this.httpclient.get(this.url + '/chat/user/' + this.localstorage.getId());
+    return this.httpclient.get(this.url + '/user/' + this.localstorage.getId()+'/chats');
   }
 
   getUser(id: string): Observable<any> {
     return this.httpclient.get(this.url + '/user/' + id);
+  }
+
+  sendMessage(txt: string, sender: string, chatId: string): Observable<any> {
+    const body = {text: txt, sender };
+    const token = this.localstorage.getToken();
+    const options = {
+      headers: new HttpHeaders({
+        Authorization: token ? token : '',
+        'cache-control': 'no-cache',
+        'Content-Type': 'application/json',
+      })
+    } 
+    console.log('first')
+    return this.httpclient.post(this.url + '/chat/' + chatId + '/messages', body, options);
   }
 }

@@ -20,7 +20,7 @@
                 <div class="bubble">New</div>
                 <hr class="line-right">
             </div>
-            <li class="list-element" *ngFor="let x of socket_notifications" >
+            <li class="list-element" *ngFor="let x of socket_notifications">
                 <app-profile-banner [notification]="x"></app-profile-banner>
             </li>
         </div>
@@ -31,7 +31,7 @@
                 <div class="bubble">Old</div>
                 <hr class="line-right">
             </div>
-            <li class="list-element" *ngFor="let x of stored_notifications" >
+            <li class="list-element" *ngFor="let x of stored_notifications">
                 <app-profile-banner [notification]="x"></app-profile-banner>
             </li>
         </div>

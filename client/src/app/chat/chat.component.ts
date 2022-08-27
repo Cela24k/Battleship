@@ -9,15 +9,16 @@ export interface MessageInterface {
 }
 
 export interface ChatInterface {
+  _id: string;
   messages: MessageInterface[];
   users: string[];
 }
 
 export function emptyChat() {
-  return {messages:[{sender:"", text:"", time:new Date()}], users:[]};
+  return { _id:'',messages:[{sender:"", text:"", time:new Date()}], users:[]};
 }
 
-export function emptyMessage(){
+export function emptyMessage() {
   return {sender:'', time:new Date(), text:''}
 }
 

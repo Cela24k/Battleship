@@ -1,5 +1,6 @@
-<div *ngIf="!isOpened(); else open" class="menu">
-    <mat-icon (click)="toggleStatus()">menu</mat-icon>
+<div *ngIf="!isOpened(); else open" class="menu" (click)="toggleStatus()">
+    <mat-icon *ngIf="n_pending != 0" [matBadge]="n_pending" matBadgeColor="warn" matBadgeSize="small">menu</mat-icon>
+    <mat-icon *ngIf="n_pending == 0" class="notification">menu</mat-icon>
 </div>
 
 <ng-template #open>
@@ -11,7 +12,9 @@
             <div class="propic">
             </div>
             <mat-tab-group class="tabs">
-                <mat-tab label="Chats"> <app-chat (openChatEvent)="bridge($event)"></app-chat> </mat-tab>
+                <mat-tab label="Chats">
+                    <app-chat (openChatEvent)="bridge($event)"></app-chat>
+                </mat-tab>
                 <mat-tab label="Second"> Content 2 </mat-tab>
                 <mat-tab label="Third"> Content 3 </mat-tab>
             </mat-tab-group>

@@ -8,7 +8,7 @@
         {{props.time}}
     </mat-card-actions> 
 </mat-card> -->
-<div *ngIf="isSelfSent(); else other" class="d-flex flex-row p-3" style="align-items: baseline; justify-content: right;">
+<div *ngIf="isSelfSent(); else other" class="d-flex flex-row p-3" style="align-items: center; justify-content: right;">
     <div class="chat ml-2 p-3">
         <mat-card class="example-card">
             <mat-card-title>{{this.username}}</mat-card-title>
@@ -24,8 +24,9 @@
     <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
 </div>
 
-<ng-template #other class="d-flex flex-row p-3" style="align-items: baseline; justify-content: left;">
-    <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
+<ng-template #other >
+    <div class="d-flex flex-row p-3" style="align-items: center; justify-content: left;">
+        <img src="https://img.icons8.com/color/48/000000/circled-user-female-skin-type-7.png" width="30" height="30">
     <div class="chat ml-2 p-3">
         <mat-card class="example-card">
             <mat-card-title>{{this.username}}</mat-card-title>
@@ -37,5 +38,6 @@
                 {{this.time}}
             </mat-card-actions>
         </mat-card>
+    </div>
     </div>
 </ng-template>

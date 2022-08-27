@@ -14,11 +14,11 @@ export class ChatPrevComponent implements OnInit {
   @Output() openChatEvent = new EventEmitter<ChatInterface>();
 
   username: string; 
-  open: boolean;
+  openedChats: ChatInterface[];
 
   constructor(private client: ChatHttpService, private localstorage: LocalStorageService) {
     this.username = ''
-    this.open = false;
+    this.openedChats = [];
   }
 
   ngOnInit(): void {
@@ -39,7 +39,13 @@ export class ChatPrevComponent implements OnInit {
 
   openChat(){
     console.log('emitting');
+    // if(!this.openedChats.includes(this.props))
+    // {
+    //   this.openedChats.push(this.props);
+    //   this.openChatEvent.emit(this.props);
+    // }
     this.openChatEvent.emit(this.props);
   }
 
+  
 }

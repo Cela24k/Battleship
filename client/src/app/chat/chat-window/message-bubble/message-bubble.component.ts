@@ -37,7 +37,6 @@ export class MessageBubbleComponent implements OnInit {
   dateToString(): string {
     const date = new Date(this.props.time).toString().split(' ');
     const response = date[1]+' '+date[2]+' '+date[3]+' '+date[4];
-    console.log(response);
     return response;
   }
 
