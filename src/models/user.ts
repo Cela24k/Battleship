@@ -126,7 +126,7 @@ export const StatsSchema = new Schema<StatsInterface>({
     },
     elo: {
         type: SchemaTypes.Number,
-        default: 0,
+        default: 1000,
     },
     playedGames: {
         type: SchemaTypes.Number,

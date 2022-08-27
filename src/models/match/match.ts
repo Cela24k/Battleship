@@ -1,6 +1,6 @@
 import mongoose, { Document, Model, Schema, Types, SchemaTypes, trusted } from "mongoose";
-import { ChatInterface, ChatSchema } from "../chat";
-import { UserInterface } from "../user";
+import { ChatInterface, ChatModel, ChatSchema, createChat } from "../chat";
+import { getUserById, UserInterface } from "../user";
 import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
 import { MatchResults, MatchResultsSchema } from "../match/match-result";
 import { Cell, CellType } from "./cell";
@@ -35,7 +35,6 @@ export const MatchSchema = new Schema<MatchInterface>({
     },
     result: {
         type: MatchResultsSchema,
-        required: true
     },
     playersChat: {
         type: ChatSchema,
@@ -66,8 +65,17 @@ MatchSchema.methods.makePlayerMove = async function(playerId: Types.ObjectId, sh
     
 }
 
-export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId){
+export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId): Promise<MatchInterface>{
+    const _playerOne: UserInterface = await getUserById(playerOne);
+    const _playerTwo: UserInterface = await getUserById(playerTwo);
+    const dataOne = {userId: _playerOne.id, elo: _playerOne.stats.elo};
+    const dataTwo = {userId: _playerTwo.id, elo: _playerTwo.stats.elo};
+    const playersChat = createChat([dataOne.userId, dataTwo.userId]);
+    const observersChat = createChat([]); //TODO we need to save the chats here
+    const data = {playerOne: dataOne, playerTwo: dataTwo, gameTurn:dataOne.userId, playersChat, observersChat }
     
+    var match = new Match(data);
+    return match
 }
 
 var matchModel: Model<MatchInterface>;
