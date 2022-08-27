@@ -6,6 +6,8 @@ import { Types } from "mongoose";
 import * as notifications from "../models/notification";
 import ios from "..";
 import { ChatModel, createChat } from "../models/chat";
+import { getUser, getUserById, User } from "../models/user";
+
 
 export const router = Router();
 
@@ -220,5 +222,27 @@ router.post('/:userId/chat', async (req, res) => {
         return res.status(200).json({ error: false, message: 'Chat created', timestamp: Date.now() });
     }
     return res.status(404).json({ error: true, message: 'Not allowed to create chat', timestamp: Date.now() });
+})
+
+router.get('/:userId/chats', async (req, res) => {
+    let jwt = parseJwt(req.headers.authorization);
+    const userId = req.params.userId;
+    if(userId && jwt['_id'] == userId){
+        try {
+            const u = await getUserById(new Types.ObjectId(userId));
+            const chats = await u.getChats();
+            console.log(chats);
+            const response = {chats, timestamp:Date.now()};
+            console.log(response);
+            return res.status(200).json(response);
+        } catch (err) {
+            if (err === 'Server Error')
+                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+            else
+                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        }
+    }
+    return res.status(401).json({error: false, errormessage:"Unauthorized", timestamp:Date.now()})
+    
 })
 

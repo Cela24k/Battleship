@@ -10,7 +10,7 @@ import { parseJwt } from "./user-routes";
 
 export const router = Router();
 
-router.get('/', async (req, res) => {
+router.get('', async (req, res) => {
     let jwt = parseJwt(req.headers.authorization);
     let userId = req.body.userId;
     if (userId && jwt['_id'] == userId) {
@@ -31,11 +31,8 @@ router.get('/', async (req, res) => {
 *   Returns the chatInterface or 404/500 if an error occurs.
 */
 
-router.post('/newchat', async (req, res) => {
-    //TODO try to find out if newchat should include a 
-    //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message? --> "/newchat" called 
-    // only when the first message is sent
-    //Test if a user deletes the chat, should the chat being destroyed also for his friend? --> NO
+router.post('', async (req, res) => {
+
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
     let userId = req.body.userId;
     let friendId = req.body.friendId;
@@ -69,8 +66,18 @@ router.post('/newchat', async (req, res) => {
 
         return res.status(200).json({ error: false, message: 'Chat created', timestamp: Date.now(), chatId: chat._id });
     }
-    return res.status(404).json({ error: true, message: 'Not allowed to create chat', timestamp: Date.now() });
+    return res.status(401).json({error: false, errormessage: 'Unauthorized', timestamp: Date.now()});
 })
+
+router.delete('', async(req, res) => {
+    let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
+    let userId = req.body.userId;
+    let friendId = req.body.friendId;
+    if (userId && friendId && jwt['_id'] == userId) {
+        
+    }
+})
+
 /*  Retrieves the chat referred by the chatId.
 *   Returns the chatInterface or 404/500 if an error occurs.
 */
@@ -89,17 +96,29 @@ router.get('/:chatId', async (req, res) => {
 
 })
 
-router.get('/user/:userId', async (req, res) => {
-    let jwt = parseJwt(req.headers.authorization);
-    const userId = req.params.userId;
-    if(userId && jwt['_id'] == userId){
+/*  Adds a message in the chatInterface.
+*   Returns the chatInterface or 404/500 if an error occurs.
+*/
+router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
+    let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
+    const { sender, text } = req.body;
+    if(sender === jwt['_id']){
         try {
-            const user = await getUserById(new Types.ObjectId(userId));
-            const chats = await user.getChats();
-            console.log(chats);
-            const response = {chats, timestamp:Date.now()};
-            console.log(response);
-            return res.status(200).json(response);
+            const chatId = req.params.chatId;
+    
+            const chat = await ChatModel.findById(chatId).then(async data => {
+                return await data.addMessage(new Types.ObjectId(sender), text);
+            }
+    
+            ).catch(err => { throw err });
+    
+            const messageEmitter = new ChatEmitter(ios, chatId);
+            messageEmitter.emit(chat);
+            console.log("Socket inviato");//TODO frontend test, or in postman.
+    
+            return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
+    
+    
         } catch (err) {
             if (err === 'Server Error')
                 return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
@@ -107,38 +126,7 @@ router.get('/user/:userId', async (req, res) => {
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
     }
-    return res.status(401).json({error: false, errormessage:"Unauthorized", timestamp:Date.now()})
-    
-})
 
-
-/*  Adds a message in the chatInterface.
-*   Returns the chatInterface or 404/500 if an error occurs.
-*/
-router.post('/:chatId/send', async (req, res) => {//TODO socket integration
-    try {
-        const chatId = req.params.chatId;
-        const { sender, text } = req.body;
-        const chat = await ChatModel.findById(chatId).then(async data => {
-            return await data.addMessage(new Types.ObjectId(sender), text);
-
-        }
-
-        ).catch(err => { throw err });
-
-        const messageEmitter = new ChatEmitter(ios, chatId);
-        messageEmitter.emit(chat);
-        console.log("Socket inviato");//TODO frontend test, or in postman.
-
-        return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
-
-
-    } catch (err) {
-        if (err === 'Server Error')
-            return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
-        else
-            return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
-    }
-
+    return res.status(401).json({error: false, errormessage: 'Unauthorized', timestamp: Date.now()});
 })
 //TODO think about a delete, is it useful to delete a private chat? moreover a game chat might be deleted when the game ends.
