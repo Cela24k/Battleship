@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output } from '@angular/core';
 import { ChatHttpService } from 'src/app/chat-http.service';
+import { ChatListenerService } from 'src/app/chat-listener.service';
 import { LocalStorageService } from 'src/app/local-storage.service';
 import { ChatInterface, emptyChat, emptyMessage, MessageInterface } from '../chat.component';
 
@@ -17,7 +18,7 @@ export class ChatWindowComponent implements OnInit{
   userid: string;
   messages: MessageInterface[];
 
-  constructor(private client: ChatHttpService,private localstorage: LocalStorageService) {
+  constructor(private client: ChatHttpService,private localstorage: LocalStorageService, private socket: ChatListenerService) {
     this.username = ''
     this.userid = localstorage.getId();
     this.messages = []
@@ -25,7 +26,16 @@ export class ChatWindowComponent implements OnInit{
 
   ngOnInit(): void {
     this.fetchInfo();
+    this.userid = this.localstorage.getId();
     this.messages = this.props.messages;
+    this.socket.onNewMessage().subscribe((data)=>{
+      console.log(data);
+      this.messages.push(data.chat)
+    })
+  }
+
+  ngOnDestroy(): void{
+    this.userid = '';
   }
 
   fetchInfo(): void {
@@ -45,14 +55,18 @@ export class ChatWindowComponent implements OnInit{
   }
 
   sendMessage(txt: string){
-    console.log(this.props);
     this.client.sendMessage(txt, this.userid, this.props['_id']).subscribe({
       next: (data)=>{
+        console.log(data)
         this.messages.push(data.chat)
       },
       error: (e)=>{
         console.log(e)
       }
     });
+  }
+
+  catchMessage(){
+
   }
 }

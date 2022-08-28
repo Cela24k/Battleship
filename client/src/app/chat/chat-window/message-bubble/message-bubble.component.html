@@ -1,13 +1,3 @@
-<!-- <mat-card class="example-card">
-    <mat-card-title>{{props.sender}}</mat-card-title>
-    <mat-card-content>
-        <p>{{ props.text }}</p>
-    </mat-card-content>
-    <mat-divider inset></mat-divider>
-    <mat-card-actions>
-        {{props.time}}
-    </mat-card-actions> 
-</mat-card> -->
 <div *ngIf="isSelfSent(); else other" class="d-flex flex-row p-3" style="align-items: center; justify-content: right;">
     <div class="chat ml-2 p-3">
         <mat-card class="example-card">

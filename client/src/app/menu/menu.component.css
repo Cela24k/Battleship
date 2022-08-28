@@ -54,6 +54,12 @@
     /* width: 32vw; */
 }
 
+.example-button-container {
+    display: flex;
+    justify-content: center;
+    width: 120px;
+}
+
 ::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
     bottom: 0;
     min-width: 10vw!important;

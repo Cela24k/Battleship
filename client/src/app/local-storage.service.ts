@@ -60,6 +60,6 @@ export class LocalStorageService {
   }
 
   logoOut(){
-    this.remove('token');
+    localStorage.clear();
   }
 }

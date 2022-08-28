@@ -1,1 +1,6 @@
-<app-play-game-panel></app-play-game-panel>
+<app-play-game-panel *ngIf="!isPlaying(); else game" (gameEvent)="this.playing = true"></app-play-game-panel>
+<ng-template #game>
+    <div>
+        ue ghesboto
+    </div>
+</ng-template>

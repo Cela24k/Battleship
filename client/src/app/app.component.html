@@ -323,7 +323,7 @@
   <a *ngIf="isLoggedIn()" aria-label="Notifications" target="_blank" rel="noopener" title="Notifications">
     <app-notification></app-notification>
   </a>
-  <a *ngIf="isLoggedIn()" aria-label="Menu" target="_blank" rel="noopener" title="YouTube"
+  <a *ngIf="isLoggedIn()" aria-label="Menu" target="_blank" rel="noopener"
     style="margin-right: 10px; color: white">
     <app-menu (openChatEvent)="updateChats($event)"></app-menu>
   </a>

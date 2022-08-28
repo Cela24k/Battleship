@@ -8,6 +8,9 @@ class ChatEmitter<T> extends RoomEmitter<any>{
         super(ios, 'chat-message',roomId);
     }
 
+    emit(payload?: T): void{
+         this.ios.emit(this.event, {txt:'ciaoo'})
+    }
 }
 
 export default ChatEmitter;

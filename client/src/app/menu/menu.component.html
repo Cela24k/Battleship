@@ -10,14 +10,25 @@
                 <mat-icon>close</mat-icon>
             </div>
             <div class="propic">
+                <img src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100" height="100">
             </div>
-            <mat-tab-group class="tabs">
-                <mat-tab label="Chats">
+            <mat-tab-group class="tabs" >
+                <mat-tab label="Chats" >
                     <app-chat (openChatEvent)="bridge($event)"></app-chat>
                 </mat-tab>
                 <mat-tab label="Second"> Content 2 </mat-tab>
                 <mat-tab label="Third"> Content 3 </mat-tab>
             </mat-tab-group>
         </div>
+    </div>
+    <div class="example-button-container">
+        <button mat-fab aria-label="Start a new chat" (click)="openChatDialog()" style="background-color: #CAE8E7; color: #205B59; right: 10px; top:92vh ">
+          <mat-icon>chat</mat-icon>
+        </button>
+    </div>
+    <div *ngIf="isSearching()">
+        <!-- TODO: sostituire style con una classe -->
+        <app-menu-searchbox *ngIf="this.chatbox" [type]="'chat'" style="position: absolute; top:200px; right: 50vw; z-index: 100"></app-menu-searchbox>
+        <app-menu-searchbox *ngIf="this.friendbox " [type]="'friend'"></app-menu-searchbox>
     </div>
 </ng-template>

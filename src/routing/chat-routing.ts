@@ -98,6 +98,7 @@ router.get('/:chatId', async (req, res) => {
 
 /*  Adds a message in the chatInterface.
 *   Returns the chatInterface or 404/500 if an error occurs.
+*   Sends a message
 */
 router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));

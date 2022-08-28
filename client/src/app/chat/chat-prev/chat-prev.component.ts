@@ -38,7 +38,6 @@ export class ChatPrevComponent implements OnInit {
   }
 
   openChat(){
-    console.log('emitting');
     // if(!this.openedChats.includes(this.props))
     // {
     //   this.openedChats.push(this.props);
@@ -47,5 +46,6 @@ export class ChatPrevComponent implements OnInit {
     this.openChatEvent.emit(this.props);
   }
 
+  
   
 }

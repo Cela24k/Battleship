@@ -47,7 +47,6 @@ export class ChatComponent implements OnInit {
   fetchChats(): void{
     this.httpService.getChats().subscribe({
       next: (d) => {
-        console.log(d);
         this.stored_chats = d.chats;
         this.n_pending = this.stored_chats.length;
       },
@@ -55,7 +54,9 @@ export class ChatComponent implements OnInit {
         console.log(err);
         console.log('Error: ' + JSON.stringify(err));
       },
-      complete: () => {},
+      complete: () => {
+        this.clearChats();
+      },
     });
   } 
 
@@ -63,4 +64,9 @@ export class ChatComponent implements OnInit {
     console.log('bridge');
     this.openChatEvent.emit(chat);
   }
+
+  clearChats(): void {
+    this.stored_chats = this.stored_chats.filter((e)=> {return e.messages.length != 0})
+  }
+
 }

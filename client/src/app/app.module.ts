@@ -29,6 +29,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
 import { MessageBubbleComponent } from './chat/chat-window/message-bubble/message-bubble.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatDividerModule} from '@angular/material/divider';
+import { PlayGameRandomComponent } from './play-game/play-game-random/play-game-random.component';
+import {MatButtonModule} from '@angular/material/button';
+import { MenuSearchboxComponent } from './menu/menu-searchbox/menu-searchbox.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +47,8 @@ import {MatDividerModule} from '@angular/material/divider';
     ChatPrevComponent,
     ChatWindowComponent,
     MessageBubbleComponent,
+    PlayGameRandomComponent,
+    MenuSearchboxComponent,
   ],
   imports: [
     BrowserModule,
@@ -52,12 +57,13 @@ import {MatDividerModule} from '@angular/material/divider';
     MatTabsModule,
     MatIconModule,
     MatBadgeModule,
+    MatButtonModule,
     MatCardModule,
     MatDividerModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui
-    DragDropModule
+    DragDropModule,
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},

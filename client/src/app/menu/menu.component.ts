@@ -17,11 +17,13 @@ enum State{
 export class MenuComponent implements OnInit {
 
   @Output() openChatEvent = new EventEmitter<ChatInterface>();
-
+  
   stored_chats : ChatInterface[];
   socket_chats: ChatInterface[];
   n_pending: number;
   state: State;
+  chatbox: boolean = false;
+  friendbox: boolean = false;
 
   constructor(private httpservice: ChatHttpService, private socket: ChatListenerService) {
     this.state = State.Closed;
@@ -62,5 +64,13 @@ export class MenuComponent implements OnInit {
       },
       complete: () => {},
     });
+  }
+
+  openChatDialog(): void {
+    this.chatbox = true;
+  }
+
+  isSearching(){
+    return this.chatbox || this.friendbox
   }
 }
