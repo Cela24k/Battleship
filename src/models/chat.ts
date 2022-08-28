@@ -22,6 +22,7 @@ export const MessageSchema = new Schema<MessageInterface>({
 });
 
 export interface ChatInterface extends Document {
+  readonly _id: Types.ObjectId,
   messages: MessageInterface[];
   users: Types.ObjectId[];
 
@@ -87,9 +88,9 @@ export function getModel(): Model<ChatInterface> { // Return Model as singleton
     }
     return chatModel;
 } 
-export function createChat(users: Types.ObjectId[]): ChatInterface{ 
+export function createChat(users: Types.ObjectId[]): Promise<ChatInterface>{ 
   var chat = new ChatModel({users});
-  return chat;
+  return chat.save();
 }
 
 export const ChatModel: Model<ChatInterface> = getModel();

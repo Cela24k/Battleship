@@ -247,7 +247,7 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
     if (!flag) {
         this.chats.push(chat._id);
         try {
-            await this.save();
+            await this.save();//TODO see if here when we save the usersdoc it saves alse the chats(createChat doesn save the chat)
         } catch (err) {
             return Promise.reject(err);
         }

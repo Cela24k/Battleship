@@ -42,7 +42,6 @@ export class MatchMakingEngine {
                 console.log(playerTwo.toString());
                 console.log(playerOne.toString());
                 const match = await newMatch(playerOne.userId, playerTwo.userId);
-                await match.save();
                 //TODO newmatch emitter needded.
                 await removeTicket(playerOne.userId);
                 await removeTicket(playerTwo.userId);

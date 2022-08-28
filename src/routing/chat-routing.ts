@@ -39,7 +39,7 @@ router.post('', async (req, res) => {
     if (userId && friendId && jwt['_id'] == userId) {
         try {
             var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
-            var chat = createChat(users);
+            var chat = await createChat(users);
 
             await User.find({
                 '_id': {
@@ -55,7 +55,7 @@ router.post('', async (req, res) => {
             }).catch(err => {
                 throw err;
             });
-            await chat.save();
+            
 
         } catch (err) {
             if (err === 'Server Error')

@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema, Types, SchemaTypes, trusted, get } from "mongoose";
+import mongoose, { Document, Model, Schema, Types, SchemaTypes } from "mongoose";
 import { ChatInterface, ChatModel, ChatSchema, createChat } from "../chat";
 import { getUserById, UserInterface } from "../user";
 import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
@@ -14,11 +14,11 @@ export interface MatchInterface extends Document {
     playerTwo: MatchPlayer,
     // turn: MatchTurn,//palyerOne, o playerTwo possibile utilizzo di un enum e vedere se mettere di default sempre il primo oppure lancio della monetina, oppure vedere se basare la posizione del giocatore in base all'elo
     result: MatchResults,
-    playersChat: ChatInterface,//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
-    observersChat: ChatInterface,
+    playersChat: Types.ObjectId,//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
+    observersChat: Types.ObjectId,
     gameTurn: Types.ObjectId, // which player has the turn.
 
-    makePlayerMove: (player: Types.ObjectId) => void //funzione da chiamare quando finisce un turno di sicuro
+    makePlayerMove: (player: Types.ObjectId) => Promise<MatchInterface> //funzione da chiamare quando finisce un turno di sicuro
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
@@ -34,16 +34,14 @@ export const MatchSchema = new Schema<MatchInterface>({
         type: MatchResultsSchema,
     },
     playersChat: {
-        type: ChatSchema,
-        required: true
+        type: SchemaTypes.ObjectId,
     },
     observersChat: {
-        type: ChatSchema,
-        required: true
+        type: SchemaTypes.ObjectId,
     }
 });
 
-MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell) {
+MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell): Promise<MatchInterface> {
     if (playerId !== this.gameTurn) {
         throw new Error("Not your turn");
     }
@@ -60,6 +58,7 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
         }
         player.addShot(shot);
         this.gameTurn = opponent.userid;
+        return this.save()
 
 
     } catch (err) {
@@ -70,17 +69,27 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
 
 
 export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId): Promise<MatchInterface> {
-    const _playerOne: UserInterface = await getUserById(playerOne);
-    const _playerTwo: UserInterface = await getUserById(playerTwo);
-    const delta_score: number = getExpectedScore(_playerOne.stats.elo, _playerTwo.stats.elo);
-    const dataOne = { userId: _playerOne.id, elo: _playerOne.stats.elo, delta_score };
-    const dataTwo = { userId: _playerTwo.id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
-    const playersChat = createChat([dataOne.userId, dataTwo.userId]);
-    const observersChat = createChat([]); //TODO we need to save the chats here
-    const data = { playerOne: dataOne, playerTwo: dataTwo, gameTurn: dataOne.userId, playersChat, observersChat }
+    try {
+        const _playerOne: UserInterface = await getUserById(playerOne);
+        const _playerTwo: UserInterface = await getUserById(playerTwo);
+        const delta_score: number = getExpectedScore(_playerOne.stats.elo, _playerTwo.stats.elo);
+        const dataOne = { userId: _playerOne._id, elo: _playerOne.stats.elo, delta_score };
+        const dataTwo = { userId: _playerTwo._id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
+        const playersChat = await createChat([dataOne.userId, dataTwo.userId]);
+        const observersChat = await createChat([]);
 
-    var match = new Match(data);
-    return match;
+        var match = new Match({
+            playerOne: dataOne,
+            playerTwo: dataTwo,
+            gameTurn: dataOne.userId,
+            playersChat: playersChat._id,
+            observerChat: observersChat._id
+        });
+        return match.save();
+    }
+    catch (err) {
+        throw err;
+    }
 }
 
 export async function gameOver(match: MatchInterface, winner: MatchPlayer, loser: MatchPlayer) {
