@@ -4,6 +4,7 @@ export interface MatchResults{
     winner : Types.ObjectId,
     startTime : Date,
     finishTime : Date,
+    updateResult(winner: Types.ObjectId): void,
 }
 
 export const MatchResultsSchema = new Schema<MatchResults>({
@@ -13,11 +14,16 @@ export const MatchResultsSchema = new Schema<MatchResults>({
     },
     startTime: {
         type: SchemaTypes.Date,
-        default: () => new Date()
+        default: () => new Date() //TODO see if it returns a "now" Date
     },
     finishTime: {
         type: SchemaTypes.Date,
         default: 0
 
     }
+    
 })
+MatchResultsSchema.methods.updateResult = async function(winner: Types.ObjectId){
+    this.winner = winner;
+    this.finishTime = new Date();
+}

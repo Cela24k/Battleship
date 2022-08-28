@@ -4,10 +4,10 @@ import { BattleGrid, BattleGridSchema } from "./battle-grid";
 export interface MatchPlayer {
     userId: Types.ObjectId,
     board: BattleGrid,
-    shotsFired: Number,
-    shotsHitted: Number,
-    delta_score: Number,
-    elo: Number
+    shotsFired: number,
+    shotsHitted: number,
+    delta_score: number,
+    elo: number
 }
 
 export const MatchPlayerSchema = new Schema<MatchPlayer>({
@@ -28,6 +28,10 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
         default: 0
     },
     elo: {
+        type: SchemaTypes.Number,
+        required: true
+    },
+    delta_score:{
         type: SchemaTypes.Number,
         required: true
     },

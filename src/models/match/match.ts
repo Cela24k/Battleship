@@ -1,14 +1,11 @@
-import mongoose, { Document, Model, Schema, Types, SchemaTypes, trusted } from "mongoose";
+import mongoose, { Document, Model, Schema, Types, SchemaTypes, trusted, get } from "mongoose";
 import { ChatInterface, ChatModel, ChatSchema, createChat } from "../chat";
 import { getUserById, UserInterface } from "../user";
 import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
 import { MatchResults, MatchResultsSchema } from "../match/match-result";
 import { Cell, CellType } from "./cell";
 
-export enum MatchTurn {
-    playerOneTurn,
-    playerTwoTurn
-}
+
 
 
 export interface MatchInterface extends Document {
@@ -20,8 +17,8 @@ export interface MatchInterface extends Document {
     playersChat: ChatInterface,//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
     observersChat: ChatInterface,
     gameTurn: Types.ObjectId, // which player has the turn.
-    isGameOver : () => Boolean, //vede se ci sta un vincitore, vedere se returnarlo
-    makePlayerMove : (player: Types.ObjectId) => void //funzione da chiamare quando finisce un turno di sicuro
+
+    makePlayerMove: (player: Types.ObjectId) => void //funzione da chiamare quando finisce un turno di sicuro
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
@@ -39,43 +36,65 @@ export const MatchSchema = new Schema<MatchInterface>({
     playersChat: {
         type: ChatSchema,
         required: true
-    } ,
+    },
     observersChat: {
         type: ChatSchema,
         required: true
     }
 });
 
-MatchSchema.methods.makePlayerMove = async function(playerId: Types.ObjectId, shot: Cell){
-    if(playerId!==this.gameTurn){
+MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell) {
+    if (playerId !== this.gameTurn) {
         throw new Error("Not your turn");
     }
-    try{
-        const player = playerId===this.playerOne.userId ? this.playerOne : this.playerTwo; 
-        const opponent = playerId!==this.playerOne.userId ? this.playerOne : this.playerTwo; 
+    try {
+        const player = playerId === this.playerOne.userId ? this.playerOne : this.playerTwo;
+        const opponent = playerId !== this.playerOne.userId ? this.playerOne : this.playerTwo;
         //TODO see if the shot has the same row and col of the opponent ship
-        if(opponent.shipHasBeenHit()){
+        if (opponent.shipHasBeenHit()) {
             shot.cellType = CellType.Hit;
             //should we emit the listener her for shot hitted?
+            if (opponent.board.areAllShipsDestroyed()) {
+                gameOver(this, player, opponent);
+            }
         }
         player.addShot(shot);
-    }catch(err){
+        this.gameTurn = opponent.userid;
+
+
+    } catch (err) {
         throw err;
     }
-    
+
 }
 
-export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId): Promise<MatchInterface>{
+
+export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId): Promise<MatchInterface> {
     const _playerOne: UserInterface = await getUserById(playerOne);
     const _playerTwo: UserInterface = await getUserById(playerTwo);
-    const dataOne = {userId: _playerOne.id, elo: _playerOne.stats.elo};
-    const dataTwo = {userId: _playerTwo.id, elo: _playerTwo.stats.elo};
+    const delta_score: number = getExpectedScore(_playerOne.stats.elo, _playerTwo.stats.elo);
+    const dataOne = { userId: _playerOne.id, elo: _playerOne.stats.elo, delta_score };
+    const dataTwo = { userId: _playerTwo.id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
     const playersChat = createChat([dataOne.userId, dataTwo.userId]);
     const observersChat = createChat([]); //TODO we need to save the chats here
-    const data = {playerOne: dataOne, playerTwo: dataTwo, gameTurn:dataOne.userId, playersChat, observersChat }
-    
+    const data = { playerOne: dataOne, playerTwo: dataTwo, gameTurn: dataOne.userId, playersChat, observersChat }
+
     var match = new Match(data);
-    return match
+    return match;
+}
+
+export async function gameOver(match: MatchInterface, winner: MatchPlayer, loser: MatchPlayer) {
+    try {
+        match.result.updateResult(winner.userId);
+        const matchResult = (await match.save()).result;
+        const winnerUser: UserInterface = await getUserById(winner.userId);
+        const loserUser: UserInterface = await getUserById(loser.userId);
+        winnerUser.stats.updateStats(winner, matchResult);
+        loserUser.stats.updateStats(loser, matchResult);
+    }
+    catch (err) {
+        throw err;
+    }
 }
 
 var matchModel: Model<MatchInterface>;
@@ -87,4 +106,10 @@ function getModel(): Model<MatchInterface> { // Return Model as singleton
 }
 
 export const Match: Model<MatchInterface> = getModel();
+
+//returns the expected score of playerOne.
+//https://mathspp-com.translate.goog/blog/elo-rating-system-simulation?_x_tr_sl=en&_x_tr_tl=it&_x_tr_hl=it&_x_tr_pto=op,sc    
+function getExpectedScore(playerOneElo: number, playerTwoElo: number): number {
+    return 1 / (1 + Math.pow(10, (playerOneElo - playerTwoElo) / 400));
+}
 

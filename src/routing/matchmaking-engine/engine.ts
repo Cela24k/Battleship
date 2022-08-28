@@ -64,7 +64,5 @@ export class MatchMakingEngine {
 
     //returns the expected score of playerOne.
     //https://mathspp-com.translate.goog/blog/elo-rating-system-simulation?_x_tr_sl=en&_x_tr_tl=it&_x_tr_hl=it&_x_tr_pto=op,sc
-    private getExpectedScore(playerOne: TicketEntryInterface, playerTwo: TicketEntryInterface): number {
-        return 1 / (1 + Math.pow(10, (playerOne.elo - playerTwo.elo) / SCORE_SCALING));
-    }
+    
 } 

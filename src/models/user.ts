@@ -5,6 +5,7 @@ import { NotificationType, NotificationInterface, newNotification, NotificationS
 import * as crypto from "crypto";
 import { Stats } from "fs";
 import { DeleteResult, UpdateResult } from "mongodb";
+import { StatsInterface, StatsSchema } from "./user-stats";
 
 export enum Role {
     Mod,
@@ -80,130 +81,7 @@ export interface UserInterface extends Document {
 
 
 
-export interface StatsInterface {
-    wins: number,
-    losses: number,
-    winstreak: number,
-    maxWinstreak: number,
-    elo: number,
-    playedGames: number,
-    shotsFired: number,
-    shotsHit: number,
-    accuracy: number,
-    timePlayed: Date,
-    rank: number,
-    //TODO see if it's worth call just one method to update everystats.
-    winsAdd(): void,
-    lossesAdd(): void,
-    winstreakAdd(): void,
-    winstreakReset(): void,
-    eloIncrement(value: number): void,
-    shotsFiredAdd(): void,
-    shotsHitAdd(): void,
-    accuracySet(): void,
-    timePlayedAdd(amount: Date): void,
-    rankSet(): void,
-    win(): void,
-    lose(): void,
-}
 
-export const StatsSchema = new Schema<StatsInterface>({
-    wins: {
-        type: SchemaTypes.Number,
-        default: 0,
-    },
-    losses: {
-        type: SchemaTypes.Number,
-        default: 0,
-    },
-    winstreak: {
-        type: SchemaTypes.Number,
-        default: 0,
-    },
-    maxWinstreak: {
-        type: SchemaTypes.Number,
-        default: 0,
-    },
-    elo: {
-        type: SchemaTypes.Number,
-        default: 1000,
-    },
-    playedGames: {
-        type: SchemaTypes.Number,
-        default: 0,
-    },
-    shotsFired: {
-        type: SchemaTypes.Number,
-        default: 0
-    },
-    shotsHit: {
-        type: SchemaTypes.Number,
-        default: 0
-    },
-    timePlayed: {
-        type: SchemaTypes.Date,
-        default: new Date(0),
-    },
-    rank: {
-        type: SchemaTypes.Number,
-        default: 0
-    }
-})
-
-
-StatsSchema.methods.winsAdd = function (): void {
-    this.wins++;
-    this.playedGames++;
-}
-
-StatsSchema.methods.lossesAdd = function (): void {
-    this.losses++;
-    this.playedGames++;
-}
-
-StatsSchema.methods.winstreakAdd = function (): void {
-    this.winstreak++;
-    if (this.maxWinstreak < this.winstreak)
-        this.maxWinstreak = this.winstreak;
-}
-
-StatsSchema.methods.winstreakReset = function (): void {
-    this.winstreak = 0;
-}
-
-StatsSchema.methods.eloIncrement = function (amount: number): void {
-    if (this.elo + amount < 0)
-        this.elo = 0;
-    else this.elo += amount;
-}
-StatsSchema.methods.accuracySet = function (): void {
-    this.accuracy = this.shotsFired / this.shotsHit;
-}
-StatsSchema.methods.shotsHitAdd = function (): void {
-    this.wins++;
-}
-
-// DA QUA IN POI RIVEDERE
-
-StatsSchema.methods.shotsFiredAdd = function (): void {
-    this.shotsFired++;
-    /*if(the shot hit the target)*/
-    this.shotsHitAdd();
-    this.accuracySet();
-}
-StatsSchema.methods.timePlayedAdd = function (amount: Date): void {
-    this.timePlayed += amount;
-}
-StatsSchema.methods.win = function (): void {
-    this.winsAdd();
-    this.winstreakAdd();
-}
-StatsSchema.methods.lose = function (): void {
-    this.lossesAdd();
-    this.winstreakReset();
-
-    this.timePlayedAdd();
-}
 
 export const UserSchema = new Schema<UserInterface>({
     username: {
