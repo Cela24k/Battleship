@@ -1,26 +1,43 @@
-.play_button{
+.play_button {
     width: 100vw;
     height: 33vh;
-    color:#1976d2;
+    color: #1976d2;
     font-size: 64px;
     text-align: left;
 }
 
-.spacer{
+.spacer {
     width: 25%;
     height: 100vh;
     background-color: #CAE8E7;
 }
-.track-container{
+
+.track-container {
     width: 25%;
     height: 100vh;
     filter: drop-shadow(4px 4px 10px 0px rgba(2, 1, 0, .78));
     margin-bottom: 0;
 }
 
-.triangle{
+.triangle {
     height: 100vh;
     width: 50%;
-    background:url(../../assets/panel.svg);
+    background: url(../../assets/panel.svg);
     background-size: 100% 100%;
+}
+
+.back {
+    width: 100vw;
+    height: 100vh;
+    background-color: #CAE8E7;
+}
+
+.example-card {
+    top: 60px;
+    max-width: 900px;
+}
+
+.example-header-image {
+    background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
 }

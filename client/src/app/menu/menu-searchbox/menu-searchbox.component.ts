@@ -73,7 +73,9 @@ export class MenuSearchboxComponent implements OnInit {
     const index = this.clickedElements.indexOf(row)
     if(index!=-1)
       this.clickedElements.splice(index,1);
-    else 
+    else {
+      this.clickedElements.pop();
       this.clickedElements.push(row);
+    }
   }
 }

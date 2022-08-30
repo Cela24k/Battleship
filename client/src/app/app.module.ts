@@ -37,6 +37,8 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
+import { FieldComponent } from './play-game/field/field.component';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,7 @@ import {MatChipsModule} from '@angular/material/chips';
     MessageBubbleComponent,
     PlayGameRandomComponent,
     MenuSearchboxComponent,
+    FieldComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +73,7 @@ import {MatChipsModule} from '@angular/material/chips';
     MatInputModule,
     MatTableModule,
     MatChipsModule,
+    MatGridListModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui

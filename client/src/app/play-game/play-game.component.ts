@@ -12,6 +12,13 @@ export enum GameType {
 })
 export class PlayGameComponent implements OnInit {
   playing: boolean = false;
+  ships = ["Carrier",
+    "Battleship",
+    "Cruiser",
+    "Destroyer",
+    "Submarine"
+  ]
+
   constructor() { }
 
   ngOnInit(): void {
@@ -23,5 +30,9 @@ export class PlayGameComponent implements OnInit {
 
   isPlaying(): boolean {
     return this.playing;
+  }
+
+  drop(event: any) {
+    console.log('first')
   }
 }
