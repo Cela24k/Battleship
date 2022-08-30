@@ -32,6 +32,11 @@ import {MatDividerModule} from '@angular/material/divider';
 import { PlayGameRandomComponent } from './play-game/play-game-random/play-game-random.component';
 import {MatButtonModule} from '@angular/material/button';
 import { MenuSearchboxComponent } from './menu/menu-searchbox/menu-searchbox.component';
+import {MatDialogModule} from '@angular/material/dialog'; //used in menu 
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
+import {MatChipsModule} from '@angular/material/chips';
 
 @NgModule({
   declarations: [
@@ -60,6 +65,11 @@ import { MenuSearchboxComponent } from './menu/menu-searchbox/menu-searchbox.com
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatTableModule,
+    MatChipsModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui

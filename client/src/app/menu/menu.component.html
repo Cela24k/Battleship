@@ -22,13 +22,13 @@
         </div>
     </div>
     <div class="example-button-container">
-        <button mat-fab aria-label="Start a new chat" (click)="openChatDialog()" style="background-color: #CAE8E7; color: #205B59; right: 10px; top:92vh ">
+        <button mat-fab aria-label="Start a new chat" (click)="openDialog()" style="background-color: #CAE8E7; color: #205B59; right: 10px; top:92vh ">
           <mat-icon>chat</mat-icon>
         </button>
     </div>
     <div *ngIf="isSearching()">
         <!-- TODO: sostituire style con una classe -->
-        <app-menu-searchbox *ngIf="this.chatbox" [type]="'chat'" style="position: absolute; top:200px; right: 50vw; z-index: 100"></app-menu-searchbox>
-        <app-menu-searchbox *ngIf="this.friendbox " [type]="'friend'"></app-menu-searchbox>
+        <app-menu-searchbox *ngIf="this.chatbox" [type]="'chat'" style="position: absolute; top:200px; right: 50vw; z-index: 100" (openChatEvent)="bridge($event)"></app-menu-searchbox>
+        <app-menu-searchbox *ngIf="this.friendbox " [type]="'friend'" (openChatEvent)="bridge($event)" ></app-menu-searchbox>
     </div>
 </ng-template>

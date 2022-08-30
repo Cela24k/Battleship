@@ -61,7 +61,6 @@ export class ChatComponent implements OnInit {
   } 
 
   bridge(chat: ChatInterface){
-    console.log('bridge');
     this.openChatEvent.emit(chat);
   }
 

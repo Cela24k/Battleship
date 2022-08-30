@@ -1,0 +1,42 @@
+/* Structure */
+table {
+    width: 100%;
+}
+.mat-column-username {
+    word-wrap: break-word !important;
+    white-space: unset !important;
+    flex: 0 0 28% !important;
+    width: 500px !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+    margin-right: 200px;
+}
+
+.mat-row .mat-cell {
+  border-bottom: 1px solid transparent;
+  border-top: 1px solid transparent;
+  cursor: pointer;
+}
+
+.mat-column-elo {
+    margin-right: 20px;
+}
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+.mat-row:hover .mat-cell {
+    border-color: black;
+}
+
+.demo-row-is-clicked {
+    font-weight: bold;
+}

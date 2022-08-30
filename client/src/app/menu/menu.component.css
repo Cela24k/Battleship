@@ -1,12 +1,13 @@
-.menu{
-    cursor: pointer;
-}
-.menu:hover{
-    color:#DB9D47;
+.menu {
     cursor: pointer;
 }
 
-.container{
+.menu:hover {
+    color: #DB9D47;
+    cursor: pointer;
+}
+
+.container {
     position: absolute;
     top: 0;
     width: 70vw;
@@ -14,14 +15,15 @@
     right: 0;
     background-color: #133A39;
 }
-.header{
+
+.header {
     background-color: #205B59;
     position: fixed;
     height: 20vh;
     width: 100%;
 }
 
-.close-container{
+.close-container {
     align-items: right;
     display: flex;
     position: fixed;
@@ -30,27 +32,27 @@
     cursor: pointer;
 }
 
-.content{
+.content {
     position: fixed;
     width: 33vw;
     height: 80vh;
     right: 0;
-    top:20vh;
+    top: 20vh;
 }
 
-.propic{
+.propic {
     position: fixed;
     width: 10vh;
     height: 10vh;
-    right:50px;
-    top:30px;
+    right: 50px;
+    top: 30px;
     background-image: url(../../assets/blank-profile-picture-png-transparent.png);
 }
 
-.tabs{
+.tabs {
     position: fixed;
-    top:14.5vh;
-    right:0;
+    top: 14.5vh;
+    right: 0;
     /* width: 32vw; */
 }
 
@@ -60,9 +62,10 @@
     width: 120px;
 }
 
-::ng-deep.mat-tab-label, ::ng-deep.mat-tab-label-active{
+::ng-deep.mat-tab-label,
+::ng-deep.mat-tab-label-active {
     bottom: 0;
-    min-width: 10vw!important;
-    padding: 3px!important;
-    margin: 3px!important;
-   }
+    min-width: 10vw !important;
+    padding: 3px !important;
+    margin: 3px !important;
+}

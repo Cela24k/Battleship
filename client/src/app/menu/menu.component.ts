@@ -2,6 +2,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ChatHttpService } from '../chat-http.service';
 import { ChatListenerService } from '../chat-listener.service';
 import { ChatComponent, ChatInterface, emptyChat } from '../chat/chat.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MenuSearchboxComponent } from './menu-searchbox/menu-searchbox.component';
 
 enum State{
   Open,
@@ -25,7 +27,7 @@ export class MenuComponent implements OnInit {
   chatbox: boolean = false;
   friendbox: boolean = false;
 
-  constructor(private httpservice: ChatHttpService, private socket: ChatListenerService) {
+  constructor(private httpservice: ChatHttpService, private socket: ChatListenerService, public dialog: MatDialog) {
     this.state = State.Closed;
     this.stored_chats = [];
     this.socket_chats = [];
@@ -49,6 +51,7 @@ export class MenuComponent implements OnInit {
   }
   
   bridge(chat: ChatInterface){
+    console.log(chat)
     this.openChatEvent.emit(chat);
   }
 
@@ -66,11 +69,14 @@ export class MenuComponent implements OnInit {
     });
   }
 
-  openChatDialog(): void {
-    this.chatbox = true;
-  }
-
   isSearching(){
     return this.chatbox || this.friendbox
+  }
+
+  openDialog(){
+    const dialogRef = this.dialog.open(MenuSearchboxComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(`Dialog result: ${result}`);
+    });
   }
 }
