@@ -36,7 +36,7 @@ export class MenuSearchboxComponent implements OnInit {
   }
 
   filterList(): void {
-    if (this.localstorage.getRole() == 0) {
+    if (this.localstorage.getRole() != 0) {
       let friends: string[];
 
       this.httpClient.getFriends().subscribe({
