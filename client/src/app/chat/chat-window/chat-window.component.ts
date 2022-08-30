@@ -66,7 +66,4 @@ export class ChatWindowComponent implements OnInit{
     });
   }
 
-  catchMessage(){
-
-  }
 }

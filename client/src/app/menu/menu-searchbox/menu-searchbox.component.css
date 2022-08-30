@@ -2,6 +2,7 @@
 table {
     width: 100%;
 }
+
 .mat-column-username {
     word-wrap: break-word !important;
     white-space: unset !important;
@@ -9,9 +10,9 @@ table {
     width: 500px !important;
     overflow-wrap: break-word;
     word-wrap: break-word;
-  
+
     word-break: break-word;
-  
+
     -ms-hyphens: auto;
     -moz-hyphens: auto;
     -webkit-hyphens: auto;
@@ -20,14 +21,16 @@ table {
 }
 
 .mat-row .mat-cell {
-  border-bottom: 1px solid transparent;
-  border-top: 1px solid transparent;
-  cursor: pointer;
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    cursor: pointer;
+    max-width: 50ch;
 }
 
 .mat-column-elo {
-    margin-right: 20px;
+    width: 50px;
 }
+
 .mat-form-field {
     font-size: 14px;
     width: 100%;

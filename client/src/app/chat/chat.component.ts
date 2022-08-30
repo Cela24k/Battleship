@@ -15,7 +15,7 @@ export interface ChatInterface {
 }
 
 export function emptyChat() {
-  return { _id:'',messages:[{sender:"", text:"", time:new Date()}], users:[]};
+  return { _id:'',messages:[], users:[]};
 }
 
 export function emptyMessage() {

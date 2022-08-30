@@ -16,7 +16,7 @@ export class ChatHttpService {
   }
 
   getChats(): Observable<any> {
-    return this.httpclient.get(this.url + '/user/' + this.localstorage.getId()+'/chats');
+    return this.httpclient.get(this.url + '/user/' + this.localstorage.getId() + '/chats');
   }
 
   getUser(id: string): Observable<any> {
@@ -24,7 +24,7 @@ export class ChatHttpService {
   }
 
   sendMessage(txt: string, sender: string, chatId: string): Observable<any> {
-    const body = {text: txt, sender };
+    const body = { text: txt, sender };
     const token = this.localstorage.getToken();
     const options = {
       headers: new HttpHeaders({
@@ -32,8 +32,20 @@ export class ChatHttpService {
         'cache-control': 'no-cache',
         'Content-Type': 'application/json',
       })
-    } 
-    console.log('first')
-    return this.httpclient.post(this.url + '/chat/' + chatId + '/messages', body, options);
+    }
+
+    if (chatId) {
+      return this.httpclient.post(this.url + '/chat/' + chatId + '/messages', body, options);
+    }
+    else this.httpclient.post(this.url + '/chat', {}).subscribe({
+      next: (data: any) => {
+        return this.httpclient.post(this.url + '/chat/' + data.chatId + '/messages', body, options)
+      },
+      error: (e) => {
+        console.log(e)
+      }
+    });
+    
+    return new Observable();
   }
 }

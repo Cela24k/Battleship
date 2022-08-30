@@ -4,8 +4,9 @@ import { ChatListenerService } from '../chat-listener.service';
 import { ChatComponent, ChatInterface, emptyChat } from '../chat/chat.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MenuSearchboxComponent } from './menu-searchbox/menu-searchbox.component';
+import { UserInterface } from '../user-http.service';
 
-enum State{
+enum State {
   Open,
   Closed
 }
@@ -19,8 +20,8 @@ enum State{
 export class MenuComponent implements OnInit {
 
   @Output() openChatEvent = new EventEmitter<ChatInterface>();
-  
-  stored_chats : ChatInterface[];
+
+  stored_chats: ChatInterface[];
   socket_chats: ChatInterface[];
   n_pending: number;
   state: State;
@@ -35,7 +36,7 @@ export class MenuComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.socket.onNewMessage().subscribe((data)=>{
+    this.socket.onNewMessage().subscribe((data) => {
       console.log(data);
       this.socket_chats.push(data);
       this.n_pending++;
@@ -46,11 +47,11 @@ export class MenuComponent implements OnInit {
     return this.state === State.Open;
   }
 
-  toggleStatus(): void{
+  toggleStatus(): void {
     this.state === State.Open ? this.state = State.Closed : this.state = State.Open;
   }
-  
-  bridge(chat: ChatInterface){
+
+  bridge(chat: ChatInterface) {
     console.log(chat)
     this.openChatEvent.emit(chat);
   }
@@ -65,18 +66,25 @@ export class MenuComponent implements OnInit {
         console.log(err);
         console.log('Error: ' + JSON.stringify(err));
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 
-  isSearching(){
+  isSearching() {
     return this.chatbox || this.friendbox
   }
 
-  openDialog(){
+  openDialog() {
     const dialogRef = this.dialog.open(MenuSearchboxComponent);
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      let chat: ChatInterface = emptyChat();
+
+      if (result) {
+        result.forEach((element: UserInterface) => {
+          chat.users.push(element._id);
+        });
+        this.bridge(chat);
+      }
     });
   }
 }
