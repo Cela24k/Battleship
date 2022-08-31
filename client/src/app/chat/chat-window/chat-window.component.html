@@ -13,6 +13,12 @@
         <div *ngFor="let x of this.messages; let i = index">
           <app-message-bubble [props]="this.messages[this.messages.length-1-i]"></app-message-bubble>
         </div>
+        <div>
+          ciao
+        </div>
+        <div *ngFor="let x of this.socket_messages; let i = index">
+          <app-message-bubble [props]="this.socket_messages[this.socket_messages.length-1-i]"></app-message-bubble>
+        </div>
       </div>
       <div class="form-group px-3" style="display: flex; margin-left: 10px;">
         <textarea class="form-control" rows="5" #text placeholder="Type your message"></textarea>

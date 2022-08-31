@@ -41,6 +41,8 @@ export class MenuComponent implements OnInit {
       this.socket_chats.push(data);
       this.n_pending++;
     })
+
+    this.fetchChats();
   }
 
   isOpened(): boolean {
@@ -77,11 +79,18 @@ export class MenuComponent implements OnInit {
   openDialog() {
     const dialogRef = this.dialog.open(MenuSearchboxComponent);
     dialogRef.afterClosed().subscribe(result => {
-      let chat: ChatInterface = emptyChat();
+      
+      let chat = this.stored_chats.find((e)=>{
+        console.log(result[0]._id)
+        console.log(e.users)
+        return e.users.indexOf(result[0]._id) != -1;
+      })
+      if(!chat) chat = emptyChat();
 
-      if (result) {
+      console.log(chat);
+      if (result ) {
         result.forEach((element: UserInterface) => {
-          chat.users.push(element._id);
+          chat!.users.push(element._id);
         });
         this.bridge(chat);
       }

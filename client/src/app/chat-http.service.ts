@@ -23,7 +23,7 @@ export class ChatHttpService {
     return this.httpclient.get(this.url + '/user/' + id);
   }
 
-  sendMessage(txt: string, sender: string, chatId: string): Observable<any> {
+  sendMessage(txt: string, sender: string, chatId: string, friendId?: string): Observable<any> {
     const body = { text: txt, sender };
     const token = this.localstorage.getToken();
     const options = {
@@ -37,7 +37,7 @@ export class ChatHttpService {
     if (chatId) {
       return this.httpclient.post(this.url + '/chat/' + chatId + '/messages', body, options);
     }
-    else this.httpclient.post(this.url + '/chat', {}).subscribe({
+    else this.httpclient.post(this.url + '/chat', friendId, options).subscribe({
       next: (data: any) => {
         return this.httpclient.post(this.url + '/chat/' + data.chatId + '/messages', body, options)
       },

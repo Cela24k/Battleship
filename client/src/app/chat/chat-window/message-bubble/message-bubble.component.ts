@@ -13,6 +13,7 @@ export class MessageBubbleComponent implements OnInit {
   time : string = '';
   username: string = '';
   userid: string = '';
+  text: string = '';
 
   constructor(private client: ChatHttpService, private localhelper: LocalStorageService) { }
 
@@ -20,6 +21,7 @@ export class MessageBubbleComponent implements OnInit {
     this.fetchInfo();
     this.time = this.dateToString();
     this.userid = this.props.sender;
+    this.text = this.props.text;
   }
 
   fetchInfo(): void {

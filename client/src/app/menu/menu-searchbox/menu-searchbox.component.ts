@@ -63,12 +63,6 @@ export class MenuSearchboxComponent implements OnInit {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
-  newChat(data: any) {
-    console.log(data)
-    const chat = emptyChat();
-    this.openChatEvent.emit(chat);
-  }
-
   clickElement(row: any){
     const index = this.clickedElements.indexOf(row)
     if(index!=-1)

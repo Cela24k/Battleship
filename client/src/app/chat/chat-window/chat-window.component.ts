@@ -17,11 +17,13 @@ export class ChatWindowComponent implements OnInit{
   username: string;
   userid: string;
   messages: MessageInterface[];
+  socket_messages: MessageInterface[];
 
   constructor(private client: ChatHttpService,private localstorage: LocalStorageService, private socket: ChatListenerService) {
     this.username = ''
     this.userid = localstorage.getId();
-    this.messages = []
+    this.messages = [];
+    this.socket_messages = [];
   }
 
   ngOnInit(): void {
@@ -30,7 +32,7 @@ export class ChatWindowComponent implements OnInit{
     this.messages = this.props.messages;
     this.socket.onNewMessage().subscribe((data)=>{
       console.log(data);
-      this.messages.push(data.chat)
+      this.socket_messages.push(data.chat)
     })
   }
 
@@ -55,7 +57,8 @@ export class ChatWindowComponent implements OnInit{
   }
 
   sendMessage(txt: string){
-    this.client.sendMessage(txt, this.userid, this.props['_id']).subscribe({
+    const friendId = this.props.users[0] === this.localstorage.getId() ? this.props.users[1] : this.props.users[0];
+    this.client.sendMessage(txt, this.userid, this.props['_id'], friendId).subscribe({
       next: (data)=>{
         console.log(data)
         this.messages.push(data.chat)

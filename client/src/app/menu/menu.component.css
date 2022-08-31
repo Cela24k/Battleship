@@ -69,3 +69,7 @@
     padding: 3px !important;
     margin: 3px !important;
 }
+
+.mat-icon.hide-text .mat-badge-content {
+    color: transparent;
+  }

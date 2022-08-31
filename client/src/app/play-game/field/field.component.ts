@@ -6,7 +6,6 @@ export interface CellInterface{
   cellType : CellType
 }
 
-
 export enum CellType {
   Empty = 'Empty',
   Hit = 'Hit',
