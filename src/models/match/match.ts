@@ -18,7 +18,7 @@ export interface MatchInterface extends Document {
     observersChat: Types.ObjectId,
     gameTurn: Types.ObjectId, // which player has the turn.
 
-    makePlayerMove: (player: Types.ObjectId) => Promise<MatchInterface> //funzione da chiamare quando finisce un turno di sicuro
+    makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<MatchInterface> //funzione da chiamare quando finisce un turno di sicuro
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
@@ -51,14 +51,13 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
         //TODO see if the shot has the same row and col of the opponent ship
         if (opponent.shipHasBeenHit()) {
             shot.cellType = CellType.Hit;
-            //should we emit the listener her for shot hitted?
             if (opponent.board.areAllShipsDestroyed()) {
                 gameOver(this, player, opponent);
             }
         }
         player.addShot(shot);
         this.gameTurn = opponent.userid;
-        return this.save()
+        return this.save(); //TODO see if its worth return the matchinterface or if we should return  
 
 
     } catch (err) {
@@ -67,12 +66,18 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
 
 }
 
+export async function getMatchById(matchId: Types.ObjectId): Promise<MatchInterface> {
+    return Match.findById(matchId);
+}
+
 
 export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.ObjectId): Promise<MatchInterface> {
     try {
         const _playerOne: UserInterface = await getUserById(playerOne);
         const _playerTwo: UserInterface = await getUserById(playerTwo);
         const delta_score: number = getExpectedScore(_playerOne.stats.elo, _playerTwo.stats.elo);
+        _playerOne.setPlayState(true);//TODO drop the database due this 
+        _playerTwo.setPlayState(true);
         const dataOne = { userId: _playerOne._id, elo: _playerOne.stats.elo, delta_score };
         const dataTwo = { userId: _playerTwo._id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
         const playersChat = await createChat([dataOne.userId, dataTwo.userId]);
@@ -100,6 +105,8 @@ export async function gameOver(match: MatchInterface, winner: MatchPlayer, loser
         const loserUser: UserInterface = await getUserById(loser.userId);
         winnerUser.stats.updateStats(winner, matchResult);
         loserUser.stats.updateStats(loser, matchResult);
+        winnerUser.setPlayState(true);
+        loserUser.setPlayState(true);
     }
     catch (err) {
         throw err;

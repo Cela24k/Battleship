@@ -77,8 +77,14 @@ export interface UserInterface extends Document {
 
     getChats(): Promise<ChatInterface[]>;
 
+    setPlayState(isPlaying: boolean): void;
+
 }
 
+enum PlayerState {
+    Playing = "Playing",
+    Observing = "Observing",
+}
 
 
 
@@ -114,10 +120,6 @@ export const UserSchema = new Schema<UserInterface>({
     },
     notifications: {
         type: [NotificationSchema],
-    },
-    playing: {
-        type: SchemaTypes.Boolean,
-        default: false,
     },
     chats: {
         type: [SchemaTypes.ObjectId],
@@ -255,6 +257,14 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
         return Promise.reject("Already Exist");
     }  // TODO need to see how to handle this rejection according to POST request returning state.
     return Promise.resolve();
+}
+
+//Changes the playing state in true if he' joining a game, false otherwise(we use it in 2 different methods)
+UserSchema.methods.setPlayingState = async function(isPlaying: boolean){
+    if(this.playing && this.playing!=isPlaying)
+        throw new Error("Player is already in a game");
+    this.playing = isPlaying;
+    await this.save()
 }
 
 

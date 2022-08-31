@@ -1,6 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { newMatch } from "../../models/match/match";
 import { removeTicket, TicketEntry, TicketEntryInterface } from "../../models/ticket-entry"
+import NewMatchEmitter from "../../socket-helper/Emitter/NewMatchEmitter";
 //This class provides an engine wicha aim is to arrange matches beetween players who join in the ticket list.
 const SCORE_SCALING = 400;
 const K_VALUE = 32;
@@ -39,13 +40,16 @@ export class MatchMakingEngine {
 
             if (playerTwo !== null) {
                 console.log("Matchiamoo".rainbow);
-                console.log(playerTwo.toString());
-                console.log(playerOne.toString());
                 const match = await newMatch(playerOne.userId, playerTwo.userId);
                 //TODO newmatch emitter needded.
+                const emitterOne = new NewMatchEmitter(this.serverIo, (playerOne.userId).toString());
+                const emitterTwo = new NewMatchEmitter(this.serverIo, (playerTwo.userId).toString());
+                emitterOne.emit(match);
+                emitterTwo.emit(match);
                 await removeTicket(playerOne.userId);
                 await removeTicket(playerTwo.userId);
                 ticketList.pop();
+                ticketList.splice(ticketList.indexOf(playerTwo), 1);
             }
         }
 

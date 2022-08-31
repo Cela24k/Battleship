@@ -30,3 +30,12 @@ export const CellSchema = new Schema<Cell>({
         default: CellType.Empty
     }
 })
+
+
+
+CellSchema.pre("save", function(this, next){
+    if( !(this.row >= 0 && this.row <10 && this.col >= 0 && this.col <10)){
+        throw new Error("Coordinates not valid");
+    }
+    next();
+})

@@ -28,7 +28,7 @@ export interface Ship extends Types.Subdocument {
 export const ShipSchema = new Schema<Ship>({
     position: {
         type: [CellSchema],
-        required: true
+        required: true//TODO see how can i make them unique(or if we should put everything in the frontend)
     },
     length: {
         type: SchemaTypes.Number,
@@ -63,4 +63,7 @@ ShipSchema.methods.hasBeenHit = function(shot: Cell): boolean{
 }
 
 
+ShipSchema.pre("save", function(this, next){
+    const rightLenght = this.position.length == this.length;
+})
 

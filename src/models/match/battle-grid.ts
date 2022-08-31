@@ -63,3 +63,7 @@ BattleGridSchema.methods.shipHasBeenShot = function(shot: Cell){
     })
     return false;
 }
+
+BattleGridSchema.pre("save", function(this, next){
+    
+})
