@@ -7,6 +7,7 @@ import { ChatMessageListener } from "../socket-helper/Listener/ChatMessageListen
 import ChatEmitter from "../socket-helper/Emitter/ChatEmitter";
 import ios from "..";
 import { parseJwt } from "./user-routes";
+import { text } from "body-parser";
 
 export const router = Router();
 
@@ -36,10 +37,11 @@ router.post('', async (req, res) => {
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
     let userId = req.body.userId;
     let friendId = req.body.friendId;
+    let txt = req.body.txt;
     if (userId && friendId && jwt['_id'] == userId) {
         try {
             var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
-            var chat = await createChat(users);
+            var chat = await createChat(users, txt);
 
             await User.find({
                 '_id': {
@@ -48,7 +50,7 @@ router.post('', async (req, res) => {
                 }
             }).then(data => {
                 let promises = [];
-                data.forEach(element => {
+                    data.forEach(element => {
                     promises.push(element.addChat(chat));
                 });
                 return Promise.all(promises);

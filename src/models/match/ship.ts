@@ -1,15 +1,9 @@
 import { Schema, SchemaType, SchemaTypes, Types } from "mongoose";
 import { Cell, CellSchema, CellType } from "./cell";
 
-export enum ShipType {
-    Carrier = "Carrier",
-    Battleship = "Battleship",
-    Cruiser = "Cruiser",
-    Destroyer = "Destroyer",
-    Submarine = "Submarine",
-}
 
-enum ShipLenght {
+
+export enum ShipLenght {
     Carrier = 5,
     Battleship = 4,
     Cruiser = 3,
@@ -20,7 +14,6 @@ enum ShipLenght {
 export interface Ship extends Types.Subdocument {
     position: Cell[];
     length: ShipLenght;
-    shipType: ShipType;
     isDestroyed(): boolean;
     hasBeenHit(shot: Cell): boolean;
 }
@@ -33,11 +26,6 @@ export const ShipSchema = new Schema<Ship>({
     length: {
         type: SchemaTypes.Number,
         enum: ShipLenght,
-        required: true,
-    },
-    shipType: {
-        type: SchemaTypes.String,
-        enum: ShipType,
         required: true,
     }
 })
@@ -62,8 +50,16 @@ ShipSchema.methods.hasBeenHit = function(shot: Cell): boolean{
     return false;
 }
 
+function isVertical(ship : Ship): boolean{
+    var flag = true;
+    ship.position.forEach((c: Cell) =>){
+
+    }
+    return true;
+}
 
 ShipSchema.pre("save", function(this, next){
-    const rightLenght = this.position.length == this.length;
+    const isLengthOk = this.position.length == this.length;
+    const isPositionOk =  isVertical(this) || isHorizontal(this);
 })
 

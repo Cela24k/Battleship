@@ -88,8 +88,12 @@ export function getModel(): Model<ChatInterface> { // Return Model as singleton
     }
     return chatModel;
 } 
-export function createChat(users: Types.ObjectId[]): Promise<ChatInterface>{ 
-  var chat = new ChatModel({users});
+export function createChat(users: Types.ObjectId[], text?: string): Promise<ChatInterface>{ 
+  if(text){
+    var messages: MessageInterface[] = [{sender: users[0], text, time: new Date()}]
+  }
+  
+  var chat = new ChatModel({users, messages: messages!});
   return chat.save();
 }
 

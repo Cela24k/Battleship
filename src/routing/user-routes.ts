@@ -199,7 +199,7 @@ router.post('/:userId/chat', async (req, res) => {
     if (jwt['_id'] == userId) {
         try {
             var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
-            var chat = createChat(users);
+            var chat = await createChat(users);
             await user.User.find({
                 '_id': {
                     $in: [userId,
