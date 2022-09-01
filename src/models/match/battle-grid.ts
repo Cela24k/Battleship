@@ -14,7 +14,7 @@ export interface BattleGrid {
     isAlreadyShot: () => boolean,
     shipHasBeenHit: () => boolean,
     addShot: () => void,
-    
+
 }
 
 
@@ -40,30 +40,40 @@ BattleGridSchema.methods.areAllShipsDestroyed = function () {
 
 BattleGridSchema.methods.isAlreadyShot = function (shot: Cell) {
     this.shots.forEach((s: Cell) => {
-        if(s.row === shot.row && s.col === shot.col)
+        if (s.row === shot.row && s.col === shot.col)
             return true;
     })
     return false;
 }
 
-BattleGridSchema.methods.addShot = function (shot: Cell){
-    if(this.isAlreadyShot(shot)){
+BattleGridSchema.methods.addShot = function (shot: Cell) {
+    if (this.isAlreadyShot(shot)) {
         throw new Error("You alreay shot this Cell");
     }
 
     return this.shots.push(shot);
 }
 
-BattleGridSchema.methods.shipHasBeenShot = function(shot: Cell){
+BattleGridSchema.methods.shipHasBeenShot = function (shot: Cell) {
     this.shipsPosition.forEach((s: Ship) => {
-        if(s.hasBeenHit(shot)){
+        if (s.hasBeenHit(shot)) {
             return true;
         }
-        
+
     })
     return false;
 }
+//It controls if the ships' cells number are not compromised
+BattleGridSchema.pre("save", function (this, next) {
+    var count: Cell[] = [];
+    this.shipsPosition.forEach((ship: Ship) => {
+        ship.position.forEach((c:Cell) => {
+            if(count.includes(c)){
+                throw new Error("Ships compromised");
+            }
+        })
+    })
 
-BattleGridSchema.pre("save", function(this, next){
     
+    next();
 })
