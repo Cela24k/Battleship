@@ -9,7 +9,7 @@ export interface BattleGrid {
     //      il primo metodo penso sia comodo per i colpi sparati (spari un colpo, vedi nella grid se in quella posizione ci sta una barca)
     //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
     shots: Cell[], // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
-    shipsPosition: Ship[],// Ships array that could be studied for the opponent shots.
+    ships: Ship[],// Ships array that could be studied for the opponent shots.
     areAllShipsDestroyed: () => boolean,
     isAlreadyShot: () => boolean,
     shipHasBeenHit: () => boolean,
@@ -23,7 +23,7 @@ export const BattleGridSchema = new Schema<BattleGrid>({
         type: [CellSchema],
         default: []
     },
-    shipsPosition: {
+    ships: {
         type: [ShipSchema],
         default: []
     }
@@ -55,7 +55,7 @@ BattleGridSchema.methods.addShot = function (shot: Cell) {
 }
 
 BattleGridSchema.methods.shipHasBeenShot = function (shot: Cell) {
-    this.shipsPosition.forEach((s: Ship) => {
+    this.ships.forEach((s: Ship) => {
         if (s.hasBeenHit(shot)) {
             return true;
         }
@@ -66,7 +66,7 @@ BattleGridSchema.methods.shipHasBeenShot = function (shot: Cell) {
 //It controls if the ships' cells number are not compromised
 BattleGridSchema.pre("save", function (this, next) {
     var count: Cell[] = [];
-    this.shipsPosition.forEach((ship: Ship) => {
+    this.ships.forEach((ship: Ship) => {
         ship.position.forEach((c:Cell) => {
             if(count.includes(c)){
                 throw new Error("Ships compromised");

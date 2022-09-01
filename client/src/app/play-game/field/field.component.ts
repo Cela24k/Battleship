@@ -12,11 +12,15 @@ export enum CellType {
   Miss = 'Miss',
   Ship = 'Ship'
 }
+export enum OrientationShip {
+  Horizontal,
+  Vertical
+}
 
 
 
 
-enum ShipLenght {
+export enum ShipLenght {
   Carrier = 5,
   Battleship = 4,
   Cruiser = 3,
@@ -27,6 +31,7 @@ enum ShipLenght {
 export interface ShipInterface {
   position: Cell[];
   shipType: ShipLenght;
+  orientation: OrientationShip;
 }
 
 export interface BattleGrid {
@@ -66,5 +71,7 @@ export class FieldComponent implements OnInit {
       }      
     }
   }
+
+  
 
 }
