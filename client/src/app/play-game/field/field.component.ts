@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-export interface CellInterface{
+export interface Cell{
   row : number,
   col : number,
   cellType : CellType
@@ -14,13 +14,7 @@ export enum CellType {
 }
 
 
-export enum ShipType {
-  Carrier = "Carrier",
-  Battleship = "Battleship",
-  Cruiser = "Cruiser",
-  Destroyer = "Destroyer",
-  Submarine = "Submarine",
-}
+
 
 enum ShipLenght {
   Carrier = 5,
@@ -31,9 +25,8 @@ enum ShipLenght {
 }
 
 export interface ShipInterface {
-  position: CellInterface[];
-  length: ShipLenght;
-  shipType: ShipType;
+  position: Cell[];
+  shipType: ShipLenght;
 }
 
 export interface BattleGrid {
@@ -41,7 +34,7 @@ export interface BattleGrid {
   //      un semplice array di coordinate, contenti le barche e quindi basare la logica solo sulle coordinate delle barchette.
   //      il primo metodo penso sia comodo per i colpi sparati (spari un colpo, vedi nella grid se in quella posizione ci sta una barca)
   //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
-  shots: CellInterface[], // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
+  shots: Cell[], // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
   shipsPosition: ShipInterface[],// Ships array that could be studied for the opponent shots.
 }
 const length = 10;

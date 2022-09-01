@@ -27,7 +27,7 @@ export const BattleGridSchema = new Schema<BattleGrid>({
         type: [ShipSchema],
         default: []
     }
-})
+},{_id: false});
 
 BattleGridSchema.methods.areAllShipsDestroyed = function () {
     this.ships.forEach((s: Ship) => {

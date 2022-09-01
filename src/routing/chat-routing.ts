@@ -109,17 +109,17 @@ router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
         try {
             const chatId = req.params.chatId;
     
-            const chat = await ChatModel.findById(chatId).then(async data => {
+            const message = await ChatModel.findById(chatId).then(async data => {
                 return await data.addMessage(new Types.ObjectId(sender), text);
             }
     
             ).catch(err => { throw err });
     
             const messageEmitter = new ChatEmitter(ios, chatId);
-            messageEmitter.emit(chat);
+            messageEmitter.emit(message);
             console.log("Socket inviato");//TODO frontend test, or in postman.
     
-            return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });
+            return res.status(200).json({ error: false, timestamp: Date.now(), message });
     
     
         } catch (err) {

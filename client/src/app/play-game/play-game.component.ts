@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Cell, CellType } from './field/field.component';
 
 export enum GameType {
   Friend,
   Random
 }
+
+
+
 
 @Component({
   selector: 'app-play-game',

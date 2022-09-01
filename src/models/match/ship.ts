@@ -13,7 +13,7 @@ export enum ShipLenght {
 
 export interface Ship extends Types.Subdocument {
     position: Cell[];
-    ShipType: ShipLenght;
+    shipType: ShipLenght;
     isDestroyed(): boolean;
     hasBeenHit(shot: Cell): boolean;
 }
@@ -23,12 +23,12 @@ export const ShipSchema = new Schema<Ship>({
         type: [CellSchema],
         required: true//TODO see how can i make them unique(or if we should put everything in the frontend)
     },
-    ShipType: {
+    shipType: {
         type: SchemaTypes.Number,
         enum: ShipLenght,
         required: true,
     }
-})
+},{_id: false})
 
 ShipSchema.methods.isDestroyed = function (): boolean {
     this.position.forEach((c: Cell) => {
@@ -64,7 +64,7 @@ enum OrientationShip {
 
 function areCellConsecutive(ship: Ship, orientation: OrientationShip): boolean {
     const prev = ship.position[0];
-    for (let i = 0; i < ship.ShipType - 1; i++) {
+    for (let i = 0; i < ship.shipType - 1; i++) {
         const cond = orientation == OrientationShip.Horizontal ? (prev.row != ship.position[i + 1].row) : prev.col != ship.position[i + 1].col;
         if (!cond) {
             return false;
@@ -76,7 +76,7 @@ function areCellConsecutive(ship: Ship, orientation: OrientationShip): boolean {
 // It controls if the ship is positioned in the right way;
 ShipSchema.pre("save", function (this, next) {
     if (this.position.length > 0) {
-        const isLengthOk: boolean = this.position.length == this.ShipType;
+        const isLengthOk: boolean = this.position.length == this.shipType;
         const isPositionOk: boolean = isVertical(this) || isHorizontal(this);
         const orientation: OrientationShip = isVertical(this) ? OrientationShip.Vertical : OrientationShip.Horizontal;
         const isConsecutive: boolean = areCellConsecutive(this, orientation);

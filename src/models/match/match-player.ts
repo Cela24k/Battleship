@@ -36,4 +36,4 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
         required: true
     },
 
-})
+},{_id: false});

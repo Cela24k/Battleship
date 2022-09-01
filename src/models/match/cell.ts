@@ -29,7 +29,7 @@ export const CellSchema = new Schema<Cell>({
         required: true,
         default: CellType.Empty
     }
-})
+},{_id: false})
 
 
 

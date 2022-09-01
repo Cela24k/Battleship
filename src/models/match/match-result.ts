@@ -22,7 +22,7 @@ export const MatchResultsSchema = new Schema<MatchResults>({
 
     }
     
-})
+},{_id: false})
 MatchResultsSchema.methods.updateResult = async function(winner: Types.ObjectId){
     this.winner = winner;
     this.finishTime = new Date();
