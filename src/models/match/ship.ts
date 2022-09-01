@@ -11,9 +11,15 @@ export enum ShipLenght {
     Destroyer = 2
 }
 
+enum OrientationShip {
+    Horizontal,
+    Vertical
+}
+
 export interface Ship extends Types.Subdocument {
     position: Cell[];
     shipType: ShipLenght;
+    orientation: OrientationShip,
     isDestroyed(): boolean;
     hasBeenHit(shot: Cell): boolean;
 }
@@ -23,6 +29,11 @@ export const ShipSchema = new Schema<Ship>({
         type: [CellSchema],
         required: true//TODO see how can i make them unique(or if we should put everything in the frontend)
     },
+    orientation: {
+        type: SchemaTypes.Number,
+        enum: OrientationShip
+    },
+
     shipType: {
         type: SchemaTypes.Number,
         enum: ShipLenght,
@@ -57,15 +68,12 @@ function isHorizontal(ship: Ship): boolean {
     return ship.position.every((c: Cell, i: number, arr: Cell[]) => c.row == arr[0].row);
 }
 
-enum OrientationShip {
-    Horizontal,
-    Vertical
-}
 
-function areCellConsecutive(ship: Ship, orientation: OrientationShip): boolean {
+
+function areCellConsecutive(ship: Ship): boolean {
     const prev = ship.position[0];
     for (let i = 0; i < ship.shipType - 1; i++) {
-        const cond = orientation == OrientationShip.Horizontal ? (prev.row != ship.position[i + 1].row) : prev.col != ship.position[i + 1].col;
+        const cond = ship.orientation == OrientationShip.Horizontal ? (prev.row != ship.position[i + 1].row) : prev.col != ship.position[i + 1].col;
         if (!cond) {
             return false;
         }

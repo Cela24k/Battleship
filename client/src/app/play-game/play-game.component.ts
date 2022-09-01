@@ -37,6 +37,6 @@ export class PlayGameComponent implements OnInit {
   }
 
   drop(event: any) {
-    console.log('first')
+    console.log(event)
   }
 }

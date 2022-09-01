@@ -3,6 +3,6 @@
         *ngFor="let cell of field; let i = index"
         [colspan]="1"
         [rowspan]="1" >
-      {{field[i]}}
+      {{field[i].cellType}}
     </mat-grid-tile>
   </mat-grid-list>
