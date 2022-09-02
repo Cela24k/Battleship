@@ -28,24 +28,15 @@ export class ChatHttpService {
     const token = this.localstorage.getToken();
     const options = {
       headers: new HttpHeaders({
-        Authorization: token ? token : '',
-        'cache-control': 'no-cache',
-        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token ? token : ''}`,
       })
     }
 
     if (chatId) {
       return this.httpclient.post(this.url + '/chat/' + chatId + '/messages', body, options);
     }
-    else this.httpclient.post(this.url + '/chat', friendId, options).subscribe({
-      next: (data: any) => {
-        return this.httpclient.post(this.url + '/chat/' + data.chatId + '/messages', body, options)
-      },
-      error: (e) => {
-        console.log(e)
-      }
-    });
+    else 
+      return this.httpclient.post(this.url + '/chat', {friendId, userId:sender, txt}, options);
     
-    return new Observable();
   }
 }

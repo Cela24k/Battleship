@@ -1,5 +1,5 @@
 <div *ngIf="!isOpened(); else open" class="menu" (click)="toggleStatus()">
-    <mat-icon *ngIf="n_pending != 0" [matBadge]="n_pending" class="hide-text" matBadgeColor="warn" matBadgeSize="small">menu</mat-icon>
+    <mat-icon *ngIf="n_pending != 0" [matBadge]=" '°' " class="hide-text" matBadgeColor="warn" matBadgeSize="small">menu</mat-icon>
     <mat-icon *ngIf="n_pending == 0" class="notification">menu</mat-icon>
 </div>
 

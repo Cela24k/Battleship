@@ -2,7 +2,9 @@
     <mat-grid-tile style="border: 1px solid black;"
         *ngFor="let cell of field; let i = index"
         [colspan]="1"
-        [rowspan]="1" >
+        [rowspan]="1" 
+        (click)="clickHandler($event, i)"
+        id={{i}}>
       {{field[i].cellType}}
     </mat-grid-tile>
   </mat-grid-list>

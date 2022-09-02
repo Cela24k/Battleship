@@ -53,6 +53,11 @@ router.post('', async (req, res) => {
                     data.forEach(element => {
                     promises.push(element.addChat(chat));
                 });
+
+                // const messageEmitter = new ChatEmitter(ios, chatId);
+                // messageEmitter.emit(chat);
+                // console.log("Socket inviato");//TODO frontend test, or in postman.
+
                 return Promise.all(promises);
             }).catch(err => {
                 throw err;

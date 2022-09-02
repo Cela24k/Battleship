@@ -5,6 +5,7 @@ import { ChatComponent, ChatInterface, emptyChat } from '../chat/chat.component'
 import { MatDialog } from '@angular/material/dialog';
 import { MenuSearchboxComponent } from './menu-searchbox/menu-searchbox.component';
 import { UserInterface } from '../user-http.service';
+import { LocalStorageService } from '../local-storage.service';
 
 enum State {
   Open,
@@ -28,7 +29,7 @@ export class MenuComponent implements OnInit {
   chatbox: boolean = false;
   friendbox: boolean = false;
 
-  constructor(private httpservice: ChatHttpService, private socket: ChatListenerService, public dialog: MatDialog) {
+  constructor(private httpservice: ChatHttpService, private socket: ChatListenerService, public dialog: MatDialog, private localstorage: LocalStorageService) {
     this.state = State.Closed;
     this.stored_chats = [];
     this.socket_chats = [];
@@ -37,8 +38,7 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.socket.onNewMessage().subscribe((data) => {
-      console.log(data);
-      this.socket_chats.push(data);
+      //controllare se la chat è gia stata aperta
       this.n_pending++;
     })
 
@@ -54,7 +54,6 @@ export class MenuComponent implements OnInit {
   }
 
   bridge(chat: ChatInterface) {
-    console.log(chat)
     this.openChatEvent.emit(chat);
   }
 
@@ -79,15 +78,12 @@ export class MenuComponent implements OnInit {
   openDialog() {
     const dialogRef = this.dialog.open(MenuSearchboxComponent);
     dialogRef.afterClosed().subscribe(result => {
-      
       let chat = this.stored_chats.find((e)=>{
-        console.log(result[0]._id)
-        console.log(e.users)
         return e.users.indexOf(result[0]._id) != -1;
       })
       if(!chat) chat = emptyChat();
 
-      console.log(chat);
+      chat!.users.push(this.localstorage.getId())
       if (result ) {
         result.forEach((element: UserInterface) => {
           chat!.users.push(element._id);

@@ -17,9 +17,6 @@ export enum OrientationShip {
   Vertical
 }
 
-
-
-
 export enum ShipLenght {
   Carrier = 5,
   Battleship = 4,
@@ -61,6 +58,7 @@ export class FieldComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateField();
+    // sostituire con props veri
     this.props.shots = [ {row: 3, col: 4, cellType: CellType.Empty}]
   }
 
@@ -72,6 +70,18 @@ export class FieldComponent implements OnInit {
     }
   }
 
-  
+  clickHandler(event: any, index: number) {
+    console.log(event);
+    console.log(index);
+
+    let a = document.getElementById(index.toString());
+    let b = document.getElementById((index+1).toString());
+
+
+  }
+
+  addShot(index: number){
+  }
+
 
 }

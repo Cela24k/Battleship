@@ -6,8 +6,11 @@ export enum GameType {
   Random
 }
 
-
-
+interface SelectedShip {
+  type: string,
+  length: number,
+  orientation: boolean // 0 horizontal, 1 vertical
+}
 
 @Component({
   selector: 'app-play-game',
@@ -16,31 +19,31 @@ export enum GameType {
 })
 export class PlayGameComponent implements OnInit {
   playing: boolean = false;
-  ships = ["Carrier",
-    "Battleship",
-    "Cruiser",
-    "Destroyer",
-    "Submarine"
-  ]
-  ship = [{
+
+  ships = [{
     position: [],
     shipType: ShipLenght.Carrier,
+    type: "Carrier",
     orientation: OrientationShip,
   },{
     position: [],
     shipType: ShipLenght.Battleship,
+    type: "Battleship",
     orientation: OrientationShip,
   },{
     position: [],
     shipType: ShipLenght.Cruiser,
+    type: "Cruiser",
     orientation: OrientationShip,
   },{
     position: [],
     shipType: ShipLenght.Submarine,
+    type: "Submarine",
     orientation: OrientationShip,
   },{
     position: [],
     shipType: ShipLenght.Destroyer,
+    type: "Destroyer",
     orientation: OrientationShip,
   }]
   

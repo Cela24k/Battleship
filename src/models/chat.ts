@@ -91,6 +91,7 @@ export function getModel(): Model<ChatInterface> { // Return Model as singleton
 export function createChat(users: Types.ObjectId[], text?: string): Promise<ChatInterface>{ 
   if(text){
     var messages: MessageInterface[] = [{sender: users[0], text, time: new Date()}]
+    console.log(messages.toString().green);
   }
   
   var chat = new ChatModel({users, messages: messages!});
