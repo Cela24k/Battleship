@@ -4,6 +4,7 @@ import { getUserById, UserInterface } from "../user";
 import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
 import { MatchResults, MatchResultsSchema } from "../match/match-result";
 import { Cell, CellType } from "./cell";
+import { BattleGrid } from "./battle-grid";
 
 
 
@@ -19,6 +20,7 @@ export interface MatchInterface extends Document {
     gameTurn: Types.ObjectId, // which player has the turn.
 
     makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<MatchInterface> //funzione da chiamare quando finisce un turno di sicuro
+    initBoardPlayer: (playerId: Types.ObjectId, board: BattleGrid) => Promise<MatchPlayer>;
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
@@ -66,6 +68,16 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
 
 }
 
+MatchSchema.methods.initBoardPlayer = async function(playerId: Types.ObjectId, board: BattleGrid): Promise<MatchPlayer>{
+    try {
+        const player = playerId === this.playerOne.userId ? this.playerOne : this.playerTwo;
+        player.board = board;
+        return this.save();
+    }catch(err){
+        throw err;
+    }
+}
+
 export async function getMatchById(matchId: Types.ObjectId): Promise<MatchInterface> {
     return Match.findById(matchId);
 }
@@ -76,8 +88,8 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
         const _playerOne: UserInterface = await getUserById(playerOne);
         const _playerTwo: UserInterface = await getUserById(playerTwo);
         const delta_score: number = getExpectedScore(_playerOne.stats.elo, _playerTwo.stats.elo);
-        _playerOne.setPlayState(true);//TODO drop the database due this 
-        _playerTwo.setPlayState(true);
+        // _playerOne.setPlayState(true);//TODO drop the database due this 
+        // _playerTwo.setPlayState(true);
         const dataOne = { userId: _playerOne._id, elo: _playerOne.stats.elo, delta_score };
         const dataTwo = { userId: _playerTwo._id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
         const playersChat = await createChat([dataOne.userId, dataTwo.userId]);

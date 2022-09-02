@@ -74,8 +74,8 @@ BattleGridSchema.pre("save", function (this, next) {
             cells.push(c);
         })
     })
-    if(this.ships.length != 5){
-        throw new Error("Ships compromised")
+    if(this.ships.length != 5 && this.ships.length != 0){
+        throw new Error("Ships compromised");
     }
 
     
