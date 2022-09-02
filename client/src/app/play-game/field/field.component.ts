@@ -22,13 +22,13 @@ export class FieldComponent implements OnInit {
   ngOnInit(): void {
     this.populateField();
     // sostituire con props veri
-    this.props.shots = [ {row: 3, col: 4, cellType: CellType.Empty}]
+    this.props.shots = [ new Cell(3,4,CellType.Hit)]
   }
 
   populateField(): void {
     for (let i = 0; i < length; i++) {
       for (let j = 0; j < length; j++) {
-        this.field[i*length + j] = {row: i, col: j, cellType: CellType.Empty};
+        this.field[i*length + j] = new Cell(i,j,CellType.Empty);
       }      
     }
   }
