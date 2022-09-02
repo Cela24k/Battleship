@@ -1,6 +1,6 @@
 import { Schema } from "mongoose"
 import { Cell, CellSchema } from "./cell"
-import { Ship, ShipSchema } from "./ship"
+import { Ship, ShipLenght, ShipSchema } from "./ship"
 
 
 export interface BattleGrid {
@@ -65,14 +65,18 @@ BattleGridSchema.methods.shipHasBeenShot = function (shot: Cell) {
 }
 //It controls if the ships' cells number are not compromised
 BattleGridSchema.pre("save", function (this, next) {
-    var count: Cell[] = [];
+    var cells: Cell[] = [];
     this.ships.forEach((ship: Ship) => {
         ship.position.forEach((c:Cell) => {
-            if(count.includes(c)){
+            if(cells.includes(c)){
                 throw new Error("Ships compromised");
             }
+            cells.push(c);
         })
     })
+    if(this.ships.length != 5){
+        throw new Error("Ships compromised")
+    }
 
     
     next();

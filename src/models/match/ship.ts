@@ -87,7 +87,7 @@ ShipSchema.pre("save", function (this, next) {
         const isLengthOk: boolean = this.position.length == this.shipType;
         const isPositionOk: boolean = isVertical(this) || isHorizontal(this);
         const orientation: OrientationShip = isVertical(this) ? OrientationShip.Vertical : OrientationShip.Horizontal;
-        const isConsecutive: boolean = areCellConsecutive(this, orientation);
+        const isConsecutive: boolean = areCellConsecutive(this);
 
         if (!(isLengthOk && isPositionOk && isConsecutive)) {
 
