@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Cell, CellType, OrientationShip, ShipInterface, ShipLenght } from './field/field.component';
+import { OrientationShip, ShipLenght } from './game-entities/game';
 
 export enum GameType {
   Friend,
