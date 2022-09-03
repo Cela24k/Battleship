@@ -39,6 +39,7 @@ import { MatTableModule } from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
 import { FieldComponent } from './play-game/field/field.component';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
     CommonModule,
     NgbModule, //anche qui
     DragDropModule,
+    ReactiveFormsModule,
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
