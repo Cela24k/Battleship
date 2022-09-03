@@ -1,13 +1,14 @@
 <div (click)="openChat()">
     <div class="rows">
-        <div>
+        <div style="display: flex;">
             <img class="propic" src="../../../assets/blank-profile-picture-png-transparent.png" alt="">
+            <div style="padding-top:10px">
+                <h5>
+                    {{this.username}}
+                </h5>
+                <h6>{{this.props.messages[this.props.messages.length-1].text}}</h6>
+            </div>
         </div>
-        <div>
-            <h5>
-                {{this.username}}
-            </h5>
-            <h6>{{this.props.messages[this.props.messages.length-1].text}}</h6>
-        </div>
+        <mat-icon (click)="deleteChat($event)">delete</mat-icon>
     </div>
 </div>

@@ -80,9 +80,7 @@ export class ChatWindowComponent implements OnInit {
   }
 
   scrollToBottom(): void {
-    console.log(this.myScrollContainer)
     try {
-      console.log(this.myScrollContainer)
       this.myScrollContainer!.nativeElement.scrollTop = this.myScrollContainer!.nativeElement.scrollHeight;
     } catch (err) { }
   }

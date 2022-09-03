@@ -34,10 +34,22 @@
 
 .example-card {
     top: 60px;
-    max-width: 900px;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    max-width: 70vh;
 }
 
 .example-header-image {
     background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
     background-size: cover;
+}
+
+.hint{
+    margin-top: 15px;
+    font-style: italic;
+    color: lightcoral;
+}
+
+.rotate-slider{
+    margin-left: 20px;
 }

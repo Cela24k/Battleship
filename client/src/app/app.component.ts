@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { LocalStorageService } from './local-storage.service';
@@ -35,6 +35,10 @@ export class AppComponent {
     })
   }
 
+  ngOnDestroy(){
+    this.logOut()
+  }
+
   isLoggedIn():boolean {
     return this.authHelper.isLoggedIn();
   }
@@ -58,4 +62,9 @@ export class AppComponent {
   logOut(): void{
     this.authHelper.logOut();
   }
+
+  clearLocalStorage(event: any){
+    localStorage.clear();
+  }
+
 }

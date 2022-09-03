@@ -1,0 +1,8 @@
+table {
+    border-collapse: separate;
+    border-spacing: 0 1em;
+}
+
+.column {
+    padding: 0 5px 0 5px;
+}

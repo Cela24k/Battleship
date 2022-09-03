@@ -39,6 +39,13 @@ import { MatTableModule } from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
 import { FieldComponent } from './play-game/field/field.component';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { ReactiveFormsModule } from '@angular/forms';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ProfileScreenComponent } from './menu/profile-screen/profile-screen.component';
+import { FriendsScreenComponent } from './menu/friends-screen/friends-screen.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
+import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen-prev/friends-screen-prev.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +64,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
     PlayGameRandomComponent,
     MenuSearchboxComponent,
     FieldComponent,
+    ProfileScreenComponent,
+    FriendsScreenComponent,
+    FriendsScreenPrevComponent,
   ],
   imports: [
     BrowserModule,
@@ -74,10 +84,15 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatTableModule,
     MatChipsModule,
     MatGridListModule,
+    MatSlideToggleModule,
+    MatSnackBarModule,
+    
+    FormsModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui
     DragDropModule,
+    ReactiveFormsModule,
   ],
   providers: [
               { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},

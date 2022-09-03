@@ -30,7 +30,7 @@ export function emptyMessage() {
 export class ChatComponent implements OnInit {
 
   @Output() openChatEvent = new EventEmitter<ChatInterface>();
-
+  @Output() deleteChatEvent = new EventEmitter<ChatInterface>();
 
   n_pending: number;
   stored_chats: ChatInterface[];
@@ -66,6 +66,10 @@ export class ChatComponent implements OnInit {
 
   clearChats(): void {
     this.stored_chats = this.stored_chats.filter((e)=> {return e.messages.length != 0})
+  }
+
+  deleteBridge(chat: ChatInterface){
+    this.deleteChatEvent.emit(chat);
   }
 
 }
