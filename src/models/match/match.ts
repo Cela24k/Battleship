@@ -34,31 +34,37 @@ export const MatchSchema = new Schema<MatchInterface>({
     },
     result: {
         type: MatchResultsSchema,
+        required: true
     },
     playersChat: {
         type: SchemaTypes.ObjectId,
     },
     observersChat: {
         type: SchemaTypes.ObjectId,
+    },
+    gameTurn: {
+        type: SchemaTypes.ObjectId
     }
 });
 
 MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell): Promise<MatchInterface> {
-    if (playerId !== this.gameTurn) {
+    if (playerId != this.gameTurn) {
         throw new Error("Not your turn");
     }
     try {
-        const player = playerId === this.playerOne.userId ? this.playerOne : this.playerTwo;
-        const opponent = playerId !== this.playerOne.userId ? this.playerOne : this.playerTwo;
+        const player: MatchPlayer = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
+        const opponent: MatchPlayer = playerId != this.playerOne.userId ? this.playerOne : this.playerTwo;
         //TODO see if the shot has the same row and col of the opponent ship
-        if (opponent.shipHasBeenHit()) {
+        if (opponent.board.shipHasBeenHit(shot)) {
             shot.cellType = CellType.Hit;
             if (opponent.board.areAllShipsDestroyed()) {
-                gameOver(this, player, opponent);
+                console.log("Ghesbo");
+                return await (gameOver.bind(this))(player, opponent);
             }
         }
-        player.addShot(shot);
-        this.gameTurn = opponent.userid;
+        player.board.addShot(shot);
+
+        this.gameTurn = opponent.userId;
         return this.save(); //TODO see if its worth return the matchinterface or if we should return  
 
 
@@ -68,18 +74,22 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
 
 }
 
-MatchSchema.methods.initBoardPlayer = async function(playerId: Types.ObjectId, board: BattleGrid): Promise<MatchPlayer>{
+MatchSchema.methods.initBoardPlayer = async function (playerId: Types.ObjectId, board: BattleGrid): Promise<MatchPlayer> {
     try {
-        const player = playerId === this.playerOne.userId ? this.playerOne : this.playerTwo;
+        const player = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
         player.board = board;
         return this.save();
-    }catch(err){
+    } catch (err) {
         throw err;
     }
 }
 
 export async function getMatchById(matchId: Types.ObjectId): Promise<MatchInterface> {
-    return Match.findById(matchId);
+    let result = await Match.findById({ _id: matchId }).catch(
+        (err) => Promise.reject('Server error')
+    );
+    if (result) return Promise.resolve(result);
+    else return Promise.reject('No match with such Id'); //mettere dentro un errore?
 }
 
 
@@ -92,15 +102,18 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
         // _playerTwo.setPlayState(true);
         const dataOne = { userId: _playerOne._id, elo: _playerOne.stats.elo, delta_score };
         const dataTwo = { userId: _playerTwo._id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
+        const result = {};
         const playersChat = await createChat([dataOne.userId, dataTwo.userId]);
         const observersChat = await createChat([]);
+        console.log(observersChat);
 
-        var match = new Match({
+        var match: MatchInterface = new Match({
             playerOne: dataOne,
             playerTwo: dataTwo,
             gameTurn: dataOne.userId,
             playersChat: playersChat._id,
-            observerChat: observersChat._id
+            observerChat: observersChat._id,
+            result
         });
         return match.save();
     }
@@ -109,16 +122,21 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
     }
 }
 
-export async function gameOver(match: MatchInterface, winner: MatchPlayer, loser: MatchPlayer) {
+export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
     try {
-        match.result.updateResult(winner.userId);
-        const matchResult = (await match.save()).result;
+
+        const matchResult = this.result.updateResult(winner.userId);
         const winnerUser: UserInterface = await getUserById(winner.userId);
         const loserUser: UserInterface = await getUserById(loser.userId);
         winnerUser.stats.updateStats(winner, matchResult);
         loserUser.stats.updateStats(loser, matchResult);
-        winnerUser.setPlayState(true);
-        loserUser.setPlayState(true);
+        await winnerUser.save();
+        await loserUser.save();
+        var match = Match.deleteOne({ _id: this._id });;
+        
+        return match;
+        // winnerUser.setPlayState(true);
+        // loserUser.setPlayState(true);
     }
     catch (err) {
         throw err;

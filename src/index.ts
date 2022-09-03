@@ -14,6 +14,7 @@ import { router as authRoutes } from './routing/auth-routes';
 import { router as userRoutes } from './routing/user-routes';
 import { router as chatRoutes } from './routing/chat-routing';
 import { router as matchMakingRoutes } from './routing/matchmaking-routes';
+import { router as matchRoutes } from './routing/match-routes';
 import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
 
 //crezione dell'istanza del modulo Express
@@ -41,6 +42,7 @@ app.get("/", (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
 app.use('/chat', auth, chatRoutes);
+app.use('/match', auth, matchRoutes);
 app.use('/matchmaking', auth, matchMakingRoutes);
 
 

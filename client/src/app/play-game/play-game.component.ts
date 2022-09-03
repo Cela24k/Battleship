@@ -22,27 +22,27 @@ export class PlayGameComponent implements OnInit {
 
   ships = [{
     position: [],
-    shipType: ShipLenght.Carrier,
+    length: ShipLenght.Carrier,
     type: "Carrier",
     orientation: OrientationShip,
   },{
     position: [],
-    shipType: ShipLenght.Battleship,
+    length: ShipLenght.Battleship,
     type: "Battleship",
     orientation: OrientationShip,
   },{
     position: [],
-    shipType: ShipLenght.Cruiser,
+    length: ShipLenght.Cruiser,
     type: "Cruiser",
     orientation: OrientationShip,
   },{
     position: [],
-    shipType: ShipLenght.Submarine,
+    length: ShipLenght.Submarine,
     type: "Submarine",
     orientation: OrientationShip,
   },{
     position: [],
-    shipType: ShipLenght.Destroyer,
+    length: ShipLenght.Destroyer,
     type: "Destroyer",
     orientation: OrientationShip,
   }]

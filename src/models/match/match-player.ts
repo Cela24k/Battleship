@@ -1,13 +1,14 @@
 import { Schema, SchemaTypes, Types } from "mongoose";
 import { BattleGrid, BattleGridSchema } from "./battle-grid";
+import { Cell, CellType } from "./cell";
 
 export interface MatchPlayer {
     userId: Types.ObjectId,
     board: BattleGrid,
-    shotsFired: number,
-    shotsHitted: number,
     delta_score: number,
     elo: number
+    
+    
 }
 
 export const MatchPlayerSchema = new Schema<MatchPlayer>({
@@ -19,14 +20,6 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
     board : {
         type: BattleGridSchema,
     },
-    shotsFired: {
-        type: SchemaTypes.Number,
-        default: 0
-    },
-    shotsHitted: {
-        type: SchemaTypes.Number,
-        default: 0
-    },
     elo: {
         type: SchemaTypes.Number,
         required: true
@@ -35,6 +28,8 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
         type: SchemaTypes.Number,
         required: true
     },
-
+    
 },{_id: false});
+
+
 

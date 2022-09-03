@@ -38,7 +38,7 @@ export class MatchMakingEngine {
             const playerOne = ticketList.pop();
             const playerTwo = this.findOpponent(playerOne, ticketList);
 
-            if (playerTwo !== null) {
+            if (playerTwo != null) {
                 console.log("Matchiamoo".rainbow);
                 const match = await newMatch(playerOne.userId, playerTwo.userId);
                 //TODO newmatch emitter needded.
@@ -62,10 +62,13 @@ export class MatchMakingEngine {
     }
     //TODO study and implement an elo logic, try to find how to use it
     private arePlayersMatchable(playerOne: TicketEntryInterface, playerTwo: TicketEntryInterface): boolean {
-        return playerOne.elo < playerTwo.elo + K_VALUE * 4 && playerOne.elo > playerTwo.elo - K_VALUE * 4;
+        const now = (new Date()).getTime();
+        const elapsedTimeOne = (now - playerOne.ticketTime.getTime()) / 1000;
+        const elapsedTimeTwo = (now - playerOne.ticketTime.getTime()) / 1000;
+        return (playerOne.elo < playerTwo.elo + K_VALUE * 4 && playerOne.elo > playerTwo.elo - K_VALUE * 4) || (elapsedTimeOne > 25 && elapsedTimeTwo > 25);
     }
 
     //returns the expected score of playerOne.
     //https://mathspp-com.translate.goog/blog/elo-rating-system-simulation?_x_tr_sl=en&_x_tr_tl=it&_x_tr_hl=it&_x_tr_pto=op,sc
-    
+
 } 

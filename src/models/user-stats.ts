@@ -36,6 +36,9 @@ export const StatsSchema = new Schema<StatsInterface>({
         type: SchemaTypes.Number,
         default: 0,
     },
+    accuracy:{
+        type: SchemaTypes.Number,
+    },
     winstreak: {
         type: SchemaTypes.Number,
         default: 0,
@@ -91,10 +94,10 @@ StatsSchema.methods.winstreakReset = function (): void {
 StatsSchema.methods.eloIncrement = function (amount: number): void {
     if (this.elo + amount < 0)
         this.elo = 0;
-    else this.elo += (K_VALUE*(amount));
+    else this.elo += amount;
 }
 StatsSchema.methods.accuracySet = function (): void {
-    this.accuracy = Math.floor(this.shotsFired / this.shotsHit);
+    this.accuracy = this.shotsHit / this.shotsFired;
 }
 
 StatsSchema.methods.win = function (): void {
@@ -109,7 +112,7 @@ StatsSchema.methods.lose = function (): void {
 
 //TODO see if everything is correct;
 StatsSchema.methods.updateStats = function(player: MatchPlayer, result: MatchResults) : void {
-    if(result.winner === player.userId){
+    if(result.winner == player.userId){
         this.win();
         this.eloIncrement(K_VALUE*(1 - player.delta_score));
     }else{
@@ -117,10 +120,14 @@ StatsSchema.methods.updateStats = function(player: MatchPlayer, result: MatchRes
         this.eloIncrement(K_VALUE*(0 - player.delta_score));
 
     }
-    this.shotsFiredAdd += player.shotsFired;
-    this.shotsHitAdd += player.shotsHitted;
-    const timePlayed: Date = new Date(result.finishTime.getTime() - result.startTime.getTime());
-    this.timePlayed += timePlayed;//TODO see if it can be done;
+    this.shotsFired += player.board.shotsFired;
+    this.shotsHit += player.board.shotsHitted;
+    const timePlayed: Date = new Date((result.finishTime.getTime() - result.startTime.getTime()) + this.timePlayed.getTime());
+    console.log(timePlayed.getHours()+''+timePlayed.getMinutes()+''+timePlayed.getSeconds())
+
+    this.timePlayed = timePlayed;
+    console.log(this.timePlayed);
+    
     this.accuracySet();
 }
 

@@ -1,5 +1,5 @@
-import { Schema } from "mongoose"
-import { Cell, CellSchema } from "./cell"
+import { Schema, SchemaTypes } from "mongoose"
+import { Cell, CellSchema, CellType } from "./cell"
 import { Ship, ShipLenght, ShipSchema } from "./ship"
 
 
@@ -10,10 +10,12 @@ export interface BattleGrid {
     //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
     shots: Cell[], // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
     ships: Ship[],// Ships array that could be studied for the opponent shots.
+    shotsFired: number,
+    shotsHitted: number,
     areAllShipsDestroyed: () => boolean,
-    isAlreadyShot: () => boolean,
-    shipHasBeenHit: () => boolean,
-    addShot: () => void,
+    isAlreadyShot: (shot: Cell) => boolean,
+    shipHasBeenHit: (shot: Cell) => boolean,
+    addShot: (shot: Cell) => void,
 
 }
 
@@ -26,58 +28,57 @@ export const BattleGridSchema = new Schema<BattleGrid>({
     ships: {
         type: [ShipSchema],
         default: []
-    }
-},{_id: false});
+    },
+    shotsFired: {
+        type: SchemaTypes.Number,
+        default: 0
+    },
+    shotsHitted: {
+        type: SchemaTypes.Number,
+        default: 0
+    },
+}, { _id: false });
 
 BattleGridSchema.methods.areAllShipsDestroyed = function () {
-    this.ships.forEach((s: Ship) => {
-        if (!s.isDestroyed()) {
-            return false;
-        }
-    })
-    return true;
+    return this.ships.every((s: Ship) => s.isDestroyed());
 }
 
 BattleGridSchema.methods.isAlreadyShot = function (shot: Cell) {
-    this.shots.forEach((s: Cell) => {
-        if (s.row === shot.row && s.col === shot.col)
-            return true;
-    })
-    return false;
+    return this.shots.some((s: Cell) => s.row == shot.row && s.col === shot.col);
+    
 }
 
 BattleGridSchema.methods.addShot = function (shot: Cell) {
-    if (this.isAlreadyShot(shot)) {
+    const bool = this.isAlreadyShot(shot);
+    if (bool) {
         throw new Error("You alreay shot this Cell");
     }
-
+    this.shotsFired++;
+    if(shot.cellType == CellType.Hit) this.shotsHitted++;
     return this.shots.push(shot);
 }
 
-BattleGridSchema.methods.shipHasBeenShot = function (shot: Cell) {
-    this.ships.forEach((s: Ship) => {
-        if (s.hasBeenHit(shot)) {
-            return true;
-        }
-
-    })
-    return false;
+BattleGridSchema.methods.shipHasBeenHit = function (shot: Cell) {
+    return this.ships.some((s: Ship) => s.hasBeenHit(shot));
 }
 //It controls if the ships' cells number are not compromised
 BattleGridSchema.pre("save", function (this, next) {
-    var cells: Cell[] = [];
-    this.ships.forEach((ship: Ship) => {
-        ship.position.forEach((c:Cell) => {
-            if(cells.includes(c)){
-                throw new Error("Ships compromised");
-            }
-            cells.push(c);
+    if (this.ships.length > 0) {
+        var cells: Cell[] = [];
+        var clength: number = 0;
+        this.ships.forEach((ship: Ship) => {
+            ship.position.forEach((c: Cell) => {
+                if (cells.includes(c)) {
+                    throw new Error("Ships compromised");
+                }
+                cells.push(c);
+            })
+            clength += ship.position.length;
         })
-    })
-    if(this.ships.length != 5 && this.ships.length != 0){
-        throw new Error("Ships compromised");
+        if (this.ships.length != 5 || clength != 17) {
+            throw new Error("Ships compromised");
+        }
     }
 
-    
     next();
 })

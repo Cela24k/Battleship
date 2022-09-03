@@ -18,7 +18,7 @@ enum OrientationShip {
 
 export interface Ship extends Types.Subdocument {
     position: Cell[];
-    shipType: ShipLenght;
+    length: ShipLenght;
     orientation: OrientationShip,
     isDestroyed(): boolean;
     hasBeenHit(shot: Cell): boolean;
@@ -34,31 +34,33 @@ export const ShipSchema = new Schema<Ship>({
         enum: OrientationShip
     },
 
-    shipType: {
+    length: {
         type: SchemaTypes.Number,
         enum: ShipLenght,
         required: true,
     }
-},{_id: false})
+}, { _id: false })
 
 ShipSchema.methods.isDestroyed = function (): boolean {
-    this.position.forEach((c: Cell) => {
-        if (c.cellType != CellType.Hit)
-            return false;
-    })
-
-    return true;
+    return this.position.every((c: Cell) => c.cellType == CellType.Hit)
 
 }
 
 ShipSchema.methods.hasBeenHit = function (shot: Cell): boolean {
-    this.position.forEach((c: Cell) => {
-        if (c.row === shot.row && c.col === shot.col) {
-            c.cellType = CellType.Hit;
-            return true;
-        }
-    })
-    return false;
+    if (shot) {
+        var flag = false;
+        this.position.forEach((c: Cell) => {
+            if (c.row === shot.row && c.col === shot.col) {
+                c.cellType = CellType.Hit;
+                console.log("hittato");
+                flag = true;
+            }
+        })
+        return flag;
+        
+    } else {
+        throw new Error("Shot Compromised");
+    }
 }
 
 function isVertical(ship: Ship): boolean {
@@ -72,7 +74,7 @@ function isHorizontal(ship: Ship): boolean {
 
 function areCellConsecutive(ship: Ship): boolean {
     const prev = ship.position[0];
-    for (let i = 0; i < ship.shipType - 1; i++) {
+    for (let i = 0; i < ship.length - 1; i++) {
         const cond = ship.orientation == OrientationShip.Horizontal ? (prev.row != ship.position[i + 1].row) : prev.col != ship.position[i + 1].col;
         if (!cond) {
             return false;
@@ -81,13 +83,16 @@ function areCellConsecutive(ship: Ship): boolean {
     return true;
 }
 
+
+
 // It controls if the ship is positioned in the right way;
 ShipSchema.pre("save", function (this, next) {
     if (this.position.length > 0) {
-        const isLengthOk: boolean = this.position.length == this.shipType;
+        const isLengthOk: boolean = this.position.length == this.length;
         const isPositionOk: boolean = isVertical(this) || isHorizontal(this);
         const orientation: OrientationShip = isVertical(this) ? OrientationShip.Vertical : OrientationShip.Horizontal;
         const isConsecutive: boolean = areCellConsecutive(this);
+
 
         if (!(isLengthOk && isPositionOk && isConsecutive)) {
 
