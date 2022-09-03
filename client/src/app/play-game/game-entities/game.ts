@@ -31,11 +31,14 @@ export enum ShipLenght {
 export class Ship {
     position: Cell[];
     length: ShipLenght;
+    type: string;
     orientation: OrientationShip;
-    constructor(position: Cell[], length: ShipLenght, orientation: OrientationShip){
+    constructor(position: Cell[], length: ShipLenght, , type: string, orientation: OrientationShip){
         this.position = position;
         this.length = length;
         this.orientation = orientation;
+        this.type = type; 
+
     }
 }
 

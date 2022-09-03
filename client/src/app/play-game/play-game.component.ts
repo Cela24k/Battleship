@@ -1,4 +1,4 @@
-import { OrientationShip, ShipLenght } from './game-entities/game';
+import { OrientationShip, Ship, ShipLenght } from './game-entities/game';
 import { Component, ElementRef, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
@@ -25,32 +25,11 @@ export class PlayGameComponent implements OnInit {
   formControl = new FormControl([]);
   isRotated: boolean = false;
 
-  ships: any[] = [{
-    position: [],
-    length: ShipLenght.Carrier,
-    type: "Carrier",
-    orientation: OrientationShip.Horizontal,
-  }, {
-    position: [],
-    length: ShipLenght.Battleship,
-    type: "Battleship",
-    orientation: OrientationShip.Horizontal,
-  }, {
-    position: [],
-    length: ShipLenght.Cruiser,
-    type: "Cruiser",
-    orientation: OrientationShip.Horizontal,
-  }, {
-    position: [],
-    length: ShipLenght.Submarine,
-    type: "Submarine",
-    orientation: OrientationShip.Horizontal,
-  }, {
-    position: [],
-    length: ShipLenght.Destroyer,
-    type: "Destroyer",
-    orientation: OrientationShip.Horizontal,
-  }]
+  ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
+  new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
+  new Ship([], ShipLenght.Cruiser, "Cruiser", OrientationShip.Horizontal),
+  new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
+  new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
   constructor() { }
 
