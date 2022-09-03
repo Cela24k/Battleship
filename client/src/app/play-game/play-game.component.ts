@@ -23,6 +23,7 @@ export class PlayGameComponent implements OnInit {
   playing: boolean = false;
   selected: any | null = null;
   formControl = new FormControl([]);
+  isRotated: boolean = false;
 
   ships: any[] = [{
     position: [],
@@ -83,5 +84,11 @@ export class PlayGameComponent implements OnInit {
     })
     this.selected = shipType;
     event.stopPropagation();
+  }
+
+  rotateShip(event:any){
+    if(this.selected){
+      this.isRotated = event.checked ? true : false;
+    }
   }
 }

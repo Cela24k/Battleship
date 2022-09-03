@@ -40,6 +40,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { FieldComponent } from './play-game/field/field.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { ReactiveFormsModule } from '@angular/forms';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatTableModule,
     MatChipsModule,
     MatGridListModule,
+    MatSlideToggleModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui
