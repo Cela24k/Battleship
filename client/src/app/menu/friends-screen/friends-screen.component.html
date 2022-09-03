@@ -1,0 +1,19 @@
+<mat-form-field class="example-full-width" style="margin-top: 20px;" appearance="fill">
+    <mat-label>Add a user</mat-label>
+    <input matInput type="text" [(ngModel)]="searchTerm" placeholder="Ex. Cela24k" value=" " #input>
+    <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Clear" (click)="searchTerm=''">
+        <mat-icon>close</mat-icon>
+    </button>
+</mat-form-field>
+<mat-icon class="adder" (click)="addFriend(searchTerm)">add_circle</mat-icon>
+
+<div *ngIf="isEmpty(); else open">
+    <h5 style="opacity: 0.5; font-style:italic; font-weight:100">Try adding some users by typing their username</h5>
+</div>
+
+<ng-template #open>
+    <div *ngFor="let friend of friends">
+        <mat-divider class="divider"></mat-divider>
+        <app-friends-screen-prev [id]="friend" (sendNameEvent)="addName($event)"></app-friends-screen-prev>
+    </div>
+</ng-template>

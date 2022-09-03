@@ -41,6 +41,11 @@ import { FieldComponent } from './play-game/field/field.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { ProfileScreenComponent } from './menu/profile-screen/profile-screen.component';
+import { FriendsScreenComponent } from './menu/friends-screen/friends-screen.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { FormsModule } from '@angular/forms';
+import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen-prev/friends-screen-prev.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +64,9 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     PlayGameRandomComponent,
     MenuSearchboxComponent,
     FieldComponent,
+    ProfileScreenComponent,
+    FriendsScreenComponent,
+    FriendsScreenPrevComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,6 +85,9 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
     MatChipsModule,
     MatGridListModule,
     MatSlideToggleModule,
+    MatSnackBarModule,
+    
+    FormsModule,
     BrowserAnimationsModule,
     CommonModule,
     NgbModule, //anche qui

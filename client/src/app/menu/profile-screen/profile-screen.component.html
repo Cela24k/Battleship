@@ -1,0 +1,61 @@
+<h2 style="margin-top: 10px; margin-left: 5px;">{{userData.username}}'s stats</h2>
+<table>
+    <tr>
+        <th class="column">Stat </th>
+        <th class="column">value</th>
+    </tr>
+    <tr>
+        <td class="column" >Wins</td>
+        <td class="column" >{{userData.stats.wins}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Losses</td>
+        <td class="column" >{{userData.stats.losses}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Winstreak</td>
+        <td class="column" >{{userData.stats.winstreak}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Max winstreak</td>
+        <td class="column" >{{userData.stats.maxWinstreak}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Elo</td>
+        <td class="column" >{{userData.stats.elo}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Played games</td>
+        <td class="column" >{{userData.stats.playedGames}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Shots fired</td>
+        <td class="column" >{{userData.stats.shotsFired}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Shots hit</td>
+        <td class="column" >{{userData.stats.shotsHit}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Ratio</td>
+        <td class="column" >{{(userData.stats.shotsHit / userData.stats.shotsFired).toFixed(2).toString()}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Time played</td>
+        <td class="column" >{{formatDate()}}</td>
+    </tr>
+    <tr>
+        <td class="column" >Rank</td>
+        <td class="column" >{{userData.stats.rank}}</td>
+    </tr>
+</table>
+<!-- 
+losses: 0,
+      winstreak: 0,
+      maxWinstreak: 0,
+      elo: 0,
+      playedGames: 0,
+      shotsFired: 0,
+      shotsHit: 0,
+      timePlayed: '',
+      rank: 0, -->

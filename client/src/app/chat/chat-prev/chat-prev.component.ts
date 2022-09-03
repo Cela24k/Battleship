@@ -11,6 +11,7 @@ import { ChatInterface, emptyChat } from '../chat.component';
 export class ChatPrevComponent implements OnInit {
   @Input() props: ChatInterface = emptyChat();
 
+  @Output() deleteChatEvent = new EventEmitter<ChatInterface>();
   @Output() openChatEvent = new EventEmitter<ChatInterface>();
 
   username: string; 
@@ -38,14 +39,12 @@ export class ChatPrevComponent implements OnInit {
   }
 
   openChat(){
-    // if(!this.openedChats.includes(this.props))
-    // {
-    //   this.openedChats.push(this.props);
-    //   this.openChatEvent.emit(this.props);
-    // }
     this.openChatEvent.emit(this.props);
   }
 
-  
+  deleteChat(data:any){
+    console.log('da implementare bene');
+    // this.deleteChatEvent.emit(this.props);
+  }
   
 }

@@ -41,4 +41,17 @@ export class UserHttpService {
   getFriends(): Observable<any> {
     return this.httpclient.get(this.url + '/' + this.localstorage.getId() + '/friends');
   }
+
+  getMe(): Observable<any> {
+    return this.httpclient.get(this.url + '/' + this.localstorage.getId());
+  }
+
+  friendRequest(friendid: string): Observable<any> {
+    return this.httpclient.put((this.url + '/' + this.localstorage.getId() + '/friends' + '/' + friendid), {});
+  }
+
+  getUserById(id: string): Observable<any> {
+    return this.httpclient.get(this.url +'/'+ id);
+  }
+
 }

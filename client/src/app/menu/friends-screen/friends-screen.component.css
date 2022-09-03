@@ -1,0 +1,15 @@
+.friends-form {
+    min-width: 150px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.adder{
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.divider{
+    margin-top: 5px; 
+    margin-bottom: 20px;
+}

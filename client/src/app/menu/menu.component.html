@@ -13,11 +13,11 @@
                 <img src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100" height="100">
             </div>
             <mat-tab-group class="tabs" >
+                <mat-tab label="Profile"> <app-profile-screen style="font-weight: 100"></app-profile-screen> </mat-tab>
+                <mat-tab label="Friends"> <app-friends-screen> </app-friends-screen> </mat-tab>
                 <mat-tab label="Chats" >
-                    <app-chat (openChatEvent)="bridge($event)"></app-chat>
+                    <app-chat (openChatEvent)="bridge($event)" ></app-chat>
                 </mat-tab>
-                <mat-tab label="Second"> Content 2 </mat-tab>
-                <mat-tab label="Third"> Content 3 </mat-tab>
             </mat-tab-group>
         </div>
     </div>
