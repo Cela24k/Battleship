@@ -16,6 +16,8 @@ import { router as chatRoutes } from './routing/chat-routing';
 import { router as matchMakingRoutes } from './routing/matchmaking-routes';
 import { router as matchRoutes } from './routing/match-routes';
 import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
+import { UserJoinListener } from './socket-helper/Listener/UserJoinListener';
+import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListener';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -60,6 +62,11 @@ mongoose.connect(process.env.DB_URI)
             ios.on('connection', (client) => {
                 console.log("------------------------------------------------".america)
                 console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
+                const userJoin = new UserJoinListener(client);
+                userJoin.listen();
+
+                const chatMessage = new ChatMessageListener(client);
+                chatMessage.listen();
 
                 console.log('Auth ', client.handshake.auth);
                 client.join(client.handshake.auth['userid']);

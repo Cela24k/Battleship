@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { LocalStorageService } from '../local-storage.service';
+import { SocketioService } from '../socketio.service';
 
 @Component({
   selector: 'app-access',
@@ -19,12 +20,13 @@ import { LocalStorageService } from '../local-storage.service';
 export class AccessComponent implements OnInit {
   errors = false;
 
-  constructor(private auth: AuthService, private router: Router, private local: LocalStorageService) { }
+  constructor(private auth: AuthService, private router: Router, private local: LocalStorageService, private sio: SocketioService) { }
   ngOnInit(): void { }
 
   onSubmit(username: string, password: string) {
     return this.auth.login(username, password).subscribe({
-      next: (d) => {
+      next: (d: any) => {
+        this.sio.emit("user-join", this.local.getId());
         this.router.navigate(['/play']);
       },
       error: (err) => {//TODO vedere redirect per quando ci sono errori

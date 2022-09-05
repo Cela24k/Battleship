@@ -235,9 +235,9 @@ router.get('/:userId/chats', async (req, res) => {
         try {
             const u = await getUserById(new Types.ObjectId(userId));
             const chats = await u.getChats();
-            console.log(chats);
+            //console.log(chats);
             const response = {chats, timestamp:Date.now()};
-            console.log(response);
+            //console.log(response);
             return res.status(200).json(response);
         } catch (err) {
             if (err === 'Server Error')

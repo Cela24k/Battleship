@@ -3,13 +3,22 @@ import mongoose from "mongoose";
 import { ChatInterface, ChatModel, ChatSchema } from "./chat";
 import { NotificationType, NotificationInterface, newNotification, NotificationSchema } from "./notification";
 import * as crypto from "crypto";
-import { Stats } from "fs";
+import { stat, Stats } from "fs";
 import { DeleteResult, UpdateResult } from "mongodb";
 import { StatsInterface, StatsSchema } from "./user-stats";
 
 export enum Role {
     Mod,
     None
+}
+export enum UserState {
+    Playing = "Playing",
+    Online = "Online",
+    Offline = "Offline",
+    Observing = "Observing",
+    Waiting = "Waiting",
+
+
 }
 
 export interface UserInterface extends Document {
@@ -19,16 +28,13 @@ export interface UserInterface extends Document {
     salt: string,
     role: Role,
     friends: Types.ObjectId[], // by reference ?
+    state: UserState,
     stats: StatsInterface,
     notifications: NotificationInterface[],
-    playing: boolean,
+
     chats: Types.ObjectId[],
 
-    /* this could be useful for the Matchmaking,
-    *  a match shouldn't start unless both players are waiting and if 
-    *  something bad happens in the meantime, this field is set to false 
-    */
-    waiting: boolean,
+
 
     /* Sets the hasahed password */
 
@@ -117,6 +123,12 @@ export const UserSchema = new Schema<UserInterface>({
     stats: {
         type: StatsSchema,
         default: () => ({}),
+    },
+    state: {
+        type: SchemaTypes.String,
+        enum: UserState,
+        default: UserState.Offline
+
     },
     notifications: {
         type: [NotificationSchema],
@@ -233,7 +245,7 @@ UserSchema.methods.getChats = async function (): Promise<ChatInterface[]> {
             $in: this.chats
         }
     });
-    
+
     return Promise.resolve(chatList);
 }
 
@@ -260,8 +272,8 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
 }
 
 //Changes the playing state in true if he' joining a game, false otherwise(we use it in 2 different methods)
-UserSchema.methods.setPlayingState = async function(isPlaying: boolean){
-    if(this.playing && this.playing!=isPlaying)
+UserSchema.methods.setPlayingState = async function (isPlaying: boolean) {
+    if (this.playing && this.playing != isPlaying)
         throw new Error("Player is already in a game");
     this.playing = isPlaying;
     await this.save()
@@ -298,7 +310,7 @@ export async function getUser(userid: Types.ObjectId): Promise<UserInterface> {
 }
 
 export async function getUserById(userid: Types.ObjectId): Promise<UserInterface> {
-   
+
     let result = await User.findById({ _id: userid }).catch(
         (err) => Promise.reject('Server error')
     );
@@ -360,6 +372,18 @@ export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectI
         return Promise.resolve();
     }
     return Promise.reject('Users are already friends');
+}
+
+export async function setUserState(userId: Types.ObjectId, state: UserState): Promise<UserState>{
+    try {
+        var user: UserInterface = await getUserById(userId);
+        user.state = state;
+        console.log((userId.toString() + " has changed his State in: "+ state).green.bgRed);
+        return (await user.save()).state;
+    }
+    catch (err) {
+        throw err;
+    }
 }
 
 

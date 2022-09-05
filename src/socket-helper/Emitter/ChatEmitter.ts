@@ -9,7 +9,7 @@ class ChatEmitter<T> extends RoomEmitter<any>{
     }
 
     emit(payload?: T): void{
-         this.ios.emit(this.event, payload)
+         this.ios.emit(this.event, payload);
     }
 }
 
