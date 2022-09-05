@@ -1,5 +1,5 @@
-import { BattleGrid, Cell, CellType, OrientationShip } from '../game-entities/game';
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { BattleGrid, Cell, CellType, OrientationShip, Ship } from '../game-entities/game';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 const SIZE = 10;
 
@@ -13,102 +13,130 @@ export class FieldComponent implements OnInit {
     shots: [],
     shipsPosition: []
   };
-  
-  @Input() selected: any | null = null;
+  @Input() selected: Ship | null = null;
   @Input() rotated: boolean = false;
+
+  @Output() popShipEvent = new EventEmitter<Ship>();
+  @Output() addShipEvent = new EventEmitter<Ship>();
 
   field: Cell[] = [];
   hovered: ElementRef[] = [];
-  breakpoint: number = 0;
+  placedShips: Ship[] = [];
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.populateField();
-    this.breakpoint = (window.innerWidth <= 400) ? 1 : 3;
     // sostituire con props veri
-    this.props.shots = [ new Cell(3,4,CellType.Hit)]
+    this.props.shots = [new Cell(3, 4, CellType.Hit)];
   }
 
   populateField(): void {
     for (let i = 0; i < SIZE; i++) {
       for (let j = 0; j < SIZE; j++) {
-        this.field[i*SIZE + j] = new Cell(i,j,CellType.Empty);
-      }      
+        this.field[i * SIZE + j] = new Cell(i, j, CellType.Empty);
+      }
     }
   }
 
   clickHandler(event: any, index: number) {
-    const coords = this.formatCoords(SIZE,index);
-    //console.log(event.target.__ngContext__[0]);
-    
-    //controllare che nessuna hovered sia sopra una barca
+    const coords = this.formatCoords(SIZE, index);
 
-    this.hovered.forEach(e => {
-      if(e != null){
-        this.field[e.nativeElement.id] = new Cell(coords[0],coords[1], CellType.Ship);
-        console.log(e.nativeElement.id)
+    // cliccata una barca 
+    if (this.field[index].cellType == CellType.Ship) {
+      let shipElement: Ship = new Ship([],0,'',0);
+      let shipIndex = undefined;
+
+      this.placedShips.forEach((e: Ship, i) => {
+        let result = e.position.find((x)=> {
+          return x.row == coords[0] && x.col == coords[1];
+        })
+        if(result){
+          shipIndex = i;
+          shipElement = e;
+        }
+      });
+
+      if(shipElement && shipIndex != undefined){
+        shipElement.position.forEach((e)=>{
+          this.field[e.row * SIZE + e.col] = new Cell(coords[0], coords[1], CellType.Empty);
+        })
+
+        this.placedShips.splice(shipIndex,1);
+        this.addShipEvent.emit(shipElement);
       }
-    });
+    }
 
+    if (!this.isHoveringSomething() && this.selected) {
+      this.hovered.forEach((e,i) => {
+        if (e != null) {
+          if (this.selected?.orientation == OrientationShip.Horizontal)
+            this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
+          else {
+            this.field[e.nativeElement.id] = new Cell(coords[0] + i, coords[1], CellType.Ship);
+          }
+
+          if (this.selected)
+            this.selected.position.push(this.field[e.nativeElement.id]);
+        }
+      });
+      this.placedShips.push(this.selected);
+      // mandare emitter di poppare la nave dalla lista 
+      this.popShipEvent.emit(this.selected);
+    }
   }
 
-  hoverHandler(event: any, index?: any){
+  hoverHandler(event: any, index?: any) {
     const elements: any = [];
-    const coords = this.formatCoords(10,index);
+    const coords = this.formatCoords(10, index);
+    const len = this.selected?.length != undefined ? this.selected.length : 0;
 
-    for(let i = 0; i < this.selected?.length; i++ ){
-      let htmlelem;
-      if(!this.rotated){
-        if((coords[1]+i < SIZE))
-          htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id)+i).toString()));
-        else {
-          htmlelem = new ElementRef(document.getElementById('xx'));
+    if (this.field[index].cellType == CellType.Empty) {
+      for (let i = 0; i < len; i++) {
+        let htmlelem;
+        if (!this.rotated) {
+          if ((coords[1] + i < SIZE))
+            htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i).toString()));
+          else {
+            htmlelem = new ElementRef(document.getElementById('xx'));
+          }
+        }
+        else
+          htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i * 10).toString()))
+
+        if (htmlelem.nativeElement != null) {
+          htmlelem.nativeElement?.setAttribute('style', 'background-color: lightcoral');
+          elements.push(htmlelem);
         }
       }
-      else 
-        htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id)+i*10).toString()))
-
-      if(htmlelem.nativeElement != null){
-        htmlelem.nativeElement?.setAttribute('style','background-color: lightcoral');
-        elements.push(htmlelem);
-      }
-       
     }
 
     this.hovered = elements;
     event.stopPropagation();
   }
 
-  leaveHandler(event: any, index?: any){
-    this.hovered.forEach((elem)=>{
-      if(elem.nativeElement != null)
-        elem.nativeElement.setAttribute('style','');
+  leaveHandler(event: any, index?: any) {
+    this.hovered.forEach((elem) => {
+      if (elem.nativeElement != null)
+        elem.nativeElement.setAttribute('style', '');
     })
-  }
-
-  addBoat(){
-
-  }
-
-  addShot(index: number){
-  }
-
-  onResize(event: any) {
-    this.breakpoint = (event.target.innerWidth <= 400) ? 1 : 3;
   }
 
   formatCoords(length: number, index: number): [number, number] {
     for (let i = 0; i < length; i++) {
       for (let j = 0; j < length; j++) {
-        if(index == i*length+j)
-          return [i,j];
-      }      
+        if (index == i * length + j)
+          return [i, j];
+      }
     }
-    return [-1,-1];
+    return [-1, -1];
   }
 
-  isEmpty(index: any){
+  isEmpty(index: any) {
     return this.field[index].cellType == CellType.Ship
+  }
+
+  isHoveringSomething(): boolean {
+    return this.hovered.some((e) => e && this.field[e.nativeElement.id].cellType == CellType.Ship);
   }
 }

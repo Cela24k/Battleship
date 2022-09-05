@@ -55,3 +55,12 @@ export class BattleGrid {
         this.shipsPosition = shipPositon;
     }
 }
+
+// if (!this.rotated) {
+//     console.log('ciao')
+//     this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
+//   }
+//   else {
+//     console.log('ciao2')
+//     this.field[e.nativeElement] = new Cell(coords[0] + i, coords[1], CellType.Ship);
+//   }

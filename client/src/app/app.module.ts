@@ -46,6 +46,7 @@ import { FriendsScreenComponent } from './menu/friends-screen/friends-screen.com
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen-prev/friends-screen-prev.component';
+import { TileComponent } from './play-game/tile/tile.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen
     ProfileScreenComponent,
     FriendsScreenComponent,
     FriendsScreenPrevComponent,
+    TileComponent,
   ],
   imports: [
     BrowserModule,

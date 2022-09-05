@@ -21,7 +21,7 @@ interface SelectedShip {
 })
 export class PlayGameComponent implements OnInit {
   playing: boolean = false;
-  selected: any | null = null;
+  selected: Ship | null = null;
   formControl = new FormControl([]);
   isRotated: boolean = false;
 
@@ -57,7 +57,7 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  clickEvent(event: any) {
+  clickEvent(event: any): void{
     const shipType = this.ships.find((e) => {
       return e.type == event.srcElement.innerText;
     })
@@ -68,6 +68,20 @@ export class PlayGameComponent implements OnInit {
   rotateShip(event:any){
     if(this.selected){
       this.isRotated = event.checked ? true : false;
+      this.selected.orientation = this.selected.orientation == OrientationShip.Horizontal ? OrientationShip.Vertical : OrientationShip.Horizontal; 
     }
+  }
+
+  popShip(ship: Ship){
+    const index = this.ships.indexOf(ship)
+    if( index != -1){
+      this.ships.splice(index,1)
+      this.selected = null
+    }
+  }
+
+  addShip(ship: Ship){
+    console.log('ciao')
+    this.ships.push(ship);
   }
 }

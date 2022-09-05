@@ -8,7 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./friends-screen.component.css']
 })
 export class FriendsScreenComponent implements OnInit {
-  friends: string = '';
+  friends: string[] = [];
   users: UserInterface[] = [];
   searchTerm: string = '';
   names: string[] = [];
@@ -22,13 +22,11 @@ export class FriendsScreenComponent implements OnInit {
   fetchData(): void {
     this.httpservice.getFriends().subscribe({
       next: (data) => {
+        console.log(data);
         this.friends = data;
       },
       error: (e) => {
         console.log(e);
-      },
-      complete: () => {
-        console.log(this.friends);
       },
     })
   }
@@ -48,10 +46,8 @@ export class FriendsScreenComponent implements OnInit {
       this.httpservice.getUsers().subscribe({
         next: (data) => {
           this.users = data;
-          console.log(this.users);
           let user = this.users.find((e)=> e.username == name)
           userid = user?._id;
-          console.log(userid);
         },
         error: (e) => {
           console.log(e)

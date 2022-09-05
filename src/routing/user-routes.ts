@@ -110,7 +110,7 @@ router.get('/:userId/friends', async (req, res) => {
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
         if (result.length === 0)
-            return res.status(200).json({ error: false, message: 'This user has no friends ;(', timestamp: Date.now() });
+            return res.status(404).json({ error: true, message: 'This user has no friends ;(', timestamp: Date.now() });
         return res.status(200).json(result);
     }
     return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
@@ -167,7 +167,8 @@ router.get('/:userId/notifications', async (req, res) => {
 })
 
 //accept or refuse a notification (?action=accept - ?action=refuse)
-//TODO use websocket 
+//TODO use websocket with room
+// TODO delete notifications not working
 router.put('/:userId/notifications/:notificationId', async (req, res) => {
     let action = req.query.action ? req.query.action : undefined;
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
@@ -175,8 +176,11 @@ router.put('/:userId/notifications/:notificationId', async (req, res) => {
         try {
             var u = await user.getModel().findById(new Types.ObjectId(req.params.userId));
             var notification = u.notifications.find((val) => (String(val._id) === req.params.notificationId));
-            if (action == 'accept')
+            if (action == 'accept'){
+                //attenzione
                 await notification.accept();
+                await u.removeNotification(notification);
+            }
             await u.removeNotification(notification);
         } catch (err) {
             if (err === 'Server Error')

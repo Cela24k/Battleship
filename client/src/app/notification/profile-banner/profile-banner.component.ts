@@ -20,7 +20,7 @@ export class ProfileBannerComponent implements OnInit {
   state: State;
   sender: string;
 
-  constructor( private httpservice: NotificationHttpService ) { 
+  constructor(private httpservice: NotificationHttpService) {
     this.state = State.None;
     this.sender = '';
   }
@@ -29,14 +29,27 @@ export class ProfileBannerComponent implements OnInit {
     this.sender = this.notification.text.split(' ')[0];
   }
 
-  accept(): void{
-    this.httpservice.accept(this.notification._id);
-    this.state = State.Accepted;
+  accept(): void {
+    this.httpservice.accept(this.notification._id).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.state = State.Accepted;
+      },
+      error: (e) => {
+        console.log(e);
+      },
+    });
   }
 
-  refuse(): void{
-    this.httpservice.refuse(this.notification._id);
-    this.state = State.Refused;
+  refuse(): void {
+    this.httpservice.refuse(this.notification._id).subscribe({
+      next: (data) => {
+        this.state = State.Refused;
+      },
+      error: (e) => {
+        console.log(e);
+      },
+    });
   }
 
   isNone(): boolean {
@@ -46,7 +59,7 @@ export class ProfileBannerComponent implements OnInit {
   isAccepted(): boolean {
     return this.state === State.Accepted;
   }
-  
+
   isRefused(): boolean {
     return this.state === State.Refused;
   }
