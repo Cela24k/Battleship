@@ -46,47 +46,54 @@ export class FieldComponent implements OnInit {
 
     // cliccata una barca 
     if (this.field[index].cellType == CellType.Ship) {
-      let shipElement: Ship = new Ship([],0,'',0);
+      let shipElement: Ship = new Ship([], 0, '', 0);
       let shipIndex = undefined;
-      
       this.placedShips.forEach((e: Ship, i) => {
-        let result = e.position.find((x)=> {
+        let result = e.position.find((x) => {
           return x.row == coords[0] && x.col == coords[1];
         })
-        if(result){
+        if (result) {
           shipIndex = i;
           shipElement = e;
         }
       });
 
-      //
-      if(shipElement && shipIndex != undefined){
-        shipElement.position.forEach((e)=>{
-          this.field[e.row * SIZE + e.col] = new Cell(coords[0], coords[1], CellType.Empty);
+      if (shipElement && shipIndex != undefined) {
+        // debugger;
+        shipElement.position.forEach((e) => {
+          this.field[e.row * SIZE + e.col] = new Cell(e.row, e.col, CellType.Empty);
         })
 
-        this.placedShips.splice(shipIndex,1);
+
+        this.placedShips.splice(shipIndex, 1);
+        console.log(this.placedShips); 
         this.addShipEvent.emit(shipElement);
+      }
+    } //cliccata una empty
+    else {
+      if (!this.isHoveringSomething() && this.selected) {
+        this.hovered.forEach((e, i) => {
+          console.log(e);
+          if (e != null) {
+            if (this.selected?.orientation == OrientationShip.Horizontal){
+              this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
+            }
+            else {
+              this.field[e.nativeElement.id] = new Cell(coords[0] + i, coords[1], CellType.Ship);
+            }
+
+            if (this.selected)
+              this.selected.position.push(this.field[e.nativeElement.id]);
+          }
+          else console.log('e null')
+        });
+        this.placedShips.push(this.selected);
+        // mandare emitter di poppare la nave dalla lista
+        console.log(this.placedShips); 
+        this.popShipEvent.emit(this.selected);
       }
     }
 
-    if (!this.isHoveringSomething() && this.selected) {
-      this.hovered.forEach((e,i) => {
-        if (e != null) {
-          if (this.selected?.orientation == OrientationShip.Horizontal)
-            this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
-          else {
-            this.field[e.nativeElement.id] = new Cell(coords[0] + i, coords[1], CellType.Ship);
-          }
-
-          if (this.selected)
-            this.selected.position.push(this.field[e.nativeElement.id]);
-        }
-      });
-      this.placedShips.push(this.selected);
-      // mandare emitter di poppare la nave dalla lista 
-      this.popShipEvent.emit(this.selected);
-    }
   }
 
   hoverHandler(event: any, index?: any) {
@@ -97,7 +104,7 @@ export class FieldComponent implements OnInit {
     if (this.field[index].cellType == CellType.Empty) {
       for (let i = 0; i < len; i++) {
         let htmlelem;
-        if (!this.rotated) {
+        if (this.selected?.orientation == OrientationShip.Horizontal) {
           if ((coords[1] + i < SIZE))
             htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i).toString()));
           else {
@@ -136,7 +143,7 @@ export class FieldComponent implements OnInit {
   }
 
   isEmpty(index: any) {
-    return this.field[index].cellType == CellType.Ship
+    return this.field[index].cellType == CellType.Ship;
   }
 
   isHoveringSomething(): boolean {

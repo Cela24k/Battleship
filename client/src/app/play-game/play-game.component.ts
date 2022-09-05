@@ -77,11 +77,16 @@ export class PlayGameComponent implements OnInit {
     if( index != -1){
       this.ships.splice(index,1)
       this.selected = null
+      this.isRotated = false;
     }
+    console.log(this.ships);
   }
 
   addShip(ship: Ship){
-    console.log('ciao')
+    ship.position = [];
     this.ships.push(ship);
+    this.isRotated = false;
+    console.log(this.ships);
   }
+  
 }
