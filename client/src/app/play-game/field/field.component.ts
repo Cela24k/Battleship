@@ -40,9 +40,7 @@ export class FieldComponent implements OnInit {
   }
 
   clickHandler(event: any, index: number) {
-    const coords = this.formatCoords(SIZE, index); //[x,y]
-
-    console.log('coordinate: ' + coords);
+    const coords = this.formatCoords(SIZE, index);
 
     // cliccata una barca 
     if (this.field[index].cellType == CellType.Ship) {
@@ -58,10 +56,9 @@ export class FieldComponent implements OnInit {
         }
       });
 
-      if (shipElement && shipIndex != undefined) {
-        // debugger;
-        shipElement.position.forEach((e) => {
-          this.field[e.row * SIZE + e.col] = new Cell(e.row, e.col, CellType.Empty);
+      if(shipElement && shipIndex != undefined){
+        shipElement.position.forEach((e)=>{
+          this.field[e.row * SIZE + e.col] = new Cell(coords[0], coords[1], CellType.Empty);
         })
 
 
