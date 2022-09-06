@@ -59,36 +59,6 @@ mongoose.connect(process.env.DB_URI)
     .then(
         () => {
             console.log('Connected to DB'.green);
-            ios.on('connection', (client) => {
-                console.log("------------------------------------------------".america)
-                console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
-                const userJoin = new UserJoinListener(client);
-                userJoin.listen();
-
-                const chatMessage = new ChatMessageListener(client);
-                chatMessage.listen();
-
-                console.log('Auth ', client.handshake.auth);
-                client.join(client.handshake.auth['userid']);
-
-                client.on('disconnect', () => {
-                    console.log("------------------------------------------------".america);
-                    console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
-                })
-                client.on('notification', (data) => {
-                    //client.broadcast.to('id').emit('notification','mimmetto a tutti');
-                    console.log('Il server socket ha captato: ', data);
-                    //client.broadcast.emit('notification',"MIMMO BROADCASTATO")
-                })
-                //client.emit('notification',{mimmo: "el mimmo server"});
-            })
-
-            const matchmakingEngine = new MatchMakingEngine(ios, 5000);
-            matchmakingEngine.start();
-
-
-            //handling socket needed;
-
             server.listen(8080, () => console.log("HTTP Server started at http://localhost:8080".green));
         }
     ).catch(
@@ -97,5 +67,32 @@ mongoose.connect(process.env.DB_URI)
             console.log(err);
         }
     )
+ios.on('connection', (client) => {
+    console.log("------------------------------------------------".america)
+    console.log("Socket.io client ID: ".green + client.id.red + " connected".green);
+    const userJoin = new UserJoinListener(client);
+    userJoin.listen();
+
+    const chatMessage = new ChatMessageListener(client);
+    chatMessage.listen();
+
+    console.log('Auth ', client.handshake.auth);
+    client.join(client.handshake.auth['userid']);
+
+    client.on('disconnect', () => {
+        console.log("------------------------------------------------".america);
+        console.log("Socket.io client ID: ".green + client.id.red + " has been disconnected".yellow);
+    })
+    client.on('notification', (data) => {
+        //client.broadcast.to('id').emit('notification','mimmetto a tutti');
+        console.log('Il server socket ha captato: ', data);
+        //client.broadcast.emit('notification',"MIMMO BROADCASTATO")
+    })
+    //client.emit('notification',{mimmo: "el mimmo server"});
+})
+
+
+const matchmakingEngine = new MatchMakingEngine(ios, 5000);
+matchmakingEngine.start();
 
 export default ios;

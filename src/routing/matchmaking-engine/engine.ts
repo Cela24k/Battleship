@@ -32,7 +32,7 @@ export class MatchMakingEngine {
 
     private async searchEngine() {
         // console.log("I'm searching bi".bgYellow.black);
-        const ticketList: TicketEntryInterface[] = await TicketEntry.find({}).sort({ ticketTime: 1 }); //the sorting parameter is an object with the sorting condition which value can be 1(ascending) or -1(descenting)
+        try{const ticketList: TicketEntryInterface[] = await TicketEntry.find({}).sort({ ticketTime: 1 }); //the sorting parameter is an object with the sorting condition which value can be 1(ascending) or -1(descenting)
         //it loops when the queue has at least 2 players.
         while (ticketList.length > 1) {
             const playerOne = ticketList.pop();
@@ -53,7 +53,10 @@ export class MatchMakingEngine {
             }
         }
 
-        this.refreshSearchEngine();
+        this.refreshSearchEngine();}
+        catch(err){
+            console.log(err);
+        }
 
     }
 

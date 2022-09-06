@@ -15,7 +15,6 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
     userId: {
         type: SchemaTypes.ObjectId,
         requires: true,
-        unique: true,
     },
     board : {
         type: BattleGridSchema,
