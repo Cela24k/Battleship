@@ -97,7 +97,8 @@ export class FieldComponent implements OnInit {
     const elements: any = [];
     const coords = formatCoords(10, index);
     const len = this.selected?.length != undefined ? this.selected.length : 0;
-
+    console.log(coords);
+    
     if (this.field[index].cellType == CellType.Empty) {
       for (let i = 0; i < len; i++) {
         let htmlelem;

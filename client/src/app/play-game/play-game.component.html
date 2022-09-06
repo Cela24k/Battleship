@@ -8,7 +8,6 @@
 
 <ng-template #preparation>
   <ng-container *ngIf="isPreparing(); else gamerandom">
-    <!-- mettere class -->
     <div class="back" style="display: flex; justify-content: center;">
       <div class="field-container">
         <mat-card class="example-card">
@@ -29,7 +28,6 @@
                 {{ship.type}}
               </mat-chip>
             </mat-chip-list>
-            <!-- mettere class -->
             <div style="display: flex; justify-content: space-between; padding-top: 20px;" *ngIf="this.selected">
               <p class="hint"> Selected ship: {{this.selected.type}}</p>
               <button *ngIf="isHorizontal()" mat-raised-button color="primary" aria-label="Rotate!"
@@ -40,7 +38,6 @@
           </mat-card-actions>
         </mat-card>
       </div>
-      <!-- mettere class -->
       <div style="height: 100vh;">
         <mat-card class="shots-card">
           <mat-card-header>

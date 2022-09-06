@@ -130,6 +130,10 @@ export class PlayGameComponent implements OnInit {
   }
 
   onMatchEvent(event: Match){
-    console.log(event);
+    if(this.game){
+      this.game.matchmaking = false;
+      this.game.preparation = true;
+      this.game.match = event;
+    }
   }
 }

@@ -12,6 +12,7 @@ export class RoomEmitter<T> extends Emitter<T>{
 
 
     emit(data: T){
+        console.log(new String(data).cyan);
         this.ios.in(this.roomId).emit(this.event, data);
     }
 

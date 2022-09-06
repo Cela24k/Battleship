@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { newMatch } from "../../models/match/match";
+import ios from "../..";
+import { MatchInterface, newMatch } from "../../models/match/match";
 import { removeTicket, TicketEntry, TicketEntryInterface } from "../../models/ticket-entry"
 import NewMatchEmitter from "../../socket-helper/Emitter/NewMatchEmitter";
 //This class provides an engine wicha aim is to arrange matches beetween players who join in the ticket list.
@@ -32,32 +33,37 @@ export class MatchMakingEngine {
 
     private async searchEngine() {
         // console.log("I'm searching bi".bgYellow.black);
-        try{const ticketList: TicketEntryInterface[] = await TicketEntry.find({}).sort({ ticketTime: 1 }); //the sorting parameter is an object with the sorting condition which value can be 1(ascending) or -1(descenting)
-        //it loops when the queue has at least 2 players.
-        while (ticketList.length > 1) {
-            const playerOne = ticketList.pop();
-            const playerTwo = this.findOpponent(playerOne, ticketList);
+        try {
+            const ticketList: TicketEntryInterface[] = await TicketEntry.find({}).sort({ ticketTime: 1 }); //the sorting parameter is an object with the sorting condition which value can be 1(ascending) or -1(descenting)
+            //it loops when the queue has at least 2 players.
+            while (ticketList.length > 1) {
+                const playerOne = ticketList.pop();
+                const playerTwo = this.findOpponent(playerOne, ticketList);
 
-            if (playerTwo != null) {
-                console.log("Matchiamoo".rainbow);
-                const match = await newMatch(playerOne.userId, playerTwo.userId);
-                //TODO newmatch emitter needded.
-                const emitterOne = new NewMatchEmitter(this.serverIo, (playerOne.userId).toString());
-                const emitterTwo = new NewMatchEmitter(this.serverIo, (playerTwo.userId).toString());
-                emitterOne.emit(match);
-                emitterTwo.emit(match);
-                await removeTicket(playerOne.userId);
-                await removeTicket(playerTwo.userId);
-                ticketList.pop();
-                ticketList.splice(ticketList.indexOf(playerTwo), 1);
+                if (playerTwo != null) {
+                    console.log("Matchiamoo".rainbow);
+                    const match = await newMatch(playerOne.userId, playerTwo.userId);
+                    //TODO newmatch emitter needded.
+                    // const emitterOne = new NewMatchEmitter<any>(this.serverIo, (playerOne.userId).toString());
+                    // const emitterTwo = new NewMatchEmitter<any>(this.serverIo, (playerTwo.userId).toString());
+                    
+                    ios.in((playerOne.userId).toString()).emit('new-match', match);
+                    ios.in((playerTwo.userId).toString()).emit('new-match', match);
+
+                    // emitterOne.emit(match);
+                    // emitterTwo.emit(match);
+                    await removeTicket(playerOne.userId);
+                    await removeTicket(playerTwo.userId);
+                    ticketList.pop();
+                    ticketList.splice(ticketList.indexOf(playerTwo), 1);
+                }
             }
-        }
 
-        this.refreshSearchEngine();}
-        catch(err){
-            console.log(err);
         }
-
+        catch (err) {
+            console.log(err);   
+        }
+        this.refreshSearchEngine();
     }
 
     private findOpponent(playerOne: TicketEntryInterface, ticketList: TicketEntryInterface[]): TicketEntryInterface {
