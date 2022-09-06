@@ -89,4 +89,7 @@ export class PlayGameComponent implements OnInit {
     console.log(this.ships);
   }
   
+  isHorizontal(){
+    return this.selected?.orientation == OrientationShip.Horizontal;
+  }
 }

@@ -35,12 +35,28 @@
 .example-card {
     top: 60px;
     margin-left: 10vw;
+    margin-right: 5px;
+}
+
+.shots-card {
+    top: 60px;
+    width: 30vh;
+    margin-left: 5px;
     margin-right: 10vw;
+    margin-bottom: 10px;
     max-width: 70vh;
 }
 
+.field-container{
+    width: 85vh;
+}
 .example-header-image {
     background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
+    background-size: cover;
+}
+
+.opponent-header-image {
+    background-image: url('https://cdn.pixabay.com/photo/2018/05/16/19/54/red-nosed-pit-bull-3406870__340.jpg');
     background-size: cover;
 }
 
