@@ -17,7 +17,6 @@ export class SocketioService {
   }
 
   listen(eventName: string): Observable<any> {
-    
     return new Observable((observer) => {
 
       this.socket.on(eventName, (data: any) => {

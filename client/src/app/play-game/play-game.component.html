@@ -2,7 +2,7 @@
 
 <ng-template #matchmaking>
   <ng-container *ngIf="isMatchmaking(); else preparation">
-    <app-matchmaking ></app-matchmaking>
+    <app-matchmaking (joinedMatchEvent)="onMatchEvent($event)"></app-matchmaking>
   </ng-container>
 </ng-template>
 

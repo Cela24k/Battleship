@@ -1,3 +1,5 @@
+import { ChatInterface, emptyChat } from "src/app/chat/chat.component";
+
 export class Cell {
     public row: number;
     col: number;
@@ -34,11 +36,11 @@ export class Ship {
     length: ShipLenght;
     type: string;
     orientation: OrientationShip;
-    constructor(position: Cell[], length: ShipLenght, type: string, orientation: OrientationShip){
+    constructor(position: Cell[], length: ShipLenght, type: string, orientation: OrientationShip) {
         this.position = position;
         this.length = length;
         this.orientation = orientation;
-        this.type = type; 
+        this.type = type;
 
     }
 }
@@ -50,13 +52,57 @@ export class BattleGrid {
     //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
     shots: Cell[]; // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
     shipsPosition: Ship[];// Ships array that could be studied for the opponent shots.
-    constructor(shots: Cell[], shipPositon: Ship[])
-    {
-        this.shots = shots;
-        this.shipsPosition = shipPositon;
+    constructor(shots?: Cell[], shipPositon?: Ship[]) {
+        this.shots = shots ?? [];
+        this.shipsPosition = shipPositon ?? [];
     }
 }
 
+export class MatchPlayer {
+    userId: string;
+    board: BattleGrid;
+
+    constructor(userId?: string, board?: BattleGrid) {
+        this.board = board ?? new BattleGrid();
+        this.userId = userId ?? " ";
+    }
+
+}
+
+export class MatchResults {
+    winner: string;
+
+    constructor(winner?: string) {
+        this.winner = winner ?? '';
+    }
+}
+
+export class Match {
+    _id: string;
+    playerOne: MatchPlayer;
+    playerTwo: MatchPlayer;
+    result: MatchResults;
+    playersChat: ChatInterface;
+    observersChat: ChatInterface;
+    gameTurn: string;
+
+    constructor(_id: string,
+        playerOne: MatchPlayer,
+        playerTwo: MatchPlayer,
+        result: MatchResults,
+        playersChat: ChatInterface,
+        observersChat: ChatInterface,
+        gameTurn: string) {
+        
+            this._id = _id ?? '';
+            this.playerOne = playerOne ?? new MatchPlayer();
+            this.playerTwo = playerOne ?? new MatchPlayer();
+            this.result = result ?? new MatchResults();
+            this.playersChat = playersChat ?? emptyChat();
+            this.observersChat = observersChat ?? emptyChat();
+            this.gameTurn = gameTurn ?? ''; 
+    }
+}
 // if (!this.rotated) {
 //     console.log('ciao')
 //     this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);

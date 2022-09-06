@@ -1,4 +1,4 @@
-import { Cell, OrientationShip, Ship, ShipLenght } from './game-entities/game';
+import { Cell, Match, OrientationShip, Ship, ShipLenght } from './game-entities/game';
 import { Component, ElementRef, NgModule, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
@@ -19,6 +19,7 @@ interface Game {
   type: GameType,
   matchmaking: boolean,
   preparation: boolean,
+  match: Match | null
 }
 
 @Component({
@@ -117,7 +118,7 @@ export class PlayGameComponent implements OnInit {
     // if(this.game == null){
     //   this.game = {type: event, preparation: true};
     // }
-    this.game = {type: event, matchmaking:true, preparation: false};
+    this.game = {type: event, matchmaking:true, preparation: false, match: null};
   }
 
   isMatchmaking(): boolean {
@@ -126,5 +127,9 @@ export class PlayGameComponent implements OnInit {
 
   isPreparing(): boolean {
     return this.game != null && this.game.preparation == true;
+  }
+
+  onMatchEvent(event: Match){
+    console.log(event);
   }
 }
