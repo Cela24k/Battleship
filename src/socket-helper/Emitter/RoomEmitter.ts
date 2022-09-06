@@ -12,7 +12,7 @@ export class RoomEmitter<T> extends Emitter<T>{
 
 
     emit(data: T){
-        this.ios.to(this.roomId).emit(this.event, data);
+        this.ios.in(this.roomId).emit(this.event, data);
     }
 
 
