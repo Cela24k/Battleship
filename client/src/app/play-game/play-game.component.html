@@ -1,43 +1,86 @@
-<app-play-game-panel *ngIf="!isPlaying(); else game" (gameEvent)="this.playing = true"></app-play-game-panel>
-<ng-template #game>
-  <div class="back">
-    <mat-card class="example-card">
-      <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>Your field</mat-card-title>
-        <mat-card-subtitle>Preparation phase: place the ships in the grid</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <app-field [selected]="this.selected" [rotated]="isRotated" (popShipEvent)="popShip($event)"
-          (addShipEvent)="addShip($event)"></app-field>
-      </mat-card-content>
-      <mat-card-actions>
-        <mat-chip-list #chipList [formControl]="formControl" class="example-chip" cdkDropList
-          cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
-          <mat-chip class="example-box" cdkDrag *ngFor="let ship of ships" [selectable]="false"
-            (mousedown)="clickEvent($event)">
-            {{ship.type}}
-          </mat-chip>
-        </mat-chip-list>
-        <div style="display: flex; justify-content: space-between; padding-top: 20px;">
-          <p class="hint" *ngIf="selected != null"> Selected ship: {{this.selected.type}}</p>
-          <button *ngIf="this.selected" mat-raised-button color="primary" aria-label="Rotate!" (click)="rotateShip($event)"> Rotate!</button>
-        </div>
-      </mat-card-actions>
-    </mat-card>
+<app-play-game-panel *ngIf="!isPlaying(); else matchmaking" (gameEvent)="onGameEvent($event)"></app-play-game-panel>
 
-    <!-- <mat-card class="example-card">
-      <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title>Your field</mat-card-title>
-        <mat-card-subtitle>Shoot your shots</mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        <app-field [selected]="this.selected" [rotated]="isRotated" (popShipEvent)="popShip($event)" (addShipEvent)="addShip($event)"></app-field>
-      </mat-card-content>
-      <mat-card-actions>
-       <p class="hint" *ngIf="selected != null"> Selected ship: {{this.selected.type}}</p>
-      </mat-card-actions>
-    </mat-card> -->
-  </div>
+<ng-template #matchmaking>
+  <ng-container *ngIf="isMatchmaking(); else preparation">
+    <app-matchmaking ></app-matchmaking>
+  </ng-container>
+</ng-template>
+
+<ng-template #preparation>
+  <ng-container *ngIf="isPreparing(); else gamerandom">
+    <!-- mettere class -->
+    <div class="back" style="display: flex; justify-content: center;">
+      <div class="field-container">
+        <mat-card class="example-card">
+          <mat-card-header>
+            <div mat-card-avatar class="example-header-image"></div>
+            <mat-card-title>Your field</mat-card-title>
+            <mat-card-subtitle>Preparation phase: place the ships in the grid</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <app-field [selected]="this.selected" [rotated]="isRotated" (popShipEvent)="popShip($event)"
+              (addShipEvent)="addShip($event)"></app-field>
+          </mat-card-content>
+          <mat-card-actions>
+            <mat-chip-list #chipList [formControl]="formControl" class="example-chip" cdkDropList
+              cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
+              <mat-chip class="example-box" cdkDrag *ngFor="let ship of ships" [selectable]="false"
+                (mousedown)="clickEvent($event)">
+                {{ship.type}}
+              </mat-chip>
+            </mat-chip-list>
+            <!-- mettere class -->
+            <div style="display: flex; justify-content: space-between; padding-top: 20px;" *ngIf="this.selected">
+              <p class="hint"> Selected ship: {{this.selected.type}}</p>
+              <button *ngIf="isHorizontal()" mat-raised-button color="primary" aria-label="Rotate!"
+                (click)="rotateShip($event)"> Rotate!</button>
+              <button *ngIf="!isHorizontal()" mat-stroked-button color="primary" aria-label="Rotate!"
+                (click)="rotateShip($event)"> Rotate!</button>
+            </div>
+          </mat-card-actions>
+        </mat-card>
+      </div>
+      <!-- mettere class -->
+      <div style="height: 100vh;">
+        <mat-card class="shots-card">
+          <mat-card-header>
+            <div mat-card-avatar class="opponent-header-image"></div>
+            <mat-card-title>Opponent's fiel</mat-card-title>
+            <mat-card-subtitle>Shoot your shots</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <app-shots (shotReadyEvent)="shotReady($event)"></app-shots>
+          </mat-card-content>
+          <mat-card-actions>
+            <div style="justify-content: center;">
+              <button *ngIf="shot!=null" mat-raised-button>Shoot!</button>
+            </div>
+          </mat-card-actions>
+        </mat-card>
+        <mat-card class="shots-card">
+          <mat-card-header>
+            <mat-card-title>Chat</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div style="height: 12vw; border: 1px dotted black">Chat...</div>
+          </mat-card-content>
+          <mat-card-actions>
+            actions
+          </mat-card-actions>
+        </mat-card>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #gamerandom>
+  <ng-container *ngIf="isGameRandom(); else gamefriend">
+    
+  </ng-container>
+</ng-template>
+
+<ng-template #gamefriend>
+  <ng-container>
+    ciao
+  </ng-container>
 </ng-template>

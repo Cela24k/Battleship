@@ -14,6 +14,7 @@ export class PlayGamePanelComponent implements OnInit {
   }
 
   playRandom(): void {
+    console.log('random');
     this.gameEvent.emit(GameType.Random);
   }
 }

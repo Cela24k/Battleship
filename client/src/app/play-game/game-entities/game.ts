@@ -13,7 +13,8 @@ export enum CellType {
     Empty = 'Empty',
     Hit = 'Hit',
     Miss = 'Miss',
-    Ship = 'Ship'
+    Ship = 'Ship',
+    Shot = 'Shot',
 }
 export enum OrientationShip {
     Horizontal,

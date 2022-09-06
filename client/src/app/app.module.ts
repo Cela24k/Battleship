@@ -38,6 +38,7 @@ import {MatInputModule} from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
 import {MatChipsModule} from '@angular/material/chips';
 import { FieldComponent } from './play-game/field/field.component';
+import { ShotsComponent } from './play-game/shots/shots.component';
 import {MatGridListModule} from '@angular/material/grid-list';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -47,6 +48,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen-prev/friends-screen-prev.component';
 import { TileComponent } from './play-game/tile/tile.component';
+import { MatchmakingComponent } from './play-game/matchmaking/matchmaking.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -65,10 +68,13 @@ import { TileComponent } from './play-game/tile/tile.component';
     PlayGameRandomComponent,
     MenuSearchboxComponent,
     FieldComponent,
+    ShotsComponent,
     ProfileScreenComponent,
     FriendsScreenComponent,
     FriendsScreenPrevComponent,
     TileComponent,
+    MatchmakingComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -88,6 +94,7 @@ import { TileComponent } from './play-game/tile/tile.component';
     MatGridListModule,
     MatSlideToggleModule,
     MatSnackBarModule,
+    MatProgressSpinnerModule,
     
     FormsModule,
     BrowserAnimationsModule,
