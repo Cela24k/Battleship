@@ -40,9 +40,7 @@ export class FieldComponent implements OnInit {
   }
 
   clickHandler(event: any, index: number) {
-    const coords = this.formatCoords(SIZE, index); //[x,y]
-
-    console.log('coordinate: ' + coords);
+    const coords = formatCoords(SIZE, index); //[x,y]
 
     // cliccata una barca 
     if (this.field[index].cellType == CellType.Ship) {
@@ -98,7 +96,7 @@ export class FieldComponent implements OnInit {
 
   hoverHandler(event: any, index?: any) {
     const elements: any = [];
-    const coords = this.formatCoords(10, index);
+    const coords = formatCoords(10, index);
     const len = this.selected?.length != undefined ? this.selected.length : 0;
 
     if (this.field[index].cellType == CellType.Empty) {
@@ -132,16 +130,6 @@ export class FieldComponent implements OnInit {
     })
   }
 
-  formatCoords(length: number, index: number): [number, number] {
-    for (let i = 0; i < length; i++) {
-      for (let j = 0; j < length; j++) {
-        if (index == i * length + j)
-          return [i, j];
-      }
-    }
-    return [-1, -1];
-  }
-
   isEmpty(index: any) {
     return this.field[index].cellType == CellType.Ship;
   }
@@ -149,4 +137,14 @@ export class FieldComponent implements OnInit {
   isHoveringSomething(): boolean {
     return this.hovered.some((e) => e && this.field[e.nativeElement.id].cellType == CellType.Ship);
   }
+}
+
+export function formatCoords(length: number, index: number): [number, number] {
+  for (let i = 0; i < length; i++) {
+    for (let j = 0; j < length; j++) {
+      if (index == i * length + j)
+        return [i, j];
+    }
+  }
+  return [-1, -1];
 }

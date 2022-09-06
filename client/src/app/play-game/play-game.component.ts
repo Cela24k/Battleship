@@ -1,10 +1,11 @@
-import { OrientationShip, Ship, ShipLenght } from './game-entities/game';
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Cell, OrientationShip, Ship, ShipLenght } from './game-entities/game';
+import { Component, ElementRef, NgModule, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 export enum GameType {
   Friend,
-  Random
+  Random,
+  Spectate
 }
 
 interface SelectedShip {
@@ -14,16 +15,26 @@ interface SelectedShip {
   orientation: OrientationShip // 0 horizontal, 1 vertical
 }
 
+interface Game {
+  type: GameType,
+  matchmaking: boolean,
+  preparation: boolean,
+}
+
 @Component({
   selector: 'app-play-game',
   templateUrl: './play-game.component.html',
   styleUrls: ['./play-game.component.css']
 })
 export class PlayGameComponent implements OnInit {
+
+  game: Game | null = null; 
+
   playing: boolean = false;
   selected: Ship | null = null;
   formControl = new FormControl([]);
   isRotated: boolean = false;
+  shot: Cell | null = null;
 
   ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
@@ -36,12 +47,12 @@ export class PlayGameComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  playRandom(): void {
-
+  //ottenere partite gia esistenti e cambiare il valore di game.preparation a false;
+  fetchExistingMatch(): void{
   }
 
   isPlaying(): boolean {
-    return this.playing;
+    return this.game != null;
   }
 
   drop(event: any) {
@@ -91,5 +102,29 @@ export class PlayGameComponent implements OnInit {
   
   isHorizontal(){
     return this.selected?.orientation == OrientationShip.Horizontal;
+  }
+
+  shotReady(event: any){
+    this.shot = event;
+  }
+
+  isGameRandom(): boolean{
+    return this.game != null && this.game.type == GameType.Random;
+  }
+
+  onGameEvent(event: GameType){
+    //per ricevere un match esistente
+    // if(this.game == null){
+    //   this.game = {type: event, preparation: true};
+    // }
+    this.game = {type: event, matchmaking:true, preparation: false};
+  }
+
+  isMatchmaking(): boolean {
+    return this.game != null && this.game.matchmaking == true;
+  }
+
+  isPreparing(): boolean {
+    return this.game != null && this.game.preparation == true;
   }
 }
