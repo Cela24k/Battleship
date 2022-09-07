@@ -1,6 +1,7 @@
-import { Cell, Match, OrientationShip, Ship, ShipLenght } from './game-entities/game';
+import { BattleGrid, Cell, Match, OrientationShip, Ship, ShipLenght } from './game-entities/game';
 import { Component, ElementRef, NgModule, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { GameService } from '../game.service';
 
 export enum GameType {
   Friend,
@@ -19,7 +20,9 @@ interface Game {
   type: GameType,
   matchmaking: boolean,
   preparation: boolean,
-  match: Match | null
+  playing: boolean,
+  match: Match | null,
+  positions: Ship[];
 }
 
 @Component({
@@ -43,7 +46,7 @@ export class PlayGameComponent implements OnInit {
   new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
-  constructor() { }
+  constructor(private gameService: GameService) { }
 
   ngOnInit(): void {
   }
@@ -91,14 +94,12 @@ export class PlayGameComponent implements OnInit {
       this.selected = null
       this.isRotated = false;
     }
-    console.log(this.ships);
   }
 
   addShip(ship: Ship){
     ship.position = [];
     this.ships.push(ship);
     this.isRotated = false;
-    console.log(this.ships);
   }
   
   isHorizontal(){
@@ -118,7 +119,7 @@ export class PlayGameComponent implements OnInit {
     // if(this.game == null){
     //   this.game = {type: event, preparation: true};
     // }
-    this.game = {type: event, matchmaking:true, preparation: false, match: null};
+    this.game = {type: event, matchmaking:true, preparation: false, playing: false, match: null, positions: []};
   }
 
   isMatchmaking(): boolean {
@@ -135,5 +136,37 @@ export class PlayGameComponent implements OnInit {
       this.game.preparation = true;
       this.game.match = event;
     }
+  }
+
+  onPositionEvent(event: Ship[]){
+    if(this.game){
+      this.game.positions = event;
+    }
+  }
+
+  initBoard(){
+    if(this.game && this.game.match && this.game.positions){
+      this.gameService.initBoard(this.game.match._id, new BattleGrid([],this.game.positions)).subscribe({
+        next: (value)=> {
+          if(this.game){
+            this.game.preparation = false;
+            this.game.playing = true;
+            console.log(value)
+          }
+        },
+        error(err) {
+            console.log(err)
+        },
+        complete() {
+        },
+      })
+    }
+  }
+
+  formatProps() {
+    if(this.game)
+      return {shots:[], shipsPosition:this.game.positions}
+    else
+      return {shots: [], shipsPosition: []};
   }
 }

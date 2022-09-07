@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { formatCoords } from '../field/field.component';
 import { Cell, CellType } from '../game-entities/game';
 
@@ -10,6 +10,7 @@ const SIZE = 10;
   styleUrls: ['./shots.component.css']
 })
 export class ShotsComponent implements OnInit {
+  @Input() listeners: boolean = false;
   @Output() shotReadyEvent = new EventEmitter<Cell>();
 
   field: Cell[] = [];
@@ -32,8 +33,8 @@ export class ShotsComponent implements OnInit {
 
   clickHandler(event: any, index: number) {
     const coords = formatCoords(SIZE, index); //[x,y]
-    console.log(coords)
-    if(this.hovered && this.field[index]){
+    
+    if(this.listeners && this.hovered && this.field[index]){
       if(this.selected)
         this.field[this.selected?.row * SIZE + this.selected.col].cellType = CellType.Empty;
       this.field[index] = new Cell(coords[0],coords[1], CellType.Shot)
@@ -46,7 +47,7 @@ export class ShotsComponent implements OnInit {
     const elements: any = [];
     const coords = formatCoords(10, index);
 
-    if (this.field[index].cellType == CellType.Empty) {
+    if (this.listeners && this.field[index].cellType == CellType.Empty) {
       let htmlelem;
       htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id)).toString()));
 
@@ -59,7 +60,7 @@ export class ShotsComponent implements OnInit {
   }
 
   leaveHandler(event: any, index?: any) {
-      if (this.hovered.nativeElement != null)
+      if (this.listeners && this.hovered.nativeElement != null)
         this.hovered.nativeElement.setAttribute('style', '');
   }
 

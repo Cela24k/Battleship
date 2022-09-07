@@ -9,6 +9,8 @@ const SIZE = 10;
   styleUrls: ['./field.component.css']
 })
 export class FieldComponent implements OnInit {
+  @Input() listeners: boolean = false;
+
   @Input() props: BattleGrid = {
     shots: [],
     shipsPosition: []
@@ -18,7 +20,8 @@ export class FieldComponent implements OnInit {
 
   @Output() popShipEvent = new EventEmitter<Ship>();
   @Output() addShipEvent = new EventEmitter<Ship>();
-
+  @Output() positionsEvent = new EventEmitter<Ship[]>();
+  
   field: Cell[] = [];
   hovered: ElementRef[] = [];
   placedShips: Ship[] = [];
@@ -37,57 +40,67 @@ export class FieldComponent implements OnInit {
         this.field[i * SIZE + j] = new Cell(i, j, CellType.Empty);
       }
     }
+    this.placeExistingBoards();
+  }
+
+  placeExistingBoards(){
+    this.props.shipsPosition.forEach(e => {
+      e.position.forEach(element => {
+        this.field[element.row * SIZE + element.col] = new Cell(element.row, element.col, CellType.Ship);
+      });
+    });
   }
 
   clickHandler(event: any, index: number) {
     const coords = formatCoords(SIZE, index); //[x,y]
 
     // cliccata una barca 
-    if (this.field[index].cellType == CellType.Ship) {
-      let shipElement: Ship = new Ship([], 0, '', 0);
-      let shipIndex = undefined;
-      this.placedShips.forEach((e: Ship, i) => {
-        let result = e.position.find((x) => {
-          return x.row == coords[0] && x.col == coords[1];
-        })
-        if (result) {
-          shipIndex = i;
-          shipElement = e;
-        }
-      });
-
-      if(shipElement && shipIndex != undefined){
-        shipElement.position.forEach((e)=>{
-          this.field[e.row * SIZE + e.col] = new Cell(coords[0], coords[1], CellType.Empty);
-        })
-
-
-        this.placedShips.splice(shipIndex, 1);
-        console.log(this.placedShips); 
-        this.addShipEvent.emit(shipElement);
-      }
-    } //cliccata una empty
-    else {
-      if (!this.isHoveringSomething() && this.selected) {
-        this.hovered.forEach((e, i) => {
-          console.log(e);
-          if (e != null) {
-            if (this.selected?.orientation == OrientationShip.Horizontal){
-              this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
-            }
-            else {
-              this.field[e.nativeElement.id] = new Cell(coords[0] + i, coords[1], CellType.Ship);
-            }
-
-            if (this.selected)
-              this.selected.position.push(this.field[e.nativeElement.id]);
+    if(this.listeners){
+      if (this.field[index].cellType == CellType.Ship) {
+        let shipElement: Ship = new Ship([], 0, '', 0);
+        let shipIndex = undefined;
+        this.placedShips.forEach((e: Ship, i) => {
+          let result = e.position.find((x) => {
+            return x.row == coords[0] && x.col == coords[1];
+          })
+          if (result) {
+            shipIndex = i;
+            shipElement = e;
           }
-          else console.log('e null')
         });
-        this.placedShips.push(this.selected);
-        // mandare emitter di poppare la nave dalla lista
-        console.log(this.placedShips); 
-        this.popShipEvent.emit(this.selected);
+  
+        if(shipElement && shipIndex != undefined){
+          shipElement.position.forEach((e)=>{
+            this.field[e.row * SIZE + e.col] = new Cell(coords[0], coords[1], CellType.Empty);
+          })
+  
+  
+          this.placedShips.splice(shipIndex, 1);
+          this.addShipEvent.emit(shipElement);
+        }
+      } //cliccata una empty
+      else {
+        if (!this.isHoveringSomething() && this.selected) {
+          this.hovered.forEach((e, i) => {
+            if (e != null) {
+              if (this.selected?.orientation == OrientationShip.Horizontal){
+                this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
+              }
+              else {
+                this.field[e.nativeElement.id] = new Cell(coords[0] + i, coords[1], CellType.Ship);
+              }
+  
+              if (this.selected)
+                this.selected.position.push(this.field[e.nativeElement.id]);
+            }
+            else console.log('e null')
+          });
+          this.placedShips.push(this.selected);
+          // mandare emitter di poppare la nave dalla lista
+          this.popShipEvent.emit(this.selected);
+          if(this.placedShips.length == 5)
+            this.positionsEvent.emit(this.placedShips)
+        }
       }
     }
 
@@ -97,37 +110,40 @@ export class FieldComponent implements OnInit {
     const elements: any = [];
     const coords = formatCoords(10, index);
     const len = this.selected?.length != undefined ? this.selected.length : 0;
-    console.log(coords);
     
-    if (this.field[index].cellType == CellType.Empty) {
-      for (let i = 0; i < len; i++) {
-        let htmlelem;
-        if (this.selected?.orientation == OrientationShip.Horizontal) {
-          if ((coords[1] + i < SIZE))
-            htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i).toString()));
-          else {
-            htmlelem = new ElementRef(document.getElementById('xx'));
+    if(this.listeners){
+      if (this.field[index].cellType == CellType.Empty) {
+        for (let i = 0; i < len; i++) {
+          let htmlelem;
+          if (this.selected?.orientation == OrientationShip.Horizontal) {
+            if ((coords[1] + i < SIZE))
+              htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i).toString()));
+            else {
+              htmlelem = new ElementRef(document.getElementById('xx'));
+            }
+          }
+          else
+            htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i * 10).toString()))
+  
+          if (htmlelem.nativeElement != null) {
+            htmlelem.nativeElement?.setAttribute('style', 'background-color: lightcoral');
+            elements.push(htmlelem);
           }
         }
-        else
-          htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i * 10).toString()))
-
-        if (htmlelem.nativeElement != null) {
-          htmlelem.nativeElement?.setAttribute('style', 'background-color: lightcoral');
-          elements.push(htmlelem);
-        }
       }
+  
+      this.hovered = elements;
+      event.stopPropagation();
     }
-
-    this.hovered = elements;
-    event.stopPropagation();
   }
 
   leaveHandler(event: any, index?: any) {
-    this.hovered.forEach((elem) => {
-      if (elem.nativeElement != null)
-        elem.nativeElement.setAttribute('style', '');
-    })
+    if(this.listeners){
+      this.hovered.forEach((elem) => {
+        if (elem.nativeElement != null)
+          elem.nativeElement.setAttribute('style', '');
+      })
+    }
   }
 
   isEmpty(index: any) {
