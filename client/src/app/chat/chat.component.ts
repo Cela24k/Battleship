@@ -49,6 +49,7 @@ export class ChatComponent implements OnInit {
       next: (d) => {
         this.stored_chats = d.chats;
         this.n_pending = this.stored_chats.length;
+        
       },
       error: (err) => {
         console.log(err);

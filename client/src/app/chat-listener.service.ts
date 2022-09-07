@@ -11,4 +11,8 @@ export class ChatListenerService {
   onNewMessage() {
     return this.sio.listen('chat-message');
   }
+
+  joinChat(chatId : string) {
+    return this.sio.emit("join-chat", {chatId});
+  }
 }

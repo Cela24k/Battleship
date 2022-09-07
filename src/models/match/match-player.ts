@@ -5,7 +5,10 @@ export interface MatchPlayer {
     userId: Types.ObjectId,
     board: BattleGrid,
     delta_score: number,
-    elo: number
+    elo: number,
+    ready: boolean
+    
+    
 }
 
 export const MatchPlayerSchema = new Schema<MatchPlayer>({
@@ -24,6 +27,10 @@ export const MatchPlayerSchema = new Schema<MatchPlayer>({
         type: SchemaTypes.Number,
         required: true
     },
+    ready: {
+        type: SchemaTypes.Boolean,
+        default: false
+    }
     
 },{_id: false});
 

@@ -4,7 +4,7 @@ import { ChatInterface, ChatModel, createChat } from "../models/chat";
 import { getUser, getUserById, User } from "../models/user";
 import jsonwebtoken = require('jsonwebtoken');
 import { ChatMessageListener } from "../socket-helper/Listener/ChatMessageListener";
-import ChatEmitter from "../socket-helper/Emitter/ChatEmitter";
+import ChatMessageEmitter from "../socket-helper/Emitter/ChatMessageEmitter";
 import ios from "..";
 import { parseJwt } from "./user-routes";
 import { text } from "body-parser";
@@ -120,7 +120,7 @@ router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
     
             ).catch(err => { throw err });
     
-            const messageEmitter = new ChatEmitter(ios, chatId);
+            const messageEmitter = new ChatMessageEmitter(ios, chatId);
             messageEmitter.emit(message);
             console.log("Socket inviato");//TODO frontend test, or in postman.
     
