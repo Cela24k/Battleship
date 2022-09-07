@@ -138,6 +138,9 @@
         </mat-card>
       </div>
     </div>
+    <div *ngIf="!turn" class="floating-banner">
+      <h1> Waiting for opponent </h1>
+    </div>
   </ng-container>
 </ng-template>
 
@@ -151,5 +154,6 @@
   <div class="player-box">
     <img src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100%" alt="">
     <h2>Nome</h2>
+    <button mat-raised-button (click)="resetState()">Continue</button>
   </div>
 </div>

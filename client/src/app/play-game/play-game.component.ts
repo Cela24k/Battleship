@@ -2,6 +2,8 @@ import { BattleGrid, Cell, Match, OrientationShip, Ship, ShipLenght } from './ga
 import { Component, ElementRef, NgModule, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GameService } from '../game.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SocketioService } from '../socketio.service';
 
 export enum GameType {
   Friend,
@@ -31,10 +33,9 @@ interface Game {
   styleUrls: ['./play-game.component.css']
 })
 export class PlayGameComponent implements OnInit {
-
+  
+  turn: boolean = false;
   game: Game | null = null; 
-
-  playing: boolean = false;
   selected: Ship | null = null;
   formControl = new FormControl([]);
   isRotated: boolean = false;
@@ -46,7 +47,7 @@ export class PlayGameComponent implements OnInit {
   new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
-  constructor(private gameService: GameService) { }
+  constructor(private _snackBar: MatSnackBar,private gameService: GameService, private sio: SocketioService) { }
 
   ngOnInit(): void {
   }
@@ -149,17 +150,33 @@ export class PlayGameComponent implements OnInit {
       this.gameService.initBoard(this.game.match._id, new BattleGrid([],this.game.positions)).subscribe({
         next: (value)=> {
           if(this.game){
+            //ste due righe di codice da fare quando il server emitta che i due giocatori sono pronti
             this.game.preparation = false;
             this.game.playing = true;
+            this.openSnackBar('Board initialized, waiting for opponent', 'Got it!')
           }
         },
         error(err) {
-            console.log(err)
+            console.log('bad positions')
         },
         complete() {
         },
       })
     }
+  }
+
+  turnListener(){
+    this.sio.listen('match-turn').subscribe({
+      next(value) {
+          console.log(value);
+      },
+      error(err) {
+          console.log(err);
+      },
+      complete() {
+          
+      },
+    })
   }
 
   formatProps() {
@@ -177,7 +194,6 @@ export class PlayGameComponent implements OnInit {
             console.log(value);
 
             //sostituire cella con hit o miss 
-
         },
         error(err) {
             
@@ -189,8 +205,15 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
+  }
+
   winner(){
     return false;
   }
 
+  resetState(){
+
+  }
 }
