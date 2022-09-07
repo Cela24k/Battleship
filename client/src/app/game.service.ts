@@ -22,8 +22,8 @@ export class GameService {
     return this.httpclient.delete(this.matchmaking_url + '/join', {body:{userId: this.localstorage.getId()}});
   }
 
-  initBoard(matchId: string, board: BattleGrid){
-    return this.httpclient.post(this.match_url +"/"+ matchId, { body: board})
+  initBoard(matchId: string, board: BattleGrid): Observable<any>{
+    return this.httpclient.post(this.match_url +"/"+ matchId+ "?action=init", { body: board})
   }
 
 }

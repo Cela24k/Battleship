@@ -18,6 +18,7 @@ export class MatchJoinedListener extends Listener{
     listen(): void {
         super.listen(async (data)=>{
             const {match, userId} = data;
+            this.client.join(match._id);
             const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId?  UserState.Playing : UserState.Observing
             await setUserState(userId, userState);
         })

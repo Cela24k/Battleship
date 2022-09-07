@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { GameService } from 'src/app/game.service';
+import { LocalStorageService } from 'src/app/local-storage.service';
 import { SocketioService } from 'src/app/socketio.service';
 import { UserHttpService, UserInterface } from 'src/app/user-http.service';
 import { Match } from '../game-entities/game';
@@ -15,7 +16,7 @@ export class MatchmakingComponent implements OnInit {
   name: string = '';
 
 
-  constructor(private httpservice: UserHttpService, private gameSocket: SocketioService, private gameService: GameService) { }
+  constructor(private httpservice: UserHttpService, private gameSocket: SocketioService, private gameService: GameService, private ls:LocalStorageService) { }
 
   ngOnInit(): void {
     this.fetchData();
@@ -42,6 +43,7 @@ export class MatchmakingComponent implements OnInit {
       next: (data: Match) => {
         console.log(data);
         this.joinedMatchEvent.emit(data);
+        this.gameSocket.emit("match-join",{userId: this.ls.getId(), match: data});
       },
       error: (e) => {
         console.log(e);

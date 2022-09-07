@@ -76,8 +76,9 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
 
 MatchSchema.methods.initBoardPlayer = async function (playerId: Types.ObjectId, board: BattleGrid): Promise<MatchPlayer> {
     try {
-        const player = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
+        const player: MatchPlayer = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
         player.board = board;
+        player.ready = true;
         return this.save();
     } catch (err) {
         throw err;

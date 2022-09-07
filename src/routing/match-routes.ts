@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { Types } from "mongoose";
+import ios from "..";
 import { getMatchById, Match } from "../models/match/match";
+import InitBoardEmitter from "../socket-helper/Emitter/InitBoardEmitter";
 
 export const router = Router();
 
@@ -50,6 +52,9 @@ router.post('/:matchId', async (req, res) => {
             throw new Error("Endpoint not found");
         var match = await getMatchById(new Types.ObjectId(matchId));
         await match.initBoardPlayer(userId, board);
+        const initEmitter = new InitBoardEmitter(ios);
+        initEmitter.emit({matchId: match.id});
+
         res.status(200).json(match);
     } catch (err) {
         if (err === 'Server Error')
