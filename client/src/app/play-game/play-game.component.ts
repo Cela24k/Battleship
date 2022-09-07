@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { GameService } from '../game.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SocketioService } from '../socketio.service';
+import { LocalStorageService } from '../local-storage.service';
 
 export enum GameType {
   Friend,
@@ -34,7 +35,7 @@ interface Game {
 })
 export class PlayGameComponent implements OnInit {
   
-  turn: boolean = false;
+  turn: boolean | null = null;
   game: Game | null = null; 
   selected: Ship | null = null;
   formControl = new FormControl([]);
@@ -47,9 +48,10 @@ export class PlayGameComponent implements OnInit {
   new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
-  constructor(private _snackBar: MatSnackBar,private gameService: GameService, private sio: SocketioService) { }
+  constructor(private _snackBar: MatSnackBar,private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService) { }
 
   ngOnInit(): void {
+    this.turnListener();
   }
 
   //ottenere partite gia esistenti e cambiare il valore di game.preparation a false;
@@ -167,8 +169,11 @@ export class PlayGameComponent implements OnInit {
 
   turnListener(){
     this.sio.listen('match-turn').subscribe({
-      next(value) {
-          console.log(value);
+      next: (value) => {
+          if(value.turn == this.ls.getId())
+            this.turn = true;
+          else
+            this.turn = false;
       },
       error(err) {
           console.log(err);

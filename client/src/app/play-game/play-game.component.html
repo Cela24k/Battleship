@@ -138,8 +138,14 @@
         </mat-card>
       </div>
     </div>
-    <div *ngIf="!turn" class="floating-banner">
+    <div *ngIf="turn == null" class="floating-banner">
       <h1> Waiting for opponent </h1>
+    </div>
+    <div *ngIf="turn == true" class="floating-banner">
+      <h1> Your turn </h1>
+    </div>
+    <div *ngIf="turn == false" class="floating-banner">
+      <h1> Opponent's turn </h1>
     </div>
   </ng-container>
 </ng-template>
