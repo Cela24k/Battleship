@@ -29,6 +29,6 @@ export class GameService {
   }
 
   shoot(matchId: string, shot: Cell ): Observable<any>{
-    return this.httpclient.patch(this.match_url + '/' + matchId + '?action=move', {body: shot})
+    return this.httpclient.patch(this.match_url + '/' + matchId + '?action=move', {shot})
   }
 }

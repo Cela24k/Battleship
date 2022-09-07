@@ -2,7 +2,6 @@ import { Server, Socket } from "socket.io";
 import { ChatInterface, ChatModel } from "../../models/chat";
 import { Model } from "mongoose";
 
-import ChatEmitter from "../Emitter/ChatMessageEmitter";
 import { Listener } from "./Listener";
 import { setUserState, UserState } from "../../models/user";
 //Questa classe servira a broadcastaare un messaggio all'interno della chat (roomId) che verra data dal client!? vedere come implementare
@@ -19,7 +18,7 @@ export class MatchJoinedListener extends Listener{
         super.listen(async (data)=>{
             const {match, userId} = data;
             this.client.join(match._id);
-            console.log(match._id);
+            console.log(match._id.rainbow);
             const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId?  UserState.Playing : UserState.Observing
             await setUserState(userId, userState);
         })

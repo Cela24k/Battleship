@@ -19,7 +19,7 @@ export interface MatchInterface extends Document {
     observersChat: Types.ObjectId,
     gameTurn: Types.ObjectId, // which player has the turn.
 
-    makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<MatchInterface> //funzione da chiamare quando finisce un turno di sicuro
+    makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<[Cell,Types.ObjectId]> //funzione da chiamare quando finisce un turno di sicuro
     initBoardPlayer: (playerId: Types.ObjectId, board: BattleGrid) => Promise<MatchInterface>;
     arePlayerReady(): boolean;
 
@@ -48,7 +48,7 @@ export const MatchSchema = new Schema<MatchInterface>({
     }
 });
 
-MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell): Promise<MatchInterface> {
+MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell): Promise<[Cell,Types.ObjectId]> {
     if (playerId != this.gameTurn) {
         throw new Error("Not your turn");
     }
@@ -66,7 +66,8 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
         player.board.addShot(shot);
 
         this.gameTurn = opponent.userId;
-        return this.save(); //TODO see if its worth return the matchinterface or if we should return  
+        await this.save();
+        return [shot,this.gameTurn]; 
 
 
     } catch (err) {

@@ -30,8 +30,10 @@ router.patch('/:matchId', async (req, res) => {
         if (action != "move")
             throw new Error("Endpoint not found");
         var match = await getMatchById(matchId);
-        match = await match.makePlayerMove(userId, shot);
-        res.status(200).json(match);
+        var dataFired = await match.makePlayerMove(userId, shot);
+        const turnEmitter = new MatchTurnEmitter(ios, matchId);
+        turnEmitter.emit({gameTurn: dataFired[1], shot: dataFired[0]});
+        res.status(200).json(dataFired);
     } catch (err) {
         console.log(err);
         if (err === 'Server Error')
