@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
+import { BattleGrid } from './play-game/game-entities/game';
 
 @Injectable({
   providedIn: 'root'
@@ -20,4 +21,9 @@ export class GameService {
   removeQueue(): Observable<any>{
     return this.httpclient.delete(this.matchmaking_url + '/join', {body:{userId: this.localstorage.getId()}});
   }
+
+  initBoard(matchId: string, board: BattleGrid){
+    return this.httpclient.post(this.match_url +"/"+ matchId, { body: board})
+  }
+
 }
