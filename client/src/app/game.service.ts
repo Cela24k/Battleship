@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
-import { BattleGrid } from './play-game/game-entities/game';
+import { BattleGrid, Cell } from './play-game/game-entities/game';
 
 @Injectable({
   providedIn: 'root'
@@ -26,4 +26,7 @@ export class GameService {
     return this.httpclient.post(this.match_url +"/"+ matchId+ "?action=init", { body: board})
   }
 
+  shoot(matchId: string, shot: Cell ): Observable<any>{
+    return this.httpclient.patch(this.match_url + '/' + matchId + '?action=move', {body: shot})
+  }
 }

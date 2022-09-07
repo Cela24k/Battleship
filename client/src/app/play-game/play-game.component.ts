@@ -169,4 +169,29 @@ export class PlayGameComponent implements OnInit {
     else
       return {shots: [], shipsPosition: []};
   }
+
+  shoot(){
+    console.log(this.shot);
+    if(this.game && this.game.match && this.shot){
+      this.gameService.shoot(this.game.match._id, this.shot).subscribe({
+        next(value) {
+            console.log(value);
+
+            //sostituire cella con hit o miss 
+
+        },
+        error(err) {
+            
+        },
+        complete() {
+            
+        },
+      })
+    }
+  }
+
+  winner(){
+    return false;
+  }
+
 }
