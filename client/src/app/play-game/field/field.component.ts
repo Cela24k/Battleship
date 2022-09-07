@@ -13,7 +13,7 @@ export class FieldComponent implements OnInit {
 
   @Input() props: BattleGrid = {
     shots: [],
-    shipsPosition: []
+    ships: []
   };
   @Input() selected: Ship | null = null;
   @Input() rotated: boolean = false;
@@ -44,7 +44,7 @@ export class FieldComponent implements OnInit {
   }
 
   placeExistingBoards(){
-    this.props.shipsPosition.forEach(e => {
+    this.props.ships.forEach(e => {
       e.position.forEach(element => {
         this.field[element.row * SIZE + element.col] = new Cell(element.row, element.col, CellType.Ship);
       });

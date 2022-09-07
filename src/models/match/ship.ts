@@ -75,7 +75,7 @@ function isHorizontal(ship: Ship): boolean {
 function areCellConsecutive(ship: Ship): boolean {
     const prev = ship.position[0];
     for (let i = 0; i < ship.length - 1; i++) {
-        const cond = ship.orientation == OrientationShip.Horizontal ? (prev.row != ship.position[i + 1].row) : prev.col != ship.position[i + 1].col;
+        const cond = ship.orientation == OrientationShip.Horizontal ? (prev.col != ship.position[i + 1].col) : prev.row != ship.position[i + 1].row;
         if (!cond) {
             return false;
         }

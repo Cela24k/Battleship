@@ -51,10 +51,10 @@ export class BattleGrid {
     //      il primo metodo penso sia comodo per i colpi sparati (spari un colpo, vedi nella grid se in quella posizione ci sta una barca)
     //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
     shots: Cell[]; // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
-    shipsPosition: Ship[];// Ships array that could be studied for the opponent shots.
-    constructor(shots?: Cell[], shipPositon?: Ship[]) {
+    ships: Ship[];// Ships array that could be studied for the opponent shots.
+    constructor(shots?: Cell[], ships?: Ship[]) {
         this.shots = shots ?? [];
-        this.shipsPosition = shipPositon ?? [];
+        this.ships = ships ?? [];
     }
 }
 

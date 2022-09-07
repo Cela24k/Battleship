@@ -23,7 +23,9 @@ export class GameService {
   }
 
   initBoard(matchId: string, board: BattleGrid): Observable<any>{
-    return this.httpclient.post(this.match_url +"/"+ matchId+ "?action=init", { body: board})
+    console.log("initiboard");
+    console.log(board);
+    return this.httpclient.post(this.match_url +"/"+ matchId+ "?action=init", {board: board, userId: this.localstorage.getId()})
   }
 
   shoot(matchId: string, shot: Cell ): Observable<any>{

@@ -151,7 +151,6 @@ export class PlayGameComponent implements OnInit {
           if(this.game){
             this.game.preparation = false;
             this.game.playing = true;
-            console.log(value)
           }
         },
         error(err) {
@@ -165,9 +164,9 @@ export class PlayGameComponent implements OnInit {
 
   formatProps() {
     if(this.game)
-      return {shots:[], shipsPosition:this.game.positions}
+      return {shots:[], ships:this.game.positions}
     else
-      return {shots: [], shipsPosition: []};
+      return {shots: [], ships: []};
   }
 
   shoot(){

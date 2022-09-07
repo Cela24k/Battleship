@@ -3,6 +3,7 @@ import { Types } from "mongoose";
 import ios from "..";
 import { getMatchById, Match } from "../models/match/match";
 import InitBoardEmitter from "../socket-helper/Emitter/InitBoardEmitter";
+import MatchTurnEmitter from "../socket-helper/Emitter/MatchTurnEmitter";
 
 export const router = Router();
 
@@ -29,7 +30,7 @@ router.patch('/:matchId', async (req, res) => {
         if (action != "move")
             throw new Error("Endpoint not found");
         var match = await getMatchById(matchId);
-        await match.makePlayerMove(userId, shot);
+        match = await match.makePlayerMove(userId, shot);
         res.status(200).json(match);
     } catch (err) {
         console.log(err);
@@ -45,15 +46,19 @@ router.patch('/:matchId', async (req, res) => {
 
 router.post('/:matchId', async (req, res) => {
     const action = req.query.action;
+    console.log(req.body)
     const { userId, board } = req.body;
     const matchId = req.params.matchId;
     try {
         if (action != "init")
             throw new Error("Endpoint not found");
         var match = await getMatchById(new Types.ObjectId(matchId));
-        await match.initBoardPlayer(userId, board);
-        const initEmitter = new InitBoardEmitter(ios);
-        initEmitter.emit({matchId: match.id});
+        match = await match.initBoardPlayer(userId, board);
+        if (match.arePlayerReady()) {
+            const turnEmitter = new MatchTurnEmitter(ios, (match._id).toString());
+            turnEmitter.emit({ turn: match.gameTurn });
+            console.log("MatchInizializzzto".america);
+        }
 
         res.status(200).json(match);
     } catch (err) {

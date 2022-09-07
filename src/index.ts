@@ -18,7 +18,7 @@ import { router as matchRoutes } from './routing/match-routes';
 import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
 import { UserJoinListener } from './socket-helper/Listener/UserJoinListener';
 import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListener';
-import { MatchInitListener } from './socket-helper/Listener/MatchInitListener';
+import { MatchJoinedListener } from './socket-helper/Listener/MatchJoinListener';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -77,8 +77,8 @@ ios.on('connection', (client) => {
     const chatMessage = new ChatMessageListener(client);
     chatMessage.listen();
 
-    const initBoardListener = new MatchInitListener(ios,client);
-    initBoardListener.listen();
+    const matchJoin = new MatchJoinedListener(ios,client);
+    matchJoin.listen();
 
     console.log('Auth ', client.handshake.auth);
     client.join(client.handshake.auth['userid']);
