@@ -63,6 +63,9 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
                 return await (gameOver.bind(this))(player, opponent);
             }
         }
+        else {
+            shot.cellType = CellType.Miss;
+        }
         player.board.addShot(shot);
 
         this.gameTurn = opponent.userId;

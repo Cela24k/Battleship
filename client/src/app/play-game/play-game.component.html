@@ -110,7 +110,7 @@
         </mat-card>
       </div>
       <div style="height: 100vh;">
-        <mat-card class="shots-card">
+        <mat-card class="shots-card" [ngStyle]="{'opacity': turn ? 1 : 0.5 }">
           <mat-card-header>
             <div mat-card-avatar class="opponent-header-image"></div>
             <mat-card-title>Opponent's field</mat-card-title>
@@ -121,7 +121,7 @@
           </mat-card-content>
           <mat-card-actions>
             <div style="display: flex; justify-content: center;">
-              <button mat-raised-button [disabled]="shot==null">Shoot!</button>
+              <button mat-raised-button [disabled]="!isShootEnabled()" (click)="shoot()">Shoot!</button>
             </div>
           </mat-card-actions>
         </mat-card>

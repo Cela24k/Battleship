@@ -170,10 +170,8 @@ export class PlayGameComponent implements OnInit {
   turnListener(){
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
-          if(value.turn == this.ls.getId())
-            this.turn = true;
-          else
-            this.turn = false;
+        console.log(value);
+        this.turn = value.gameTurn == this.ls.getId();
       },
       error(err) {
           console.log(err);
@@ -192,16 +190,14 @@ export class PlayGameComponent implements OnInit {
   }
 
   shoot(){
-    console.log(this.shot);
     if(this.game && this.game.match && this.shot){
       this.gameService.shoot(this.game.match._id, this.shot).subscribe({
-        next(value) {
-            console.log(value);
-
+        next: (value) => {
+            this.turn = value.gameTurn == this.ls.getId();
             //sostituire cella con hit o miss 
         },
         error(err) {
-            
+            console.log(err)
         },
         complete() {
             
@@ -220,5 +216,9 @@ export class PlayGameComponent implements OnInit {
 
   resetState(){
 
+  }
+
+  isShootEnabled(){
+    return this.shot && this.turn;
   }
 }
