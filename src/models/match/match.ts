@@ -58,10 +58,9 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
         const player: MatchPlayer = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
         const opponent: MatchPlayer = playerId != this.playerOne.userId ? this.playerOne : this.playerTwo;
         //TODO see if the shot has the same row and col of the opponent ship
-        if (opponent.board.shipHasBeenHit(shot)) {
+        if (opponent.board.shipHasBeenHit(shot, this.id)) {
             shot.cellType = CellType.Hit;
             if (opponent.board.areAllShipsDestroyed()) {
-                console.log("Ghesbo");
                 return await (gameOver.bind(this))(player, opponent);
             }
         }else{
@@ -84,7 +83,6 @@ MatchSchema.methods.initBoardPlayer = async function (playerId: Types.ObjectId, 
     try {
         const player: MatchPlayer = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
         player.board = board;
-        console.log(player.board);
         player.ready = true;
         return this.save();
     } catch (err) {
@@ -117,12 +115,12 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
         const result = {};
         const playersChat = await createChat([dataOne.userId, dataTwo.userId]);
         const observersChat = await createChat([]);
-        console.log(observersChat);
+        const gameTurn = Math.floor(Math.random() * 2) == 0 ? dataOne.userId : dataTwo.userId;
 
         var match: MatchInterface = new Match({
             playerOne: dataOne,
             playerTwo: dataTwo,
-            gameTurn: dataOne.userId,
+            gameTurn,
             playersChat: playersChat._id,
             observerChat: observersChat._id,
             result
@@ -136,7 +134,7 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
 
 export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
     try {
-
+        
         const matchResult = this.result.updateResult(winner.userId);
         const winnerUser: UserInterface = await getUserById(winner.userId);
         const loserUser: UserInterface = await getUserById(loser.userId);
@@ -144,10 +142,12 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
         loserUser.stats.updateStats(loser, matchResult);
         await winnerUser.save();
         await loserUser.save();
-        const gameOver = new GameOverEmitter(ios, this._id);
+        const matchId = this._id;
+        const gameOver = new GameOverEmitter(ios, matchId);
+        console.log(matchResult);
         gameOver.emit({matchResult});
         
-        var match = Match.deleteOne({ _id: this._id });;
+        var match = await Match.deleteOne({ _id: this._id });;
         return match;
         // winnerUser.setPlayState(true);
         // loserUser.setPlayState(true);

@@ -186,6 +186,23 @@ export class PlayGameComponent implements OnInit {
 
       },
     })
+
+    this.sio.listen('game-over').subscribe({
+      next:(value) =>{
+        console.log(value);
+      },
+      error(err) {
+        console.log(err);
+      },
+    })
+    this.sio.listen('ship-destroyed').subscribe({
+      next:(value) =>{
+        console.log(value);
+      },
+      error(err) {
+        console.log(err);
+      },
+    })
   }
 
   fieldformatProps() {

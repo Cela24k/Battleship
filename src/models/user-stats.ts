@@ -123,10 +123,8 @@ StatsSchema.methods.updateStats = function(player: MatchPlayer, result: MatchRes
     this.shotsFired += player.board.shotsFired;
     this.shotsHit += player.board.shotsHitted;
     const timePlayed: Date = new Date((result.finishTime.getTime() - result.startTime.getTime()) + this.timePlayed.getTime());
-    console.log(timePlayed.getHours()+''+timePlayed.getMinutes()+''+timePlayed.getSeconds())
 
     this.timePlayed = timePlayed;
-    console.log(this.timePlayed);
     
     this.accuracySet();
 }

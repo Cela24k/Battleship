@@ -1,4 +1,6 @@
-import { Schema, SchemaTypes } from "mongoose"
+import { Schema, SchemaTypes, Types } from "mongoose"
+import ios from "../..";
+import { ShipDestroyedEmitter } from "../../socket-helper/Emitter/ShipDestroyedEmitter";
 import { Cell, CellSchema, CellType } from "./cell"
 import { Ship, ShipLenght, ShipSchema } from "./ship"
 
@@ -14,7 +16,7 @@ export interface BattleGrid {
     shotsHitted: number,
     areAllShipsDestroyed: () => boolean,
     isAlreadyShot: (shot: Cell) => boolean,
-    shipHasBeenHit: (shot: Cell) => boolean,
+    shipHasBeenHit: (shot: Cell, matchId: Types.ObjectId) => boolean,
     addShot: (shot: Cell) => void,
 
 }
@@ -58,8 +60,16 @@ BattleGridSchema.methods.addShot = function (shot: Cell) {
     return this.shots.push(shot);
 }
 
-BattleGridSchema.methods.shipHasBeenHit = function (shot: Cell) {
-    return this.ships.some((s: Ship) => s.hasBeenHit(shot));
+BattleGridSchema.methods.shipHasBeenHit = function (shot: Cell, matchId: Types.ObjectId) {
+    const result: Ship[] = this.ships.filter((s: Ship) => s.hasBeenHit(shot));
+    const flag = result[0]?.isDestroyed() ?? false;
+    if(flag){
+        const shipDestroyed = new ShipDestroyedEmitter(ios,matchId.toString());
+        shipDestroyed.emit({ship: result[0]});
+        
+    }
+    return result.length != 0;
+    
 }
 //It controls if the ships' cells number are not compromised
 BattleGridSchema.pre("save", function (this, next) {
