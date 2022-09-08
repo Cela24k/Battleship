@@ -5,6 +5,8 @@ import { MatchPlayer, MatchPlayerSchema } from "../match/match-player";
 import { MatchResults, MatchResultsSchema } from "../match/match-result";
 import { Cell, CellType } from "./cell";
 import { BattleGrid } from "./battle-grid";
+import { GameOverEmitter } from "../../socket-helper/Emitter/GameOverEmitter";
+import ios from "../..";
 
 
 
@@ -62,13 +64,12 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
                 console.log("Ghesbo");
                 return await (gameOver.bind(this))(player, opponent);
             }
-        }
-        else {
+        }else{
             shot.cellType = CellType.Miss;
         }
         player.board.addShot(shot);
 
-        this.gameTurn = opponent.userId;
+        this.gameTurn = shot.cellType == CellType.Hit ? player.userId : opponent.userId;
         await this.save();
         return [shot,this.gameTurn]; 
 
@@ -143,8 +144,10 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
         loserUser.stats.updateStats(loser, matchResult);
         await winnerUser.save();
         await loserUser.save();
-        var match = Match.deleteOne({ _id: this._id });;
+        const gameOver = new GameOverEmitter(ios, this._id);
+        gameOver.emit({matchResult});
         
+        var match = Match.deleteOne({ _id: this._id });;
         return match;
         // winnerUser.setPlayState(true);
         // loserUser.setPlayState(true);

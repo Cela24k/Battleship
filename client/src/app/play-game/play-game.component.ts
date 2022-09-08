@@ -197,7 +197,7 @@ export class PlayGameComponent implements OnInit {
             //sostituire cella con hit o miss 
         },
         error(err) {
-            console.log(err)
+            console.log(err);
         },
         complete() {
             

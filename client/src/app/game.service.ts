@@ -14,18 +14,18 @@ export class GameService {
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) { }
 
-  joinQueue(): Observable<any>{
-    return this.httpclient.post(this.matchmaking_url + '/join', {userId: this.localstorage.getId()});
+  joinQueue(): Observable<any> {
+    return this.httpclient.post(this.matchmaking_url + '/join', { userId: this.localstorage.getId() });
   }
 
-  removeQueue(): Observable<any>{
-    return this.httpclient.delete(this.matchmaking_url + '/join', {body:{userId: this.localstorage.getId()}});
+  removeQueue(): Observable<any> {
+    return this.httpclient.delete(this.matchmaking_url + '/join', { body: { userId: this.localstorage.getId() } });
   }
 
-  initBoard(matchId: string, board: BattleGrid): Observable<any>{
+  initBoard(matchId: string, board: BattleGrid): Observable<any> {
     console.log("initiboard");
     console.log(board);
-    return this.httpclient.post(this.match_url +"/"+ matchId+ "?action=init", {board: board, userId: this.localstorage.getId()})
+    return this.httpclient.post(this.match_url + "/" + matchId + "?action=init", { board: board, userId: this.localstorage.getId() })
   }
 
   shoot(matchId: string, shot: Cell ): Observable<any>{
