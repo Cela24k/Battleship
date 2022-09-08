@@ -54,6 +54,15 @@ export class ProfileScreenComponent implements OnInit {
 
   formatDate(): string{
     const date = new Date(this.userData.stats.timePlayed);
-    return date.getHours().toString() + ' h ' + date.getMinutes().toString() + ' m ' + date.getSeconds().toString() + ' s';
+    const secondsDiff = date.getTime()/1000;
+    const seconds = Math.floor(secondsDiff%60);
+    const minutesDiff = Math.floor(secondsDiff/60);
+    const minutes = minutesDiff%60;
+    let secondsAsString = seconds < 10 ? "0" + seconds : seconds;
+    let minutesAsString = minutes < 10 ? "0" + minutes : minutes;
+    const hoursDiff = Math.floor(minutesDiff/60);
+    const hours = hoursDiff%24;
+
+    return hours + ' h ' + minutesAsString + ' m ' + secondsAsString + ' s';
   }
 }

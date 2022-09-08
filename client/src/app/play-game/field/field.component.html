@@ -2,6 +2,6 @@
   <mat-grid-tile *ngFor="let cell of field; let i = index" [colspan]="1" [rowspan]="1" (click)="clickHandler($event, i)"
     (mouseenter)="hoverHandler($event, i)" (mouseleave)="leaveHandler($event,i)" id={{i}}>
     <!-- {{field[i].cellType}} -->
-    <app-tile class="tile" *ngIf="isEmpty(i)"></app-tile>
+    <app-tile class="tile" *ngIf="!isEmpty(i)" [type]="this.field[i].cellType"></app-tile> 
   </mat-grid-tile>
 </mat-grid-list>

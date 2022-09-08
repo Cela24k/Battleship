@@ -26,6 +26,8 @@ interface Game {
   playing: boolean,
   match: Match | null,
   positions: Ship[];
+  shots: Cell[];
+  oppentShots: Cell[];
 }
 
 @Component({
@@ -34,13 +36,14 @@ interface Game {
   styleUrls: ['./play-game.component.css']
 })
 export class PlayGameComponent implements OnInit {
-  
+
   turn: boolean | null = null;
-  game: Game | null = null; 
+  game: Game | null = null;
   selected: Ship | null = null;
   formControl = new FormControl([]);
   isRotated: boolean = false;
   shot: Cell | null = null;
+
 
   ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
@@ -48,14 +51,14 @@ export class PlayGameComponent implements OnInit {
   new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
-  constructor(private _snackBar: MatSnackBar,private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService) { }
+  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService) { }
 
   ngOnInit(): void {
     this.turnListener();
   }
 
   //ottenere partite gia esistenti e cambiare il valore di game.preparation a false;
-  fetchExistingMatch(): void{
+  fetchExistingMatch(): void {
   }
 
   isPlaying(): boolean {
@@ -75,7 +78,7 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  clickEvent(event: any): void{
+  clickEvent(event: any): void {
     const shipType = this.ships.find((e) => {
       return e.type == event.srcElement.innerText;
     })
@@ -83,46 +86,46 @@ export class PlayGameComponent implements OnInit {
     event.stopPropagation();
   }
 
-  rotateShip(event:any){
-    if(this.selected){
+  rotateShip(event: any) {
+    if (this.selected) {
       this.isRotated = event.checked ? true : false;
-      this.selected.orientation = this.selected.orientation == OrientationShip.Horizontal ? OrientationShip.Vertical : OrientationShip.Horizontal; 
+      this.selected.orientation = this.selected.orientation == OrientationShip.Horizontal ? OrientationShip.Vertical : OrientationShip.Horizontal;
     }
   }
 
-  popShip(ship: Ship){
+  popShip(ship: Ship) {
     const index = this.ships.indexOf(ship)
-    if( index != -1){
-      this.ships.splice(index,1)
+    if (index != -1) {
+      this.ships.splice(index, 1)
       this.selected = null
       this.isRotated = false;
     }
   }
 
-  addShip(ship: Ship){
+  addShip(ship: Ship) {
     ship.position = [];
     this.ships.push(ship);
     this.isRotated = false;
   }
-  
-  isHorizontal(){
+
+  isHorizontal() {
     return this.selected?.orientation == OrientationShip.Horizontal;
   }
 
-  shotReady(event: any){
+  shotReady(event: any) {
     this.shot = event;
   }
 
-  isGameRandom(): boolean{
+  isGameRandom(): boolean {
     return this.game != null && this.game.type == GameType.Random;
   }
 
-  onGameEvent(event: GameType){
+  onGameEvent(event: GameType) {
     //per ricevere un match esistente
     // if(this.game == null){
     //   this.game = {type: event, preparation: true};
     // }
-    this.game = {type: event, matchmaking:true, preparation: false, playing: false, match: null, positions: []};
+    this.game = { type: event, matchmaking: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: []};
   }
 
   isMatchmaking(): boolean {
@@ -133,33 +136,33 @@ export class PlayGameComponent implements OnInit {
     return this.game != null && this.game.preparation == true;
   }
 
-  onMatchEvent(event: Match){
-    if(this.game){
+  onMatchEvent(event: Match) {
+    if (this.game) {
       this.game.matchmaking = false;
       this.game.preparation = true;
       this.game.match = event;
     }
   }
 
-  onPositionEvent(event: Ship[]){
-    if(this.game){
+  onPositionEvent(event: Ship[]) {
+    if (this.game) {
       this.game.positions = event;
     }
   }
 
-  initBoard(){
-    if(this.game && this.game.match && this.game.positions){
-      this.gameService.initBoard(this.game.match._id, new BattleGrid([],this.game.positions)).subscribe({
-        next: (value)=> {
-          if(this.game){
+  initBoard() {
+    if (this.game && this.game.match && this.game.positions) {
+      this.gameService.initBoard(this.game.match._id, new BattleGrid([], this.game.positions)).subscribe({
+        next: (value) => {
+          if (this.game) {
             //ste due righe di codice da fare quando il server emitta che i due giocatori sono pronti
             this.game.preparation = false;
             this.game.playing = true;
-            this.openSnackBar('Board initialized, waiting for opponent', 'Got it!')
+            this.openSnackBar('Board succesfully initialized', 'Got it!')
           }
         },
         error(err) {
-            console.log('bad positions')
+          console.log('bad positions')
         },
         complete() {
         },
@@ -167,11 +170,79 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  turnListener(){
+  turnListener() {
+    const myId = this.ls.getId();
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
-        console.log(value);
-        this.turn = value.gameTurn == this.ls.getId();
+        this.turn = value.gameTurn == myId;
+        if(value.shot && value.userId != myId){
+          this.game?.oppentShots.push(value.shot);
+        }
+      },
+      error(err) {
+        console.log(err);
+      },
+      complete() {
+
+      },
+    })
+  }
+
+  fieldformatProps() {
+    if (this.game)
+      return { shots: this.game.oppentShots, ships: this.game.positions }
+    else
+      return { shots: [], ships: [] };
+  }
+
+  shotsformatProps() {
+    if (this.game)
+      return { shots: this.game.shots, ships: this.game.positions }
+    else
+      return { shots: [], ships: [] };
+  }
+
+  shoot() {
+    if (this.game && this.game.match && this.shot) {
+      this.gameService.shoot(this.game.match._id, this.shot).subscribe({
+        next: (value) => {
+          //sostituire cella con hit o miss 
+          if (this.game && this.shot && value[0]) {
+            this.game.shots.push(value[0]);
+            console.log(this.game.shots);
+          }
+
+        },
+        error(err) {
+            console.log(err);
+        },
+        complete() {
+
+        },
+      })
+    }
+  }
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action, { duration: 4000 });
+  }
+
+  winner() {
+    return false;
+  }
+
+  resetState() {
+
+  }
+
+  isShootEnabled() {
+    return this.shot && this.turn;
+  }
+
+  winListener() {
+    this.sio.listen('match-winner').subscribe({
+      next(value) {
+          
       },
       error(err) {
           console.log(err);
@@ -181,44 +252,5 @@ export class PlayGameComponent implements OnInit {
       },
     })
   }
-
-  formatProps() {
-    if(this.game)
-      return {shots:[], ships:this.game.positions}
-    else
-      return {shots: [], ships: []};
-  }
-
-  shoot(){
-    if(this.game && this.game.match && this.shot){
-      this.gameService.shoot(this.game.match._id, this.shot).subscribe({
-        next: (value) => {
-            this.turn = value.gameTurn == this.ls.getId();
-            //sostituire cella con hit o miss 
-        },
-        error(err) {
-            console.log(err);
-        },
-        complete() {
-            
-        },
-      })
-    }
-  }
-
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action);
-  }
-
-  winner(){
-    return false;
-  }
-
-  resetState(){
-
-  }
-
-  isShootEnabled(){
-    return this.shot && this.turn;
-  }
+  
 }

@@ -1,6 +1,6 @@
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { formatCoords } from '../field/field.component';
-import { Cell, CellType } from '../game-entities/game';
+import { BattleGrid, Cell, CellType } from '../game-entities/game';
 
 const SIZE = 10;
 
@@ -11,16 +11,26 @@ const SIZE = 10;
 })
 export class ShotsComponent implements OnInit {
   @Input() listeners: boolean = false;
+  @Input() props: BattleGrid = {
+    shots: [],
+    ships: []
+  };
+
   @Output() shotReadyEvent = new EventEmitter<Cell>();
 
   field: Cell[] = [];
   hovered: ElementRef = new ElementRef('');
   selected: Cell | null = null;
-  
+
   constructor() { }
 
   ngOnInit(): void {
     this.populateField();
+    this.populateShots();
+  }
+  
+  ngOnChanges() {
+    this.populateShots();
   }
 
   populateField(): void {
@@ -31,13 +41,19 @@ export class ShotsComponent implements OnInit {
     }
   }
 
+  populateShots(): void {
+    this.props.shots.forEach((e) => {
+      this.field[e.row * SIZE + e.col] = new Cell(e.row, e.col, e.cellType);
+    })
+  }
+
   clickHandler(event: any, index: number) {
     const coords = formatCoords(SIZE, index); //[x,y]
-    
-    if(this.listeners && this.hovered && this.field[index]){
-      if(this.selected)
+
+    if (this.listeners && this.hovered && this.field[index]) {
+      if (this.selected)
         this.field[this.selected?.row * SIZE + this.selected.col].cellType = CellType.Empty;
-      this.field[index] = new Cell(coords[0],coords[1], CellType.Shot)
+      this.field[index] = new Cell(coords[0], coords[1], CellType.Shot)
       this.selected = this.field[index];
       this.shotReadyEvent.emit(this.selected);
     }
@@ -52,7 +68,7 @@ export class ShotsComponent implements OnInit {
       htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id)).toString()));
 
       if (htmlelem.nativeElement != null) {
-        htmlelem.nativeElement?.setAttribute('style', 'background-color: lightcoral');
+        htmlelem.nativeElement?.setAttribute('style', 'background-color: lightcyan');
         this.hovered = htmlelem;
       }
     }
@@ -60,11 +76,19 @@ export class ShotsComponent implements OnInit {
   }
 
   leaveHandler(event: any, index?: any) {
-      if (this.listeners && this.hovered.nativeElement != null)
-        this.hovered.nativeElement.setAttribute('style', '');
+    if (this.listeners && this.hovered.nativeElement != null)
+      this.hovered.nativeElement.setAttribute('style', '');
   }
 
-  isEmpty(index: number){
+  isEmpty(index: number) {
     return this.field[index].cellType == CellType.Empty;
+  }
+
+  isHit(index: number) {
+    return this.field[index].cellType == CellType.Hit;
+  }
+
+  isMissed(index: number) {
+    return this.field[index].cellType == CellType.Miss;
   }
 }

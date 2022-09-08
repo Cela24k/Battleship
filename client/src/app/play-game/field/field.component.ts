@@ -31,7 +31,11 @@ export class FieldComponent implements OnInit {
   ngOnInit(): void {
     this.populateField();
     // sostituire con props veri
-    this.props.shots = [new Cell(3, 4, CellType.Hit)];
+    this.populateShots();
+  }
+  
+  ngOnChanges() {
+    this.populateShots();
   }
 
   populateField(): void {
@@ -41,6 +45,12 @@ export class FieldComponent implements OnInit {
       }
     }
     this.placeExistingBoards();
+  }
+
+  populateShots(): void {
+    this.props.shots.forEach((e)=>{
+      this.field[e.row * SIZE + e.col] = new Cell(e.row,e.col,e.cellType);
+    })
   }
 
   placeExistingBoards(){
@@ -147,7 +157,7 @@ export class FieldComponent implements OnInit {
   }
 
   isEmpty(index: any) {
-    return this.field[index].cellType == CellType.Ship;
+    return this.field[index].cellType == CellType.Empty;
   }
 
   isHoveringSomething(): boolean {

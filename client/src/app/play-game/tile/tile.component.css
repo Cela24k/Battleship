@@ -1,5 +1,17 @@
-.tile-content{
+.tile-shot{
     width: 100%;
     height: 100%;
     background: grey;
+}
+
+.tile-hit{
+    width: 100%;
+    height: 100%;
+    background: lightgreen;
+}
+
+.tile-miss{
+    width: 100%;
+    height: 100%;
+    background: lightcoral;
 }

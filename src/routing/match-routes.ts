@@ -32,7 +32,7 @@ router.patch('/:matchId', async (req, res) => {
         var match = await getMatchById(matchId);
         var dataFired = await match.makePlayerMove(userId, shot);
         const turnEmitter = new MatchTurnEmitter(ios, matchId);
-        turnEmitter.emit({gameTurn: dataFired[1], shot: dataFired[0]});
+        turnEmitter.emit({gameTurn: dataFired[1], shot: dataFired[0], userId});
         res.status(200).json(dataFired);
     } catch (err) {
         console.log(err);
