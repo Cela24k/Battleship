@@ -38,6 +38,12 @@ export class SocketioService {
 
   }
 
+  removeListener(eventName: string){
+    this.socket.removeAllListeners(eventName);
+  }
+
+  
+
   disconnect() {
     
     this.socket.disconnect();

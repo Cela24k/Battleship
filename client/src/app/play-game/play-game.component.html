@@ -48,7 +48,8 @@
             <mat-card-subtitle>Shoot your shots</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
-            <app-shots (shotReadyEvent)="shotReady($event)" [listeners]="false" [props]="shotsformatProps()" ></app-shots>
+            <app-shots (shotReadyEvent)="shotReady($event)" [listeners]="false" [props]="shotsformatProps()">
+            </app-shots>
           </mat-card-content>
           <mat-card-actions>
             <div style="display: flex; justify-content: center;">
@@ -130,10 +131,13 @@
             <mat-card-title>Chat</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <div style="height: 12vw; border: 1px dotted black">Chat...</div>
+            <div style="height: 12vw; border: 1px dotted black; overflow-y: scroll;">
+              <div *ngFor="let message of chat"><b style="">{{message.sender}}</b> : {{message.text}}</div>
+            </div>
           </mat-card-content>
           <mat-card-actions>
-            actions
+            <input type="text" [(ngModel)]="text">
+            <button mat-raised-button (click)="sendMessage()">Send!</button>
           </mat-card-actions>
         </mat-card>
       </div>

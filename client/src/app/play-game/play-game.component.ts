@@ -43,6 +43,9 @@ export class PlayGameComponent implements OnInit {
   formControl = new FormControl([]);
   isRotated: boolean = false;
   shot: Cell | null = null;
+  chatId: string = " ";
+  chat: any[] = [];
+  text: string = " ";
 
 
   ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
@@ -141,6 +144,7 @@ export class PlayGameComponent implements OnInit {
       this.game.matchmaking = false;
       this.game.preparation = true;
       this.game.match = event;
+      this.chatId = event.playersChat;
     }
   }
 
@@ -170,6 +174,15 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
+  sendMessage(){
+    console.log(this.text);
+    console.log(this.chatId);
+    if(this.text!= " "){
+      this.sio.emit('match-message', {chatId: this.chatId, message: {sender: this.ls.getId(), text: this.text, timestamp: Date.now()}})
+      this.text = " ";
+    }
+  }
+
   turnListener() {
     const myId = this.ls.getId();
     this.sio.listen('match-turn').subscribe({
@@ -191,6 +204,9 @@ export class PlayGameComponent implements OnInit {
       next:(value) =>{
         console.log(value);
         this.game = null;
+        this.sio.removeListener("chat-match");
+        this.sio.removeListener("ship-destroyed");
+        this.sio.removeListener("game-over");
       },
       error(err) {
         console.log(err);
@@ -199,6 +215,17 @@ export class PlayGameComponent implements OnInit {
     this.sio.listen('ship-destroyed').subscribe({
       next:(value) =>{
         console.log(value);
+      },
+      error(err) {
+        console.log(err);
+      },
+    })
+
+
+    this.sio.listen('chat-match').subscribe({
+      next:(value: any) =>{
+        console.log("arrivato il messaggio miiiinghia");
+        this.chat.push(value.message);
       },
       error(err) {
         console.log(err);
@@ -256,6 +283,8 @@ export class PlayGameComponent implements OnInit {
   isShootEnabled() {
     return this.shot && this.turn;
   }
+
+  
 
   winListener() {
     this.sio.listen('match-winner').subscribe({

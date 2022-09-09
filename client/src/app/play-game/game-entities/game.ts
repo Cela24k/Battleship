@@ -82,23 +82,23 @@ export class Match {
     playerOne: MatchPlayer;
     playerTwo: MatchPlayer;
     result: MatchResults;
-    playersChat: ChatInterface;
-    observersChat: ChatInterface;
+    playersChat: string;
+    observersChat: string;
     gameTurn: string;
 
     constructor(_id: string,
         playerOne: MatchPlayer,
         playerTwo: MatchPlayer,
         result: MatchResults,
-        playersChat: ChatInterface,
-        observersChat: ChatInterface,
+        playersChat: string,
+        observersChat: string,
         gameTurn: string) {
         
             this._id = _id ?? '';
             this.playerOne = playerOne ?? new MatchPlayer();
-            this.playerTwo = playerOne ?? new MatchPlayer();
+            this.playerTwo = playerTwo ?? new MatchPlayer();
             this.result = result ?? new MatchResults();
-            this.playersChat = playersChat ?? emptyChat();
+            this.playersChat = playersChat ?? " ";
             this.observersChat = observersChat ?? emptyChat();
             this.gameTurn = gameTurn ?? ''; 
     }

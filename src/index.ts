@@ -20,6 +20,7 @@ import { UserJoinListener } from './socket-helper/Listener/UserJoinListener';
 import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListener';
 import { MatchJoinedListener } from './socket-helper/Listener/MatchJoinListener';
 import ChatMatchEmitter from './socket-helper/Emitter/ChatMatchEmitter';
+import { MatchChatListener } from './socket-helper/Listener/MatchChatListener';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -81,6 +82,9 @@ ios.on('connection', (client) => {
     const matchJoin = new MatchJoinedListener(ios, client);
     matchJoin.listen();
 
+    const matchChat = new MatchChatListener(client);
+    matchChat.listen();
+
     console.log('Auth ', client.handshake.auth);
     client.join(client.handshake.auth['userid']);
 
@@ -96,12 +100,7 @@ ios.on('connection', (client) => {
     //client.emit('notification',{mimmo: "el mimmo server"});
 })
 
-ios.on('match-message', (data) => {
-    if (data && data.chatId && data.message) {
-        const matchChat = new ChatMatchEmitter(ios, data.chatId);
-        matchChat.emit({ message: data.message });
-    }
-})
+
 
 const matchmakingEngine = new MatchMakingEngine(ios, 5000);
 matchmakingEngine.start();
