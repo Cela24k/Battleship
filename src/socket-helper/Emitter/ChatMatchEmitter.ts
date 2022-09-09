@@ -2,10 +2,10 @@ import { Types } from "mongoose";
 import { Server } from "socket.io";
 import { RoomEmitter } from "./RoomEmitter";
 //broadcasta un messaggio in una determinata room che sara di valore chatId
-class PlayerChatEmitter<T> extends RoomEmitter<any>{
+class ChatMatchEmitter<T> extends RoomEmitter<any>{
     
     constructor(ios: Server, roomId: string){
-        super(ios, 'chat-message',roomId);
+        super(ios, 'chat-match',roomId);
     }
 
     emit(payload?: T): void{
@@ -13,4 +13,4 @@ class PlayerChatEmitter<T> extends RoomEmitter<any>{
     }
 }
 
-export default PlayerChatEmitter;
+export default ChatMatchEmitter;

@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 
 
-export abstract class Emitter<T> {
+export class Emitter<T> {
 
     public readonly ios: Server;
     public readonly event: string;

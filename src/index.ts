@@ -19,8 +19,7 @@ import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
 import { UserJoinListener } from './socket-helper/Listener/UserJoinListener';
 import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListener';
 import { MatchJoinedListener } from './socket-helper/Listener/MatchJoinListener';
-import PlayerChatEmitter from './socket-helper/Emitter/PlayerChatEmitter';
-import ObserverChatEmitter from './socket-helper/Emitter/ObserverChatEmitter';
+import ChatMatchEmitter from './socket-helper/Emitter/ChatMatchEmitter';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -79,7 +78,7 @@ ios.on('connection', (client) => {
     const chatMessage = new ChatMessageListener(client);
     chatMessage.listen();
 
-    const matchJoin = new MatchJoinedListener(ios,client);
+    const matchJoin = new MatchJoinedListener(ios, client);
     matchJoin.listen();
 
     console.log('Auth ', client.handshake.auth);
@@ -98,12 +97,9 @@ ios.on('connection', (client) => {
 })
 
 ios.on('match-message', (data) => {
-    if(data.state == "Player"){
-        const playerEmitter = new PlayerChatEmitter(ios,data.chatId);
-        playerEmitter.emit({message : data.message});
-    }else{
-        const observerEmitter = new ObserverChatEmitter(ios,data.chatId);
-        observerEmitter.emit({message : data.message});
+    if (data && data.chatId && data.message) {
+        const matchChat = new ChatMatchEmitter(ios, data.chatId);
+        matchChat.emit({ message: data.message });
     }
 })
 

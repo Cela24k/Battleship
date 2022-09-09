@@ -7,10 +7,6 @@ class ChatMessageEmitter<T> extends RoomEmitter<any>{
     constructor(ios: Server, roomId: string){
         super(ios, 'chat-message',roomId);
     }
-
-    emit(payload?: T): void{
-         this.ios.emit(this.event, payload);
-    }
 }
 
 export default ChatMessageEmitter;
