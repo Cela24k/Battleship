@@ -52,7 +52,6 @@ ShipSchema.methods.hasBeenHit = function (shot: Cell): boolean {
         this.position.forEach((c: Cell) => {
             if (c.row === shot.row && c.col === shot.col) {
                 c.cellType = CellType.Hit;
-                console.log("hittato");
                 flag = true;
             }
         })

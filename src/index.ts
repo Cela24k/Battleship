@@ -19,6 +19,8 @@ import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
 import { UserJoinListener } from './socket-helper/Listener/UserJoinListener';
 import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListener';
 import { MatchJoinedListener } from './socket-helper/Listener/MatchJoinListener';
+import PlayerChatEmitter from './socket-helper/Emitter/PlayerChatEmitter';
+import ObserverChatEmitter from './socket-helper/Emitter/ObserverChatEmitter';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -95,6 +97,15 @@ ios.on('connection', (client) => {
     //client.emit('notification',{mimmo: "el mimmo server"});
 })
 
+ios.on('match-message', (data) => {
+    if(data.state == "Player"){
+        const playerEmitter = new PlayerChatEmitter(ios,data.chatId);
+        playerEmitter.emit({message : data.message});
+    }else{
+        const observerEmitter = new ObserverChatEmitter(ios,data.chatId);
+        observerEmitter.emit({message : data.message});
+    }
+})
 
 const matchmakingEngine = new MatchMakingEngine(ios, 5000);
 matchmakingEngine.start();
