@@ -322,7 +322,7 @@ export async function getAllUsers(): Promise<UserInterface[]> {
     const projection = {
         username: true,
         stats: true,
-        playing: true,
+        state: true,
     }
     let result = await User.find({}, projection).catch((err) => {
         return Promise.reject('Server Error');

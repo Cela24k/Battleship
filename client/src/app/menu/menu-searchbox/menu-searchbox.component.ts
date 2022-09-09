@@ -13,7 +13,7 @@ export class MenuSearchboxComponent implements OnInit {
   @Output() openChatEvent = new EventEmitter<ChatInterface>();
   @Input() type: string = '';
 
-  displayedColumns: string[] = ['username', 'elo', 'playing'];
+  displayedColumns: string[] = ['username', 'elo', 'state'];
   friendlist: UserInterface[] = [];
   dataSource = new MatTableDataSource(this.friendlist);
   clickedElements: UserInterface[] = [];
@@ -26,6 +26,7 @@ export class MenuSearchboxComponent implements OnInit {
   fetchData() {
     this.httpClient.getUsers().subscribe({
       next: (data) => {
+        console.log(data);
         this.friendlist = data;
         this.filterList();
       },

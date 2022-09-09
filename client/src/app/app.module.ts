@@ -50,6 +50,8 @@ import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen
 import { TileComponent } from './play-game/tile/tile.component';
 import { MatchmakingComponent } from './play-game/matchmaking/matchmaking.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ChooseFriendComponent } from './play-game/choose-friend/choose-friend.component';
+import { PlaySearchboxComponent } from './play-game/choose-friend/play-searchbox/play-searchbox.component';
 
 @NgModule({
   declarations: [
@@ -74,6 +76,8 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
     FriendsScreenPrevComponent,
     TileComponent,
     MatchmakingComponent,
+    ChooseFriendComponent,
+    PlaySearchboxComponent,
     
   ],
   imports: [

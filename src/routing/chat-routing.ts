@@ -71,7 +71,7 @@ router.post('', async (req, res) => {
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
 
-        return res.status(200).json({ error: false, message: 'Chat created', timestamp: Date.now(), chatId: chat._id });
+        return res.status(200).json({ error: false, message: 'Chat created', timestamp: Date.now(), chatId: chat._id, chat });
     }
     return res.status(401).json({error: false, errormessage: 'Unauthorized', timestamp: Date.now()});
 })

@@ -45,6 +45,7 @@ export class ChatWindowComponent implements OnInit {
         this.scrollToBottom();
       }
     })
+    console.log(this.props);
   }
 
   ngOnDestroy(): void {
@@ -71,7 +72,11 @@ export class ChatWindowComponent implements OnInit {
     const friendId = this.props.users[0] === this.localstorage.getId() ? this.props.users[1] : this.props.users[0];
     this.client.sendMessage(txt, this.userid, this.props['_id'], friendId).subscribe({
       next: (data) => {
-        console.log(data);
+        if(this.props._id == ''){
+          this.props = data.chat;
+          console.log(this.props);
+          this.messages = this.props.messages;
+        }
       },
       error: (e) => {
         console.log(e)

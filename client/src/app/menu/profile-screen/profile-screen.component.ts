@@ -24,7 +24,7 @@ export class ProfileScreenComponent implements OnInit {
       rank: 0,
       _id: ''
     },
-    playing: false
+    state: 'Offline'
   }
 
   constructor(private httpservice: UserHttpService) { }
