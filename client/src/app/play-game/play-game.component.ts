@@ -226,19 +226,13 @@ export class PlayGameComponent implements OnInit {
 
     this.sio.listen('game-over').subscribe({
       next: (value) => {
-        console.log(value);
-        this.sio.emit("match-left", {match: this.game?.match, userId: this.ls.getId()});
-        this.game = null;
-        this.sio.removeListener("chat-match");
-        this.sio.removeListener("ship-destroyed");
-        this.sio.removeListener("game-over");
-        this.stopAudio();
-
-        this.playerWinner = value.winner;
+        this.gameOver(value);
       },
       error(err) {
         console.log(err);
       },
+      complete: () => {
+      }
     })
     this.sio.listen('ship-destroyed').subscribe({
       next: (value) => {
@@ -254,16 +248,32 @@ export class PlayGameComponent implements OnInit {
       next: (value: any) => {
         console.log("arrivato il messaggio miiiinghia");
         this.userHttp.getUserById(value.message.sender).subscribe({
-            next: (data:UserInterface) => {
-              value.message.sender = data.username;
-              this.chat.push(value.message);
+          next: (data: UserInterface) => {
+            value.message.sender = data.username;
+            this.chat.push(value.message);
 
-            },
-            error(err) {
-              console.log(err);
-            },
-          }
+          },
+          error(err) {
+            console.log(err);
+          },
+        }
         );
+      },
+      error(err) {
+        console.log(err);
+      },
+    })
+  }
+
+  gameOver(value: any) {
+    this.sio.emit("match-left", {match: this.game?.match, userId: this.ls.getId()});
+    this.sio.removeListener("chat-match");
+    this.sio.removeListener("ship-destroyed");
+    this.sio.removeListener("game-over");
+    this.stopAudio();
+    this.userHttp.getUserById(value.matchResult.winner).subscribe({
+      next: (value) => {
+        this.playerWinner = value.username;
       },
       error(err) {
         console.log(err);
@@ -321,16 +331,16 @@ export class PlayGameComponent implements OnInit {
   }
 
   winner() {
-    return this.playerWinner.length > 0;
+    return this.playerWinner && this.playerWinner.length > 0;
   }
 
   resetState() {
     this.turn = null;
-    this.game  = null;
-    this.selected  = null;
+    this.game = null;
+    this.selected = null;
     this.formControl = new FormControl([]);
     this.isRotated = false;
-    this.shot  = null;
+    this.shot = null;
     this.playerWinner = '';
 
     this.ships = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
@@ -350,7 +360,4 @@ export class PlayGameComponent implements OnInit {
     else
       return false;
   }
-
-  
-
 }
