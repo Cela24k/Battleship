@@ -227,6 +227,7 @@ export class PlayGameComponent implements OnInit {
     this.sio.listen('game-over').subscribe({
       next: (value) => {
         console.log(value);
+        this.sio.emit("match-left", {match: this.game?.match, userId: this.ls.getId()});
         this.game = null;
         this.sio.removeListener("chat-match");
         this.sio.removeListener("ship-destroyed");
@@ -349,5 +350,7 @@ export class PlayGameComponent implements OnInit {
     else
       return false;
   }
+
+  
 
 }

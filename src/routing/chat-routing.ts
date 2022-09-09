@@ -121,7 +121,7 @@ router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
             ).catch(err => { throw err });
     
             const messageEmitter = new ChatMessageEmitter(ios, chatId);
-            messageEmitter.emit(message);
+            messageEmitter.emit({message, chatId});
             console.log("Socket inviato");//TODO frontend test, or in postman.
     
             return res.status(200).json({ error: false, timestamp: Date.now(), message });

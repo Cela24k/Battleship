@@ -1,3 +1,4 @@
+import { DataRowOutlet } from '@angular/cdk/table';
 import { Component, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ChatHttpService } from 'src/app/chat-http.service';
 import { ChatListenerService } from 'src/app/chat-listener.service';
@@ -35,7 +36,8 @@ export class ChatWindowComponent implements OnInit {
     this.messages = this.props.messages;
     this.socket.onNewMessage().subscribe({
       next: (data) => {
-        this.messages.push(data);
+        if(data.chatId == this.props._id) //control for message socket
+          this.messages.push(data.message);
 
       },
       error: (e) => {

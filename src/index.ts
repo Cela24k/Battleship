@@ -21,6 +21,7 @@ import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListene
 import { MatchJoinedListener } from './socket-helper/Listener/MatchJoinListener';
 import ChatMatchEmitter from './socket-helper/Emitter/ChatMatchEmitter';
 import { MatchChatListener } from './socket-helper/Listener/MatchChatListener';
+import { MatchLeftListener } from './socket-helper/Listener/MatchLeftListener';
 
 //crezione dell'istanza del modulo Express
 const app = express();
@@ -84,6 +85,9 @@ ios.on('connection', (client) => {
 
     const matchChat = new MatchChatListener(client);
     matchChat.listen();
+
+    const matchLeft = new MatchLeftListener(ios,client);
+    matchLeft.listen();
 
     console.log('Auth ', client.handshake.auth);
     client.join(client.handshake.auth['userid']);
