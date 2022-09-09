@@ -190,6 +190,7 @@ export class PlayGameComponent implements OnInit {
     this.sio.listen('game-over').subscribe({
       next:(value) =>{
         console.log(value);
+        this.game = null;
       },
       error(err) {
         console.log(err);

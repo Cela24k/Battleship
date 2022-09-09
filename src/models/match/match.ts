@@ -144,7 +144,8 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
         await winnerUser.save();
         await loserUser.save();
         const matchId = this._id;
-        const gameOver = new GameOverEmitter(ios, matchId);
+        console.log(matchId);
+        const gameOver = new GameOverEmitter(ios, matchId.toString());
         console.log(matchResult);
         gameOver.emit({matchResult});
         
