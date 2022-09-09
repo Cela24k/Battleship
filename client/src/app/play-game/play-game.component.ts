@@ -5,6 +5,7 @@ import { GameService } from '../game.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SocketioService } from '../socketio.service';
 import { LocalStorageService } from '../local-storage.service';
+import { UserHttpService, UserInterface } from '../user-http.service';
 
 export enum GameType {
   Friend,
@@ -46,6 +47,7 @@ export class PlayGameComponent implements OnInit {
   chatId: string = " ";
   chat: any[] = [];
   text: string = " ";
+  audio: HTMLAudioElement = new Audio();
 
 
   ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
@@ -54,7 +56,7 @@ export class PlayGameComponent implements OnInit {
   new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
-  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService) { }
+  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService, private userHttp: UserHttpService) { }
 
   ngOnInit(): void {
     this.turnListener();
@@ -128,7 +130,7 @@ export class PlayGameComponent implements OnInit {
     // if(this.game == null){
     //   this.game = {type: event, preparation: true};
     // }
-    this.game = { type: event, matchmaking: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: []};
+    this.game = { type: event, matchmaking: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
   }
 
   isMatchmaking(): boolean {
@@ -163,6 +165,7 @@ export class PlayGameComponent implements OnInit {
             this.game.preparation = false;
             this.game.playing = true;
             this.openSnackBar('Board succesfully initialized', 'Got it!')
+            this.playSound();
           }
         },
         error(err) {
@@ -174,11 +177,11 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  sendMessage(){
+  sendMessage() {
     console.log(this.text);
     console.log(this.chatId);
-    if(this.text!= " "){
-      this.sio.emit('match-message', {chatId: this.chatId, message: {sender: this.ls.getId(), text: this.text, timestamp: Date.now()}})
+    if (this.text != " ") {
+      this.sio.emit('match-message', { chatId: this.chatId, message: { sender: this.ls.getId(), text: this.text, timestamp: Date.now() } })
       this.text = " ";
     }
   }
@@ -188,7 +191,7 @@ export class PlayGameComponent implements OnInit {
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
         this.turn = value.gameTurn == myId;
-        if(value.shot && value.userId != myId){
+        if (value.shot && value.userId != myId) {
           this.game?.oppentShots.push(value.shot);
         }
       },
@@ -201,19 +204,21 @@ export class PlayGameComponent implements OnInit {
     })
 
     this.sio.listen('game-over').subscribe({
-      next:(value) =>{
+      next: (value) => {
         console.log(value);
         this.game = null;
         this.sio.removeListener("chat-match");
         this.sio.removeListener("ship-destroyed");
         this.sio.removeListener("game-over");
+        this.stopAudio();
+
       },
       error(err) {
         console.log(err);
       },
     })
     this.sio.listen('ship-destroyed').subscribe({
-      next:(value) =>{
+      next: (value) => {
         console.log(value);
       },
       error(err) {
@@ -223,9 +228,19 @@ export class PlayGameComponent implements OnInit {
 
 
     this.sio.listen('chat-match').subscribe({
-      next:(value: any) =>{
+      next: (value: any) => {
         console.log("arrivato il messaggio miiiinghia");
-        this.chat.push(value.message);
+        this.userHttp.getUserById(value.message.sender).subscribe({
+            next: (data:UserInterface) => {
+              value.message.sender = data.username;
+              this.chat.push(value.message);
+
+            },
+            error(err) {
+              console.log(err);
+            },
+          }
+        );
       },
       error(err) {
         console.log(err);
@@ -259,13 +274,23 @@ export class PlayGameComponent implements OnInit {
 
         },
         error(err) {
-            console.log(err);
+          console.log(err);
         },
         complete() {
 
         },
       })
     }
+  }
+  playSound() {
+    this.audio.src = "../../assets/sound.mp3";
+    this.audio.load();
+    this.audio.play();
+    this.audio.volume = 0.1;
+  }
+
+  stopAudio() {
+    this.audio.pause();
   }
 
   openSnackBar(message: string, action: string) {
@@ -284,20 +309,20 @@ export class PlayGameComponent implements OnInit {
     return this.shot && this.turn;
   }
 
-  
+
 
   winListener() {
     this.sio.listen('match-winner').subscribe({
       next(value) {
-          
+
       },
       error(err) {
-          console.log(err);
+        console.log(err);
       },
       complete() {
-          
+
       },
     })
   }
-  
+
 }
