@@ -21,7 +21,7 @@ export class FieldComponent implements OnInit {
   @Output() popShipEvent = new EventEmitter<Ship>();
   @Output() addShipEvent = new EventEmitter<Ship>();
   @Output() positionsEvent = new EventEmitter<Ship[]>();
-  
+
   field: Cell[] = [];
   hovered: ElementRef[] = [];
   placedShips: Ship[] = [];
@@ -33,7 +33,7 @@ export class FieldComponent implements OnInit {
     // sostituire con props veri
     this.populateShots();
   }
-  
+
   ngOnChanges() {
     this.populateShots();
   }
@@ -48,12 +48,12 @@ export class FieldComponent implements OnInit {
   }
 
   populateShots(): void {
-    this.props.shots.forEach((e)=>{
-      this.field[e.row * SIZE + e.col] = new Cell(e.row,e.col,e.cellType);
+    this.props.shots.forEach((e) => {
+      this.field[e.row * SIZE + e.col] = new Cell(e.row, e.col, e.cellType);
     })
   }
 
-  placeExistingBoards(){
+  placeExistingBoards(): void {
     this.props.ships.forEach(e => {
       e.position.forEach(element => {
         this.field[element.row * SIZE + element.col] = new Cell(element.row, element.col, CellType.Ship);
@@ -65,7 +65,7 @@ export class FieldComponent implements OnInit {
     const coords = formatCoords(SIZE, index); //[x,y]
 
     // cliccata una barca 
-    if(this.listeners){
+    if (this.listeners && !this.isOutBound(coords[0], coords[1])) {
       if (this.field[index].cellType == CellType.Ship) {
         let shipElement: Ship = new Ship([], 0, '', 0);
         let shipIndex = undefined;
@@ -78,13 +78,13 @@ export class FieldComponent implements OnInit {
             shipElement = e;
           }
         });
-  
-        if(shipElement && shipIndex != undefined){
-          shipElement.position.forEach((e)=>{
+
+        if (shipElement && shipIndex != undefined) {
+          shipElement.position.forEach((e) => {
             this.field[e.row * SIZE + e.col] = new Cell(coords[0], coords[1], CellType.Empty);
           })
-  
-  
+
+
           this.placedShips.splice(shipIndex, 1);
           this.addShipEvent.emit(shipElement);
         }
@@ -93,13 +93,13 @@ export class FieldComponent implements OnInit {
         if (!this.isHoveringSomething() && this.selected) {
           this.hovered.forEach((e, i) => {
             if (e != null) {
-              if (this.selected?.orientation == OrientationShip.Horizontal){
+              if (this.selected?.orientation == OrientationShip.Horizontal) {
                 this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
               }
               else {
                 this.field[e.nativeElement.id] = new Cell(coords[0] + i, coords[1], CellType.Ship);
               }
-  
+
               if (this.selected)
                 this.selected.position.push(this.field[e.nativeElement.id]);
             }
@@ -108,8 +108,8 @@ export class FieldComponent implements OnInit {
           this.placedShips.push(this.selected);
           // mandare emitter di poppare la nave dalla lista
           this.popShipEvent.emit(this.selected);
-          if(this.placedShips.length == 5)
-            this.positionsEvent.emit(this.placedShips)
+          if (this.placedShips.length == 5)
+            this.positionsEvent.emit(this.placedShips);
         }
       }
     }
@@ -120,9 +120,9 @@ export class FieldComponent implements OnInit {
     const elements: any = [];
     const coords = formatCoords(10, index);
     const len = this.selected?.length != undefined ? this.selected.length : 0;
-    
-    if(this.listeners){
-      if (this.field[index].cellType == CellType.Empty) {
+
+    if (this.listeners) {
+      if (this.field[index].cellType == CellType.Empty && !this.isOutBound(coords[0], coords[1])) {
         for (let i = 0; i < len; i++) {
           let htmlelem;
           if (this.selected?.orientation == OrientationShip.Horizontal) {
@@ -134,21 +134,21 @@ export class FieldComponent implements OnInit {
           }
           else
             htmlelem = new ElementRef(document.getElementById((parseInt(event.srcElement.id) + i * 10).toString()))
-  
+
           if (htmlelem.nativeElement != null) {
             htmlelem.nativeElement?.setAttribute('style', 'background-color: lightcoral');
             elements.push(htmlelem);
           }
         }
       }
-  
+
       this.hovered = elements;
       event.stopPropagation();
     }
   }
 
   leaveHandler(event: any, index?: any) {
-    if(this.listeners){
+    if (this.listeners) {
       this.hovered.forEach((elem) => {
         if (elem.nativeElement != null)
           elem.nativeElement.setAttribute('style', '');
@@ -156,13 +156,69 @@ export class FieldComponent implements OnInit {
     }
   }
 
-  isEmpty(index: any) {
+  isEmpty(index: any): boolean {
     return this.field[index].cellType == CellType.Empty;
   }
 
   isHoveringSomething(): boolean {
     return this.hovered.some((e) => e && this.field[e.nativeElement.id].cellType == CellType.Ship);
   }
+
+  randomizeField() {
+    console.log(this.props);
+    this.props.ships.forEach(elem => {
+      console.log(elem);
+      let placed = false;
+      this.selected = elem;
+      while (!placed) {
+        let x = Math.floor(Math.random() * 10);
+        let y = Math.floor(Math.random() * 10);
+        if(this.placeShip(x,y))
+          placed = true;
+      }
+    });
+    this.props.ships = [];
+  }
+
+  placeShip(x: number, y: number): boolean {
+    if (!this.isOutBound(x, y) && !this.isOverlapping(x, y) && this.selected) {
+      this.selected.position.forEach((e) => {
+        this.field[x * SIZE + y] = new Cell(e.row, e.col, e.cellType);
+        if(this.selected)
+          this.placedShips.push(this.selected);
+      })
+    }
+    return false;
+  }
+
+  isOutBound(x: number, y: number): boolean {
+    if (this.selected) {
+      if (this.selected.orientation == OrientationShip.Horizontal)
+        return y + this.selected.length > SIZE;
+      else
+        return x + this.selected.length > SIZE;
+    }
+    return false;
+  }
+
+  isOverlapping(x: number, y: number): boolean {
+    if (this.selected) {
+      if (this.selected.orientation == OrientationShip.Horizontal) {
+        for (let index = 0; index < this.selected.length; index++) {
+          if (this.field[x * SIZE + y + index].cellType != CellType.Empty)
+            return true;
+        }
+      }
+      else {
+        for (let index = 0; index < this.selected.length; index++) {
+          if (this.field[x * SIZE + y + index * SIZE].cellType != CellType.Empty)
+            return true;
+        }
+      }
+    }
+    return false;
+  }
+
 }
 
 export function formatCoords(length: number, index: number): [number, number] {
