@@ -6,6 +6,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SocketioService } from '../socketio.service';
 import { LocalStorageService } from '../local-storage.service';
 import { UserHttpService, UserInterface } from '../user-http.service';
+import { MatDialog } from '@angular/material/dialog';
 
 export enum GameType {
   Friend,
@@ -22,6 +23,8 @@ interface SelectedShip {
 
 interface Game {
   type: GameType,
+  players: string[],
+  isChoosingFriend: boolean,
   matchmaking: boolean,
   preparation: boolean,
   playing: boolean,
@@ -48,7 +51,7 @@ export class PlayGameComponent implements OnInit {
   chat: any[] = [];
   text: string = " ";
   audio: HTMLAudioElement = new Audio();
-
+  playerWinner: string = '';
 
   ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
@@ -56,7 +59,7 @@ export class PlayGameComponent implements OnInit {
   new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
   new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 
-  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService, private userHttp: UserHttpService) { }
+  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService, private userHttp: UserHttpService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.turnListener();
@@ -126,11 +129,13 @@ export class PlayGameComponent implements OnInit {
   }
 
   onGameEvent(event: GameType) {
-    //per ricevere un match esistente
-    // if(this.game == null){
-    //   this.game = {type: event, preparation: true};
-    // }
-    this.game = { type: event, matchmaking: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+    if (event == GameType.Random)
+      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+    else if (event == GameType.Friend)
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+    else if (event == GameType.Spectate)
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+
   }
 
   isMatchmaking(): boolean {
@@ -141,18 +146,34 @@ export class PlayGameComponent implements OnInit {
     return this.game != null && this.game.preparation == true;
   }
 
+  isChoosingFriend(): boolean {
+    return this.game != null && this.game.isChoosingFriend;
+  }
+
   onMatchEvent(event: Match) {
     if (this.game) {
       this.game.matchmaking = false;
       this.game.preparation = true;
       this.game.match = event;
       this.chatId = event.playersChat;
+      this.game.players.push(event.playerOne.userId);
+      this.game.players.push(event.playerTwo.userId);
     }
   }
 
   onPositionEvent(event: Ship[]) {
     if (this.game) {
       this.game.positions = event;
+    }
+  }
+
+  onFriendChosen(event: string) {
+    if (event == '') {
+      this.resetState();
+    }
+    if (this.game) {
+      this.game.isChoosingFriend = false;
+      this.game.playing = true;
     }
   }
 
@@ -212,6 +233,7 @@ export class PlayGameComponent implements OnInit {
         this.sio.removeListener("game-over");
         this.stopAudio();
 
+        this.playerWinner = value.winner;
       },
       error(err) {
         console.log(err);
@@ -298,31 +320,34 @@ export class PlayGameComponent implements OnInit {
   }
 
   winner() {
-    return false;
+    return this.playerWinner.length > 0;
   }
 
   resetState() {
+    this.turn = null;
+    this.game  = null;
+    this.selected  = null;
+    this.formControl = new FormControl([]);
+    this.isRotated = false;
+    this.shot  = null;
+    this.playerWinner = '';
 
+    this.ships = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Cruiser, "Cruiser", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
   }
 
   isShootEnabled() {
     return this.shot && this.turn;
   }
 
-
-
-  winListener() {
-    this.sio.listen('match-winner').subscribe({
-      next(value) {
-
-      },
-      error(err) {
-        console.log(err);
-      },
-      complete() {
-
-      },
-    })
+  isObserver() {
+    if (this.game)
+      return this.game.players.indexOf(this.ls.getId()) == -1;
+    else
+      return false;
   }
 
 }

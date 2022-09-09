@@ -22,7 +22,7 @@ export interface UserInterface {
   _id: string,
   username: string,
   stats: StatsInterface,
-  playing: false
+  state: string;
 }
 
 @Injectable({

@@ -1,8 +1,14 @@
 <app-play-game-panel *ngIf="!isPlaying(); else matchmaking" (gameEvent)="onGameEvent($event)"></app-play-game-panel>
 
 <ng-template #matchmaking>
-  <ng-container *ngIf="isMatchmaking(); else preparation">
+  <ng-container *ngIf="isMatchmaking(); else choose">
     <app-matchmaking (joinedMatchEvent)="onMatchEvent($event)"></app-matchmaking>
+  </ng-container>
+</ng-template>
+
+<ng-template #choose>
+  <ng-container *ngIf="isChoosingFriend(); else preparation">
+    <app-choose-friend (friendChosenEvent)="onFriendChosen($event)"></app-choose-friend>
   </ng-container>
 </ng-template>
 
@@ -156,7 +162,13 @@
 
 <ng-template #gamefriend>
   <ng-container>
-    ciao
+    <div *ngIf="winner()" class="win-screen">
+      <div class="player-box">
+        <img src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100%" alt="">
+        <h2>Nome</h2>
+        <button mat-raised-button (click)="resetState()">Continue</button>
+      </div>
+    </div>
   </ng-container>
 </ng-template>
 

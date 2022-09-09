@@ -16,4 +16,12 @@ export class PlayGamePanelComponent implements OnInit {
   playRandom(): void {
     this.gameEvent.emit(GameType.Random);
   }
+
+  playFriend(): void {
+    this.gameEvent.emit(GameType.Friend);
+  }
+
+  spectate(): void {
+    this.gameEvent.emit(GameType.Spectate);
+  }
 }
