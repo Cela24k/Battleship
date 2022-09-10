@@ -103,6 +103,15 @@ export class Match {
             this.gameTurn = gameTurn ?? ''; 
     }
 }
+
+export function getAllShips(){
+    return [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Cruiser, "Cruiser", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
+    new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
+}
+
 // if (!this.rotated) {
 //     console.log('ciao')
 //     this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);

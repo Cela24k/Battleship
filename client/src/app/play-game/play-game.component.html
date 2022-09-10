@@ -26,7 +26,7 @@
           <mat-card-content>
             <app-field [selected]="this.selected" [listeners]="true" [rotated]="isRotated"
               (popShipEvent)="popShip($event)" (addShipEvent)="addShip($event)"
-              (positionsEvent)="onPositionEvent($event)"></app-field>
+              (positionsEvent)="onPositionEvent($event)" (shipsRandomizedEvent)="randomize($event)"></app-field>
           </mat-card-content>
           <mat-card-actions>
             <mat-chip-list #chipList [formControl]="formControl" class="example-chip" cdkDropList
@@ -176,7 +176,7 @@
 <div *ngIf="winner()" class="win-screen">
   <div class="player-box">
     <img src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100%" alt="">
-    <h2>{{playerWinner}}</h2>
+    <h2>{{playerWinner}} won the game!</h2>
     <button mat-raised-button (click)="resetState()">Continue</button>
   </div>
 </div>

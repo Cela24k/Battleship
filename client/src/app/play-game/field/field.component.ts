@@ -1,4 +1,4 @@
-import { BattleGrid, Cell, CellType, OrientationShip, Ship } from '../game-entities/game';
+import { BattleGrid, Cell, CellType, getAllShips, OrientationShip, Ship } from '../game-entities/game';
 import { Component, ElementRef, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 const SIZE = 10;
@@ -21,6 +21,7 @@ export class FieldComponent implements OnInit {
   @Output() popShipEvent = new EventEmitter<Ship>();
   @Output() addShipEvent = new EventEmitter<Ship>();
   @Output() positionsEvent = new EventEmitter<Ship[]>();
+  @Output() shipsRandomizedEvent = new EventEmitter<Ship[]>();
 
   field: Cell[] = [];
   hovered: ElementRef[] = [];
@@ -30,6 +31,7 @@ export class FieldComponent implements OnInit {
 
   ngOnInit(): void {
     this.populateField();
+    this.placeExistingBoards();
     // sostituire con props veri
     this.populateShots();
   }
@@ -44,7 +46,6 @@ export class FieldComponent implements OnInit {
         this.field[i * SIZE + j] = new Cell(i, j, CellType.Empty);
       }
     }
-    this.placeExistingBoards();
   }
 
   populateShots(): void {
@@ -65,7 +66,7 @@ export class FieldComponent implements OnInit {
     const coords = formatCoords(SIZE, index); //[x,y]
 
     // cliccata una barca 
-    if (this.listeners && !this.isOutBound(coords[0], coords[1])) {
+    if (this.listeners) {
       if (this.field[index].cellType == CellType.Ship) {
         let shipElement: Ship = new Ship([], 0, '', 0);
         let shipIndex = undefined;
@@ -90,7 +91,7 @@ export class FieldComponent implements OnInit {
         }
       } //cliccata una empty
       else {
-        if (!this.isHoveringSomething() && this.selected) {
+        if (!this.isOutBound(coords[0], coords[1]) && !this.isTooClose(coords[0], coords[1]) && !this.isHoveringSomething() && this.selected) {
           this.hovered.forEach((e, i) => {
             if (e != null) {
               if (this.selected?.orientation == OrientationShip.Horizontal) {
@@ -122,7 +123,7 @@ export class FieldComponent implements OnInit {
     const len = this.selected?.length != undefined ? this.selected.length : 0;
 
     if (this.listeners) {
-      if (this.field[index].cellType == CellType.Empty && !this.isOutBound(coords[0], coords[1])) {
+      if (this.field[index].cellType == CellType.Empty && !this.isOutBound(coords[0], coords[1]) && !this.isOverlapping(coords[0],coords[1]) && !this.isTooClose(coords[0],coords[1]) ) {
         for (let i = 0; i < len; i++) {
           let htmlelem;
           if (this.selected?.orientation == OrientationShip.Horizontal) {
@@ -165,28 +166,42 @@ export class FieldComponent implements OnInit {
   }
 
   randomizeField() {
-    console.log(this.props);
-    this.props.ships.forEach(elem => {
-      console.log(elem);
+    let boats = getAllShips();
+    this.placedShips = [];
+    this.populateField();
+
+    boats.forEach(elem => {
       let placed = false;
       this.selected = elem;
       while (!placed) {
         let x = Math.floor(Math.random() * 10);
         let y = Math.floor(Math.random() * 10);
-        if(this.placeShip(x,y))
+        let rot = Math.floor(Math.random()*2);
+        this.selected.orientation = rot;
+        
+        if (this.placeShip(x, y)){
           placed = true;
+        }
       }
-    });
-    this.props.ships = [];
+    })
+    this.selected = null;
+    this.shipsRandomizedEvent.emit(this.placedShips);
   }
 
   placeShip(x: number, y: number): boolean {
-    if (!this.isOutBound(x, y) && !this.isOverlapping(x, y) && this.selected) {
-      this.selected.position.forEach((e) => {
-        this.field[x * SIZE + y] = new Cell(e.row, e.col, e.cellType);
-        if(this.selected)
-          this.placedShips.push(this.selected);
-      })
+    if (this.selected && !this.isOutBound(x, y) && !this.isOverlapping(x, y) && !this.isTooClose(x,y)) {
+      for (let index = 0; index < this.selected.length; index++) {
+        if(this.selected.orientation == OrientationShip.Horizontal){
+          this.field[x*SIZE+(index+y)].cellType = CellType.Ship;
+          this.selected.position.push(this.field[x*SIZE+(index+y)]);
+        }
+        else{
+          this.field[(x+index)*SIZE+y].cellType = CellType.Ship;
+          this.selected.position.push(this.field[(x+index)*SIZE+y]);
+        }
+      }
+      this.placedShips.push(this.selected);
+      return true;
     }
     return false;
   }
@@ -219,6 +234,51 @@ export class FieldComponent implements OnInit {
     return false;
   }
 
+  isTooClose(x: number, y: number): boolean {
+      let retVal = false;
+      if (this.selected) {
+        let positions = [];
+        let startPosition = {}
+
+        for (let index = 0; index < this.selected.length; index++) {
+          if(this.selected.orientation == OrientationShip.Horizontal){
+            positions.push(this.field[x * SIZE + (y+index)]);
+          }
+          else
+            positions.push(this.field[(x+index) * SIZE + y]);
+        }
+
+        positions.forEach((e) => {
+          if (
+            (this.field[(e.row - 1) * SIZE + (e.col - 1)] && this.field[(e.row - 1) * SIZE + (e.col - 1)].cellType != CellType.Empty) ||
+            (this.field[(e.row + 1) * SIZE + (e.col - 1)] && this.field[(e.row + 1) * SIZE + (e.col - 1)].cellType != CellType.Empty) ||
+            (this.field[(e.row - 1) * SIZE + (e.col + 1)] && this.field[(e.row - 1) * SIZE + (e.col + 1)].cellType != CellType.Empty) ||
+            (this.field[(e.row + 1) * SIZE + (e.col + 1)] && this.field[(e.row + 1) * SIZE + (e.col + 1)].cellType != CellType.Empty)){
+              retVal = true;
+            }
+        })
+        if (this.selected.orientation == OrientationShip.Horizontal) {
+          if (
+            (this.field[x * SIZE + (y + this.selected.length + 1)] &&
+            this.field[x * SIZE + (y + this.selected.length + 1)].cellType != CellType.Empty) ||
+            (this.field[x * SIZE + (y - 1)] &&
+            this.field[x * SIZE + (y - 1)].cellType != CellType.Empty)){
+            retVal = true;
+          }
+        }
+        else {
+          if (
+            (this.field[((x + this.selected.length + 1) * SIZE) + y] &&
+            this.field[((x + this.selected.length + 1)* SIZE) + y].cellType != CellType.Empty) ||
+            (this.field[((x - 1) * SIZE) + y] &&
+            this.field[((x - 1) * SIZE) + y].cellType != CellType.Empty)
+          )
+            retVal = true;
+        }
+      }
+      return retVal;
+ }
+ 
 }
 
 export function formatCoords(length: number, index: number): [number, number] {

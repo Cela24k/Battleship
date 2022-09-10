@@ -1,4 +1,4 @@
-import { BattleGrid, Cell, Match, OrientationShip, Ship, ShipLenght } from './game-entities/game';
+import { BattleGrid, Cell, Match, OrientationShip, Ship, ShipLenght, getAllShips } from './game-entities/game';
 import { Component, ElementRef, NgModule, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { GameService } from '../game.service';
@@ -53,11 +53,7 @@ export class PlayGameComponent implements OnInit {
   audio: HTMLAudioElement = new Audio();
   playerWinner: string = '';
 
-  ships: any[] = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
-  new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
-  new Ship([], ShipLenght.Cruiser, "Cruiser", OrientationShip.Horizontal),
-  new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
-  new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
+  ships: any[] = getAllShips();
 
   constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService, private userHttp: UserHttpService, public dialog: MatDialog) { }
 
@@ -347,11 +343,7 @@ export class PlayGameComponent implements OnInit {
     this.shot = null;
     this.playerWinner = '';
 
-    this.ships = [new Ship([], ShipLenght.Carrier, "Carrier", OrientationShip.Horizontal),
-    new Ship([], ShipLenght.Battleship, "Battleship", OrientationShip.Horizontal),
-    new Ship([], ShipLenght.Cruiser, "Cruiser", OrientationShip.Horizontal),
-    new Ship([], ShipLenght.Submarine, "Submarine", OrientationShip.Horizontal),
-    new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
+    this.ships = getAllShips();
   }
 
   isShootEnabled() {
@@ -364,4 +356,14 @@ export class PlayGameComponent implements OnInit {
     else
       return false;
   }
+
+  randomize(event: Ship[]){
+    console.log(event);
+    this.ships = [];
+    this.selected = null;
+    if(this.game)
+      this.game.positions = event;
+  }
+
+
 }
