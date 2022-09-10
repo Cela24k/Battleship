@@ -21,7 +21,7 @@ export interface MatchInterface extends Document {
     observersChat: Types.ObjectId,
     gameTurn: Types.ObjectId, // which player has the turn.
 
-    makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<[Cell,string]> //funzione da chiamare quando finisce un turno di sicuro
+    makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<[Cell, string]> //funzione da chiamare quando finisce un turno di sicuro
     initBoardPlayer: (playerId: Types.ObjectId, board: BattleGrid) => Promise<MatchInterface>;
     arePlayerReady(): boolean;
 
@@ -50,7 +50,7 @@ export const MatchSchema = new Schema<MatchInterface>({
     }
 });
 
-MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell): Promise<[Cell,string]> {
+MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, shot: Cell): Promise<[Cell, string]> {
     if (playerId != this.gameTurn) {
         throw new Error("Not your turn");
     }
@@ -64,14 +64,14 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
                 await (gameOver.bind(this))(player, opponent);
                 return [shot, " "];
             }
-        }else{
+        } else {
             shot.cellType = CellType.Miss;
         }
         player.board.addShot(shot);
 
         this.gameTurn = shot.cellType == CellType.Hit ? player.userId : opponent.userId;
         await this.save();
-        return [shot,this.gameTurn]; 
+        return [shot, this.gameTurn];
 
 
     } catch (err) {
@@ -82,10 +82,14 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
 
 MatchSchema.methods.initBoardPlayer = async function (playerId: Types.ObjectId, board: BattleGrid): Promise<MatchInterface> {
     try {
+        if (board.ships.length == 0) {
+            throw new Error();
+        }
         const player: MatchPlayer = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
         player.board = board;
         player.ready = true;
         return this.save();
+
     } catch (err) {
         throw err;
     }
@@ -135,7 +139,7 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
 
 export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
     try {
-        
+
         const matchResult = this.result.updateResult(winner.userId);
         const winnerUser: UserInterface = await getUserById(winner.userId);
         const loserUser: UserInterface = await getUserById(loser.userId);
@@ -147,8 +151,8 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
         console.log(matchId);
         const gameOver = new GameOverEmitter(ios, matchId.toString());
         console.log(matchResult);
-        gameOver.emit({matchResult});
-        
+        gameOver.emit({ matchResult });
+
         var match = await Match.deleteOne({ _id: this._id });;
         return match;
         // winnerUser.setPlayState(true);
