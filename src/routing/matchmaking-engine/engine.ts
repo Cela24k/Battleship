@@ -44,14 +44,10 @@ export class MatchMakingEngine {
                     console.log("Matchiamoo".rainbow);
                     const match = await newMatch(playerOne.userId, playerTwo.userId);
                     //TODO newmatch emitter needded.
-                    // const emitterOne = new NewMatchEmitter<any>(this.serverIo, (playerOne.userId).toString());
-                    // const emitterTwo = new NewMatchEmitter<any>(this.serverIo, (playerTwo.userId).toString());
-                    
-                    ios.in((playerOne.userId).toString()).emit('new-match', match);
-                    ios.in((playerTwo.userId).toString()).emit('new-match', match);
-
-                    // emitterOne.emit(match);
-                    // emitterTwo.emit(match);
+                    const emitterOne = new NewMatchEmitter<any>(this.serverIo, (playerOne.userId).toString());
+                    const emitterTwo = new NewMatchEmitter<any>(this.serverIo, (playerTwo.userId).toString());
+                    emitterOne.emit(match);
+                    emitterTwo.emit(match);
                     await removeTicket(playerOne.userId);
                     await removeTicket(playerTwo.userId);
                     ticketList.pop();

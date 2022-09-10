@@ -7,6 +7,7 @@ import * as notifications from "../models/notification";
 import ios from "..";
 import { ChatModel, createChat } from "../models/chat";
 import { getUser, getUserById, User } from "../models/user";
+import NotificationEmitter from '../socket-helper/Emitter/NotificationEmitter';
 
 
 export const router = Router();
@@ -132,7 +133,8 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
             // new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend 
             // ));
             let n = await notifications.newNotification(sender.username, sender._id, new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)
-            ios.in(req.params.friendId).emit('notification', n);
+            const notificationEmitter = new NotificationEmitter(ios,req.params.friendId);
+            notificationEmitter.emit(n);
 
         } catch (err) {
             if (err === 'Server Error')
