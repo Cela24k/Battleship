@@ -63,6 +63,7 @@ export class PlayGameComponent implements OnInit {
 
   ngOnInit(): void {
     this.turnListener();
+    this.sio.emit("user-join", this.ls.getId());
   }
 
   //ottenere partite gia esistenti e cambiare il valore di game.preparation a false;
@@ -209,6 +210,9 @@ export class PlayGameComponent implements OnInit {
 
   turnListener() {
     const myId = this.ls.getId();
+
+    
+
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
         this.turn = value.gameTurn == myId;

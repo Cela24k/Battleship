@@ -13,7 +13,7 @@ export class SocketioService {
   private socket: Socket;
 
   constructor(private ls: LocalStorageService) {
-    this.socket = io(this.uri, {auth:{userid: ls.getId()}});
+    this.socket = io(this.uri, {auth:{userId: ls.getId()}});
   }
 
   listen(eventName: string): Observable<any> {

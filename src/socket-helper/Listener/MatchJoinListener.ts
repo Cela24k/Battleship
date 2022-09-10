@@ -17,17 +17,21 @@ export class MatchJoinedListener extends Listener {
 
     listen(): void {
         super.listen(async (data) => {
-            const { match, userId } = data;
-            if (match) {
-                this.client.join(match._id);
-                console.log(match._id.rainbow);
-                const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
-                await setUserState(userId, userState);
-                if (userState == UserState.Playing) {
-                    this.client.join(match.playersChat)
-                } else {
-                    this.client.join(match.observerChat);
+            try {
+                const { match, userId } = data;
+                if (match) {
+                    this.client.join(match._id);
+                    console.log(match._id.rainbow);
+                    const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
+                    await setUserState(userId, userState);
+                    if (userState == UserState.Playing) {
+                        this.client.join(match.playersChat)
+                    } else {
+                        this.client.join(match.observerChat);
+                    }
                 }
+            } catch (err) {
+                console.log(err);
             }
         })
     }

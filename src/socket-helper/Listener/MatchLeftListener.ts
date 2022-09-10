@@ -18,6 +18,7 @@ export class MatchLeftListener extends Listener {
     //TODO testare funzionamento
     listen(): void {
         super.listen(async (data) => {
+            try{
             const { match, userId } = data;
             if (match) {
                 if (data.surrender) {
@@ -35,6 +36,9 @@ export class MatchLeftListener extends Listener {
                 }
                 await setUserState(userId, UserState.Online);
             }
+        }catch(err){
+            console.log(err);
+        }
         });
     }
 }

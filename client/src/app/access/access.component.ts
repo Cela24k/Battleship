@@ -26,7 +26,6 @@ export class AccessComponent implements OnInit {
   onSubmit(username: string, password: string) {
     return this.auth.login(username, password).subscribe({
       next: (d: any) => {
-        this.sio.emit("user-join", this.local.getId());
         this.router.navigate(['/play']);
       },
       error: (err) => {//TODO vedere redirect per quando ci sono errori
