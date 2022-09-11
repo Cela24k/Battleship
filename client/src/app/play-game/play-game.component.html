@@ -2,13 +2,19 @@
 
 <ng-template #matchmaking>
   <ng-container *ngIf="isMatchmaking(); else choose">
-    <app-matchmaking (joinedMatchEvent)="onMatchEvent($event)"></app-matchmaking>
+    <app-matchmaking (joinedMatchEvent)="onMatchEvent($event)" (queueLeftEvent)="onQueueLeft($event)"></app-matchmaking>
   </ng-container>
 </ng-template>
 
 <ng-template #choose>
-  <ng-container *ngIf="isChoosingFriend(); else preparation">
+  <ng-container *ngIf="isChoosingFriend(); else friend">
     <app-choose-friend (friendChosenEvent)="onFriendChosen($event)"></app-choose-friend>
+  </ng-container>
+</ng-template>
+
+<ng-template #friend>
+  <ng-container *ngIf="isWaitingFriend(); else preparation">
+    <app-waiting-friend (friendChosenEvent)="onFriendChosen($event)" [friendId]="getFriendId()"></app-waiting-friend>
   </ng-container>
 </ng-template>
 
@@ -180,5 +186,15 @@
     <img src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100%" alt="">
     <h2>{{playerWinner}} won the game!</h2>
     <button mat-raised-button (click)="resetState()">Continue</button>
+  </div>
+</div>
+
+<div *ngIf="pendingMatch">
+  <div class="game-request">
+    <div class="request-content">
+      <h1 class="text">Game request from </h1>
+      <button mat-raised-button color="primary" (click)="responseFriendMatch(true)"> Accept </button>
+      <button mat-raised-button color="warn" (click)="responseFriendMatch(false)"> Refuse </button>
+    </div>
   </div>
 </div>

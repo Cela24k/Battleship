@@ -14,7 +14,7 @@ export class FrienMatchListener extends Listener {
     }
 
     listen(): void {
-        super.listen(async (data: any) => {//TODO qui si avranno anche le chaiamate al databse
+        super.listen(async (data: any) => {
             if(data.friendId && data.userId){
                 const friendMatch = new FriendMatchEmitter(ios, data.friendId);
                 friendMatch.emit({userId: data.userId});
