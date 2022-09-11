@@ -132,13 +132,13 @@ export class PlayGameComponent implements OnInit {
   }
 
   onGameEvent(event: GameType) {
-    if (event == GameType.Random){
-      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, timerId: null, timer:60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+    if (event == GameType.Random) {
+      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, timerId: null, timer: 60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     }
     else if (event == GameType.Friend)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer: 0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     else if (event == GameType.Spectate)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer: 0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
 
   }
 
@@ -164,15 +164,15 @@ export class PlayGameComponent implements OnInit {
       this.game.players.push(event.playerTwo.userId);
       this.getFriendName();
       let timer = () => {
-        if(this.game && this.game.timer > 0){
+        if (this.game && this.game.timer > 0) {
           this.game.timer = this.game.timer - 1;
           this.game.timerId = setTimeout(timer, 1000);
         }
-        else if(this.game){
+        else if (this.game) {
           this.randomizeBoard();
-          this.game.timerId = setTimeout(()=>{
+          this.game.timerId = setTimeout(() => {
             this.initBoard();
-          },200)
+          }, 200)
         }
       }
       timer();
@@ -221,7 +221,7 @@ export class PlayGameComponent implements OnInit {
             this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + this.ls.getUsername() + ' initialized his board', timestamp: Date.now() } })
             this.openSnackBar('Board succesfully initialized', 'Got it!')
             this.playSound();
-            if(this.game.timerId)
+            if (this.game.timerId)
               clearTimeout(this.game.timerId);
           }
         },
@@ -275,7 +275,7 @@ export class PlayGameComponent implements OnInit {
       complete: () => {
       }
     })
-    
+
     this.sio.listen('ship-destroyed').subscribe({
       next: (value) => {
         value.ship.position.forEach((e: Cell) => {
@@ -292,17 +292,21 @@ export class PlayGameComponent implements OnInit {
 
     this.sio.listen('chat-match').subscribe({
       next: (value: any) => {
-        this.userHttp.getUserById(value.message.sender).subscribe({
-          next: (data: UserInterface) => {
-            value.message.sender = data.username;
-            this.chat.push(value.message);
+        if (value.message.sender == 'Server') {
+          this.chat.push(value.message);
+        } else {
+          this.userHttp.getUserById(value.message.sender).subscribe({
+            next: (data: UserInterface) => { 
+              value.message.sender = data.username;
+              this.chat.push(value.message);
 
-          },
-          error(err) {
-            console.log(err);
-          },
+            },
+            error(err) {
+              console.log(err);
+            },
+          }
+          );
         }
-        );
       },
       error(err) {
         console.log(err);
@@ -324,6 +328,10 @@ export class PlayGameComponent implements OnInit {
         console.log(err);
       },
     })
+  }
+
+  surrender() {//TODO change html and go away 
+    this.sio.emit("match-left", { match: this.game?.match, userId: this.ls.getId(), surrender: true });
   }
 
   fieldformatProps() {
@@ -432,15 +440,15 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  randomizeBoard(){
+  randomizeBoard() {
     this.random = true;
     console.log(this.random);
   }
 
-  getTimerSecs(){
-    if(this.game && this.game.timer)
-      return this.game.timer.toString().padStart(2,'0');
-    else 
+  getTimerSecs() {
+    if (this.game && this.game.timer)
+      return this.game.timer.toString().padStart(2, '0');
+    else
       return '00';
   }
 }

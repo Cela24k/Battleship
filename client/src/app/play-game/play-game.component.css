@@ -137,3 +137,8 @@
     text-align: center;
     margin: 0
 }
+
+.surrender{
+    top: 50px;
+    position: absolute;
+}

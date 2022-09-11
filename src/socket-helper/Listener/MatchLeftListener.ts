@@ -25,7 +25,7 @@ export class MatchLeftListener extends Listener {
                     const matchData = await getMatchById(match._id);
                     const winner = matchData.playerOne.userId == userId ? matchData.playerTwo : matchData.playerOne;
                     const loser = matchData.playerOne.userId == userId ? matchData.playerOne : matchData.playerTwo;
-                    gameOver.bind(matchData)(winner, loser);
+                    await gameOver.bind(matchData)(winner, loser);
                 }
                 this.client.leave(match._id);
                 const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing

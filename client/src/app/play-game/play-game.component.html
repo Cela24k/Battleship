@@ -86,6 +86,7 @@
 
 <ng-template #play>
   <ng-container *ngIf="isPlaying(); else gamefriend">
+    <button class="surrender" mat-raised-button warn (click)="surrender()">FF noob</button>
     <div class="back" style="display: flex; justify-content: center;">
       <div class="field-container">
         <mat-card class="example-card">
