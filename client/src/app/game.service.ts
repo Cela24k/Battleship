@@ -19,7 +19,7 @@ export class GameService {
   }
 
   removeQueue(): Observable<any> {
-    return this.httpclient.delete(this.matchmaking_url + '/join', { body: { userId: this.localstorage.getId() } });
+    return this.httpclient.delete(this.matchmaking_url + '/remove', { body: { userId: this.localstorage.getId() } });
   }
 
   initBoard(matchId: string, board: BattleGrid): Observable<any> {
