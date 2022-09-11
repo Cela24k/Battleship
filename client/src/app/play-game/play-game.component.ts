@@ -27,6 +27,7 @@ interface Game {
   isChoosingFriend: boolean,
   matchmaking: boolean,
   preparation: boolean,
+  timerId: NodeJS.Timeout | null,
   timer: number,
   playing: boolean,
   match: Match | null,
@@ -132,26 +133,12 @@ export class PlayGameComponent implements OnInit {
 
   onGameEvent(event: GameType) {
     if (event == GameType.Random){
-      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, timer:60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
-
-      let timer = () => {
-        if(this.game && this.game.timer > 0){
-          this.game.timer = this.game.timer - 1;
-          setTimeout(timer, 1000);
-        }
-        else {
-          this.randomizeBoard();
-          setTimeout(()=>{
-            this.initBoard();
-          },200)
-        }
-      }
-      timer();
+      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, timerId: null, timer:60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     }
     else if (event == GameType.Friend)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     else if (event == GameType.Spectate)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
 
   }
 
@@ -176,6 +163,19 @@ export class PlayGameComponent implements OnInit {
       this.game.players.push(event.playerOne.userId);
       this.game.players.push(event.playerTwo.userId);
       this.getFriendName();
+      let timer = () => {
+        if(this.game && this.game.timer > 0){
+          this.game.timer = this.game.timer - 1;
+          this.game.timerId = setTimeout(timer, 1000);
+        }
+        else if(this.game){
+          this.randomizeBoard();
+          this.game.timerId = setTimeout(()=>{
+            this.initBoard();
+          },200)
+        }
+      }
+      timer();
       // this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + event.playerOne + 'connected', timestamp: Date.now() } })
     }
   }
@@ -221,6 +221,8 @@ export class PlayGameComponent implements OnInit {
             this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + this.ls.getUsername() + ' initialized his board', timestamp: Date.now() } })
             this.openSnackBar('Board succesfully initialized', 'Got it!')
             this.playSound();
+            if(this.game.timerId)
+              clearTimeout(this.game.timerId);
           }
         },
         error(err) {
@@ -273,14 +275,12 @@ export class PlayGameComponent implements OnInit {
       complete: () => {
       }
     })
+    
     this.sio.listen('ship-destroyed').subscribe({
       next: (value) => {
-        console.log(value);
-
         value.ship.position.forEach((e: Cell) => {
           this._snackBar.open(value.ship.type + 'Ship destroyed', 'Close', { duration: 3000 });
           //fare qualcosa
-
           // let elem = document.getElementById(((e.row*10+e.col)+100).toString());
           // elem?.setAttribute('style','border: 1px solid black');
         });

@@ -19,7 +19,8 @@ enum OrientationShip {
 export interface Ship extends Types.Subdocument {
     position: Cell[];
     length: ShipLenght;
-    orientation: OrientationShip,
+    orientation: OrientationShip;
+    type: string;
     isDestroyed(): boolean;
     hasBeenHit(shot: Cell): boolean;
 }
@@ -38,6 +39,9 @@ export const ShipSchema = new Schema<Ship>({
         type: SchemaTypes.Number,
         enum: ShipLenght,
         required: true,
+    },
+    type: {
+        type: SchemaTypes.String
     }
 }, { _id: false })
 
