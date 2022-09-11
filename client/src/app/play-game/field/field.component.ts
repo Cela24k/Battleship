@@ -17,6 +17,8 @@ export class FieldComponent implements OnInit {
   };
   @Input() selected: Ship | null = null;
   @Input() rotated: boolean = false;
+  @Input() randomize: boolean = false;
+
   @Output() popShipEvent = new EventEmitter<Ship>();
   @Output() addShipEvent = new EventEmitter<Ship>();
   @Output() positionsEvent = new EventEmitter<Ship[]>();
@@ -25,7 +27,7 @@ export class FieldComponent implements OnInit {
   field: Cell[] = [];
   hovered: ElementRef[] = [];
   placedShips: Ship[] = [];
-  
+
 
   constructor() { }
 
@@ -34,10 +36,18 @@ export class FieldComponent implements OnInit {
     this.placeExistingBoards();
     // sostituire con props veri
     this.populateShots();
+    console.log(this.randomize);
+    if(this.randomize){
+      this.randomizeField();
+    }
   }
 
   ngOnChanges() {
     this.populateShots();
+    if(this.randomize){
+      this.randomizeField();
+    }
+
   }
 
   populateField(): void {

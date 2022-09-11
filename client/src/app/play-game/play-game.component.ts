@@ -27,6 +27,7 @@ interface Game {
   isChoosingFriend: boolean,
   matchmaking: boolean,
   preparation: boolean,
+  timer: number,
   playing: boolean,
   match: Match | null,
   positions: Ship[];
@@ -54,6 +55,7 @@ export class PlayGameComponent implements OnInit {
   playerWinner: string = '';
   ships: any[] = getAllShips();
   friendUsername: string = 'Oppon ent';
+  random = false;
 
   constructor(
     private _snackBar: MatSnackBar, private gameService: GameService,
@@ -129,12 +131,27 @@ export class PlayGameComponent implements OnInit {
   }
 
   onGameEvent(event: GameType) {
-    if (event == GameType.Random)
-      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+    if (event == GameType.Random){
+      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, timer:60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+
+      let timer = () => {
+        if(this.game && this.game.timer > 0){
+          this.game.timer = this.game.timer - 1;
+          setTimeout(timer, 1000);
+        }
+        else {
+          this.randomizeBoard();
+          setTimeout(()=>{
+            this.initBoard();
+          },200)
+        }
+      }
+      timer();
+    }
     else if (event == GameType.Friend)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     else if (event == GameType.Spectate)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timer:0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
 
   }
 
@@ -386,9 +403,9 @@ export class PlayGameComponent implements OnInit {
   }
 
   randomize(event: Ship[]) {
-    console.log(event);
     this.ships = [];
     this.selected = null;
+    this.random = false;
     if (this.game)
       this.game.positions = event;
   }
@@ -415,4 +432,15 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
+  randomizeBoard(){
+    this.random = true;
+    console.log(this.random);
+  }
+
+  getTimerSecs(){
+    if(this.game && this.game.timer)
+      return this.game.timer.toString().padStart(2,'0');
+    else 
+      return '00';
+  }
 }

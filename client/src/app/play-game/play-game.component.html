@@ -24,7 +24,7 @@
               placed ship to remove it</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
-            <app-field [selected]="this.selected" [listeners]="true" [rotated]="isRotated"
+            <app-field [selected]="this.selected" [listeners]="true" [rotated]="isRotated" [randomize]="this.random"
               (popShipEvent)="popShip($event)" (addShipEvent)="addShip($event)"
               (positionsEvent)="onPositionEvent($event)" (shipsRandomizedEvent)="randomize($event)"></app-field>
           </mat-card-content>
@@ -78,7 +78,7 @@
       </div>
     </div>
     <div class="floating-banner-preparation">
-      <h1 class="text"> Preparation: place your ships in 00:00 </h1>
+      <h1 class="text"> Preparation: place your ships in 00:{{getTimerSecs()}} </h1>
       <button mat-raised-button [disabled]="this.ships.length != 0" (click)="initBoard()">Done</button>
     </div>
   </ng-container>
