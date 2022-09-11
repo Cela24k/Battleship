@@ -53,7 +53,7 @@ export class AuthService {
   logOut(){
     if(this.isLoggedIn()){
       console.log("logging out");
-      this.localHelper.logoOut();
+      this.localHelper.logOut();
     }
   }
 

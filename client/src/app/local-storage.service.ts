@@ -59,7 +59,7 @@ export class LocalStorageService {
     return 'no jwt stored';
   }
 
-  logoOut(){
+  logOut(){
     localStorage.clear();
   }
 }

@@ -24,7 +24,9 @@ export class AppComponent {
   constructor(
     private router: Router,
     private authHelper: AuthService,
-    private interceptor: HttpTokenPortingService
+    private interceptor: HttpTokenPortingService,
+    private sio: SocketioService,
+    private ls: LocalStorageService
   ) { 
     this.open_chats = [];
   }
@@ -59,7 +61,8 @@ export class AppComponent {
     this.open_chats.splice(i,1);
   }
 
-  logOut(): void{
+  logOut(){
+    this.sio.emit("log-out", {userId: this.ls.getId()});
     this.authHelper.logOut();
   }
 

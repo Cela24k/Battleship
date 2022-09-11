@@ -43,7 +43,6 @@ export class MatchMakingEngine {
                 if (playerTwo != null) {
                     console.log("Matchiamoo".rainbow);
                     const match = await newMatch(playerOne.userId, playerTwo.userId);
-                    //TODO newmatch emitter needded.
                     const emitterOne = new NewMatchEmitter<any>(this.serverIo, (playerOne.userId).toString());
                     const emitterTwo = new NewMatchEmitter<any>(this.serverIo, (playerTwo.userId).toString());
                     emitterOne.emit(match);
