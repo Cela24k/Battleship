@@ -32,4 +32,8 @@ export class GameService {
     const body = {shot: shot, userId: this.localstorage.getId()};
     return this.httpclient.patch(this.match_url + '/' + matchId + '?action=move', body)
   }
+
+  matchRequest(userId: string, friendId: string): Observable<any>{
+    return this.httpclient.post(this.match_url, {});
+  }
 }

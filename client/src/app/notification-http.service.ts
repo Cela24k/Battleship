@@ -25,4 +25,5 @@ export class NotificationHttpService {
   refuse(id: string): Observable<any>{
     return this.httpclient.put(this.url + '/' + this.localstorage.getId() + '/notifications/' + id +  '?action=refuse',{});
   }
+
 }

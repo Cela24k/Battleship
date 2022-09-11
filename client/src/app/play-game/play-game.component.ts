@@ -52,10 +52,13 @@ export class PlayGameComponent implements OnInit {
   text: string = " ";
   audio: HTMLAudioElement = new Audio();
   playerWinner: string = '';
-
   ships: any[] = getAllShips();
+  friendUsername: string = 'Oppon ent';
 
-  constructor(private _snackBar: MatSnackBar, private gameService: GameService, private sio: SocketioService, private ls: LocalStorageService, private userHttp: UserHttpService, public dialog: MatDialog) { }
+  constructor(
+    private _snackBar: MatSnackBar, private gameService: GameService,
+    private sio: SocketioService, private ls: LocalStorageService,
+    private userHttp: UserHttpService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.turnListener();
@@ -155,6 +158,8 @@ export class PlayGameComponent implements OnInit {
       this.chatId = event.playersChat;
       this.game.players.push(event.playerOne.userId);
       this.game.players.push(event.playerTwo.userId);
+      this.getFriendName();
+      // this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + event.playerOne + 'connected', timestamp: Date.now() } })
     }
   }
 
@@ -164,13 +169,27 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  onFriendChosen(event: string) {
-    if (event == '') {
+  onFriendChosen(event: any) {
+
+    if (!event) {
       this.resetState();
     }
-    if (this.game) {
-      this.game.isChoosingFriend = false;
-      this.game.playing = true;
+    else {
+      if (this.game && this.game.type == GameType.Friend) {
+        this.gameService.matchRequest(this.ls.getId(), event[0]._id).subscribe({
+          next(value) {
+
+          },
+          error(err) {
+
+          },
+          complete() {
+
+          },
+        })
+        this.game.isChoosingFriend = false;
+        this.game.playing = true;
+      }
     }
   }
 
@@ -182,6 +201,7 @@ export class PlayGameComponent implements OnInit {
             //ste due righe di codice da fare quando il server emitta che i due giocatori sono pronti
             this.game.preparation = false;
             this.game.playing = true;
+            this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + this.ls.getUsername() + ' initialized his board', timestamp: Date.now() } })
             this.openSnackBar('Board succesfully initialized', 'Got it!')
             this.playSound();
           }
@@ -207,10 +227,12 @@ export class PlayGameComponent implements OnInit {
   turnListener() {
     const myId = this.ls.getId();
 
-    
-
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
+        if (this.turn == null) {
+          //emittare un messaggio nella chat quando si entra
+          // this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: myId + 'joined the match', timestamp: Date.now() } })
+        }
         this.turn = value.gameTurn == myId;
         if (value.shot && value.userId != myId) {
           this.game?.oppentShots.push(value.shot);
@@ -237,16 +259,22 @@ export class PlayGameComponent implements OnInit {
     this.sio.listen('ship-destroyed').subscribe({
       next: (value) => {
         console.log(value);
+
+        value.ship.position.forEach((e: Cell) => {
+          this._snackBar.open(value.ship.type + 'Ship destroyed', 'Close', { duration: 3000 });
+          //fare qualcosa
+
+          // let elem = document.getElementById(((e.row*10+e.col)+100).toString());
+          // elem?.setAttribute('style','border: 1px solid black');
+        });
       },
       error(err) {
         console.log(err);
       },
     })
 
-
     this.sio.listen('chat-match').subscribe({
       next: (value: any) => {
-        console.log("arrivato il messaggio miiiinghia");
         this.userHttp.getUserById(value.message.sender).subscribe({
           next: (data: UserInterface) => {
             value.message.sender = data.username;
@@ -266,7 +294,7 @@ export class PlayGameComponent implements OnInit {
   }
 
   gameOver(value: any) {
-    this.sio.emit("match-left", {match: this.game?.match, userId: this.ls.getId()});
+    this.sio.emit("match-left", { match: this.game?.match, userId: this.ls.getId() });
     this.sio.removeListener("chat-match");
     this.sio.removeListener("ship-destroyed");
     this.sio.removeListener("game-over");
@@ -327,7 +355,7 @@ export class PlayGameComponent implements OnInit {
   }
 
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, { duration: 4000 });
+    this._snackBar.open(message, action, { duration: 3000 });
   }
 
   winner() {
@@ -357,13 +385,34 @@ export class PlayGameComponent implements OnInit {
       return false;
   }
 
-  randomize(event: Ship[]){
+  randomize(event: Ship[]) {
     console.log(event);
     this.ships = [];
     this.selected = null;
-    if(this.game)
+    if (this.game)
       this.game.positions = event;
   }
 
+  getFriendName() {
+    const myId = this.ls.getId();
+    if (this.game) {
+      let fId = this.game.players.find((e) => {
+        return e != myId
+      })
+      if (fId)
+        this.userHttp.getUserById(fId).subscribe({
+          next: (value) => {
+            console.log(value)
+            this.friendUsername = value.username;
+          },
+          error(err) {
+            console.log(err);
+          },
+          complete() {
+
+          },
+        })
+    }
+  }
 
 }

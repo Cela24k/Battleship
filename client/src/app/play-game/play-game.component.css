@@ -33,13 +33,13 @@
 }
 
 .example-card {
-    top: 60px;
+    top: 85px;
     margin-left: 10vw;
     margin-right: 5px;
 }
 
 .shots-card {
-    top: 60px;
+    top: 85px;
     width: 30vh;
     margin-left: 5px;
     margin-right: 10vw;
@@ -47,9 +47,10 @@
     max-width: 70vh;
 }
 
-.field-container{
-    width: 85vh;
+.field-container {
+    width: 75vh;
 }
+
 .example-header-image {
     background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg');
     background-size: cover;
@@ -60,31 +61,70 @@
     background-size: cover;
 }
 
-.hint{
+.hint {
     margin-top: 15px;
     font-style: italic;
     color: lightcoral;
 }
 
-.rotate-slider{
+.rotate-slider {
     margin-left: 20px;
 }
 
-.floating-banner{
+
+.floating-banner {
     position: absolute;
     width: 100%;
-    height: 120px;
-    bottom:0;
+    height: 90px;
+    bottom: 0;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    background: rgb(226, 100, 38);
+    background: linear-gradient(90deg, rgba(226, 100, 38, 0.5466561624649859) 0%, rgba(196, 71, 9, 1) 50%);
 }
 
-.win-screen{
+.floating-banner-preparation {
+    position: absolute;
+    width: 100%;
+    height: 90px;
+    bottom: 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: rgb(226, 100, 38);
+    background: linear-gradient(90deg, rgba(226, 100, 38, 0.5466561624649859) 0%, rgba(196, 71, 9, 1) 50%);
+}
+
+.floating-banner-your {
+    position: absolute;
+    width: 100%;
+    height: 90px;
+    bottom: 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: rgb(173, 204, 164);
+    background: linear-gradient(90deg, rgba(173, 204, 164, 0.5466561624649859) 0%, rgba(127, 198, 109, 1) 50%);
+}
+
+.floating-banner-opponent {
+    position: absolute;
+    width: 100%;
+    height: 90px;
+    bottom: 0;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background: rgb(226, 100, 38);
+    background: linear-gradient(90deg, rgba(226, 100, 38, 0.5466561624649859) 0%, rgba(196, 71, 9, 1) 50%);
+}
+
+.win-screen {
     position: absolute;
     width: 100%;
     height: 100%;
-    top:0;
+    top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,3 +132,8 @@
     text-align: center;
 }
 
+.text {
+    color: white;
+    text-align: center;
+    margin: 0
+}
