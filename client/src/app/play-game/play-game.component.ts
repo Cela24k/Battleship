@@ -21,10 +21,15 @@ interface SelectedShip {
   orientation: OrientationShip // 0 horizontal, 1 vertical
 }
 
+interface PendingMatch {
+  players: string[],
+}
+
 interface Game {
   type: GameType,
   players: string[],
   isChoosingFriend: boolean,
+  isWaitingFriend: boolean,
   matchmaking: boolean,
   preparation: boolean,
   timerId: NodeJS.Timeout | null,
@@ -55,8 +60,11 @@ export class PlayGameComponent implements OnInit {
   audio: HTMLAudioElement = new Audio();
   playerWinner: string = '';
   ships: any[] = getAllShips();
-  friendUsername: string = 'Oppon ent';
+  friendUsername: string = 'Opponent';
   random = false;
+  friendId: string = '';
+  pendingMatch = false;
+
 
   constructor(
     private _snackBar: MatSnackBar, private gameService: GameService,
@@ -133,12 +141,12 @@ export class PlayGameComponent implements OnInit {
 
   onGameEvent(event: GameType) {
     if (event == GameType.Random) {
-      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, timerId: null, timer: 60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: true, players: [], isChoosingFriend: false, isWaitingFriend: false, timerId: null, timer: 60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     }
     else if (event == GameType.Friend)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer: 0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, isWaitingFriend: false, timerId: null, timer: 60, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
     else if (event == GameType.Spectate)
-      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, timerId: null, timer: 0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+      this.game = { type: event, matchmaking: false, players: [], isChoosingFriend: true, isWaitingFriend: false, timerId: null, timer: 0, preparation: false, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
 
   }
 
@@ -154,9 +162,17 @@ export class PlayGameComponent implements OnInit {
     return this.game != null && this.game.isChoosingFriend;
   }
 
+  isWaitingFriend(): boolean {
+    return this.game != null && this.game.isWaitingFriend;
+  }
+
   onMatchEvent(event: Match) {
+    console.log(this.game);
+    this.pendingMatch = false;
+    
     if (this.game) {
       this.game.matchmaking = false;
+      this.game.isWaitingFriend = false;
       this.game.preparation = true;
       this.game.match = event;
       this.chatId = event.playersChat;
@@ -187,27 +203,21 @@ export class PlayGameComponent implements OnInit {
   }
 
   onFriendChosen(event: any) {
-
     if (!event) {
       this.resetState();
     }
     else {
       if (this.game && this.game.type == GameType.Friend) {
-        this.gameService.matchRequest(this.ls.getId(), event[0]._id).subscribe({
-          next(value) {
-
-          },
-          error(err) {
-
-          },
-          complete() {
-
-          },
-        })
+        this.friendId = event[0]._id;
         this.game.isChoosingFriend = false;
-        this.game.playing = true;
+        this.game.isWaitingFriend = true;
+        this.sio.emit('friend-match', {friendId: this.friendId, userId: this.ls.getId()});
       }
     }
+  }
+
+  onQueueLeft(event: any) {
+    this.resetState();
   }
 
   initBoard() {
@@ -296,7 +306,7 @@ export class PlayGameComponent implements OnInit {
           this.chat.push(value.message);
         } else {
           this.userHttp.getUserById(value.message.sender).subscribe({
-            next: (data: UserInterface) => { 
+            next: (data: UserInterface) => {
               value.message.sender = data.username;
               this.chat.push(value.message);
 
@@ -312,6 +322,18 @@ export class PlayGameComponent implements OnInit {
         console.log(err);
       },
     })
+
+    this.sio.listen('friend-match').subscribe({
+      next: (data: any) => {
+        this.pendingMatch = true;
+        this.friendId = data.userId;
+      },
+      error(err) {
+      },
+    })
+
+    this.joinMatch();
+
   }
 
   gameOver(value: any) {
@@ -440,6 +462,10 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
+  getFriendId() {
+    return this.friendId;
+  }
+
   randomizeBoard() {
     this.random = true;
     console.log(this.random);
@@ -450,5 +476,28 @@ export class PlayGameComponent implements OnInit {
       return this.game.timer.toString().padStart(2, '0');
     else
       return '00';
+  }
+
+  joinMatch() {
+    console.log('im listening for matches');
+    this.sio.listen('new-match').subscribe({
+      next: (data: Match) => {
+        // this.joinedMatchEvent.emit(data);
+        this.onMatchEvent(data);
+        this.sio.emit("match-join",{userId: this.ls.getId(), match: data});
+      },
+      error: (e) => {
+        console.log(e);
+      },
+      complete: () => {
+      }
+    })
+  }
+
+  responseFriendMatch(accept: boolean){
+    if(accept){
+      this.game = { type: GameType.Friend, matchmaking: false, players: [], isChoosingFriend: false, isWaitingFriend: false, timerId: null, timer: 60, preparation: true, playing: false, match: null, positions: [], shots: [], oppentShots: [] };
+    }
+    this.sio.emit('friend-response',{accept, userId: this.ls.getId(), friendId: this.friendId});
   }
 }

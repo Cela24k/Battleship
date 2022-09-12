@@ -12,6 +12,7 @@ import { Match } from '../game-entities/game';
 })
 export class MatchmakingComponent implements OnInit {
   @Output() joinedMatchEvent = new EventEmitter<Match>();
+  @Output() queueLeftEvent = new EventEmitter<any>();
 
   name: string = '';
 
@@ -31,27 +32,27 @@ export class MatchmakingComponent implements OnInit {
         console.log(e);
       },
       complete: () => {
-        this.joinMatch();
+        // this.joinMatch();
         this.joinQueue();
       }
     })
   }
 
-  joinMatch() {
-    console.log('im listening for matches');
-    this.gameSocket.listen('new-match').subscribe({
-      next: (data: Match) => {
-        console.log(data);
-        this.joinedMatchEvent.emit(data);
-        this.gameSocket.emit("match-join",{userId: this.ls.getId(), match: data});
-      },
-      error: (e) => {
-        console.log(e);
-      },
-      complete: () => {
-      }
-    })
-  }
+  // joinMatch() {
+  //   console.log('im listening for matches');
+  //   this.gameSocket.listen('new-match').subscribe({
+  //     next: (data: Match) => {
+  //       console.log(data);
+  //       this.joinedMatchEvent.emit(data);
+  //       this.gameSocket.emit("match-join",{userId: this.ls.getId(), match: data});
+  //     },
+  //     error: (e) => {
+  //       console.log(e);
+  //     },
+  //     complete: () => {
+  //     }
+  //   })
+  // }
 
   joinQueue() {
     console.log('im connected to the queue');
@@ -68,10 +69,11 @@ export class MatchmakingComponent implements OnInit {
     });
   }
 
-  onCancel() {
+  leaveQueue() {
     this.gameService.removeQueue().subscribe({
       next: (data) => {
-        console.log(data);
+        console.log('removed')
+        this.queueLeftEvent.emit(null);
       },
       error: (e) => {
         console.log(e);
@@ -80,6 +82,6 @@ export class MatchmakingComponent implements OnInit {
 
       }
     })
-
   }
+
 }

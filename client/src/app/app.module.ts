@@ -52,6 +52,7 @@ import { MatchmakingComponent } from './play-game/matchmaking/matchmaking.compon
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { ChooseFriendComponent } from './play-game/choose-friend/choose-friend.component';
 import { PlaySearchboxComponent } from './play-game/choose-friend/play-searchbox/play-searchbox.component';
+import { WaitingFriendComponent } from './play-game/waiting-friend/waiting-friend.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { PlaySearchboxComponent } from './play-game/choose-friend/play-searchbox
     MatchmakingComponent,
     ChooseFriendComponent,
     PlaySearchboxComponent,
+    WaitingFriendComponent,
     
   ],
   imports: [
