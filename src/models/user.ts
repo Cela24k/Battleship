@@ -6,6 +6,8 @@ import * as crypto from "crypto";
 import { stat, Stats } from "fs";
 import { DeleteResult, UpdateResult } from "mongodb";
 import { StatsInterface, StatsSchema } from "./user-stats";
+import { StateChangeEmitter } from "../socket-helper/Emitter/StateChangeEmitter";
+import ios from "..";
 
 export enum Role {
     Mod,
@@ -84,6 +86,8 @@ export interface UserInterface extends Document {
     getChats(): Promise<ChatInterface[]>;
 
     setPlayState(isPlaying: boolean): void;
+
+    getFriendsId(): Types.ObjectId[];
 
 }
 
@@ -278,6 +282,9 @@ UserSchema.methods.setPlayingState = async function (isPlaying: boolean) {
     this.playing = isPlaying;
     await this.save()
 }
+UserSchema.methods.getFriendsId = async function () {
+    return this.friends
+}
 
 
 export function getSchema() { return UserSchema; }
@@ -374,12 +381,21 @@ export async function makeFriendship(user1: Types.ObjectId, user2: Types.ObjectI
     return Promise.reject('Users are already friends');
 }
 
-export async function setUserState(userId: Types.ObjectId, state: UserState): Promise<UserState>{
+export async function setUserState(userId: Types.ObjectId, state: UserState): Promise<UserState> {
     try {
         var user: UserInterface = await getUserById(userId);
         user.state = state;
-        console.log((userId.toString() + " has changed his State in: "+ state).green.bgRed);
-        return (await user.save()).state;
+        console.log((userId.toString() + " has changed his State in: " + state).green.bgRed);
+        const stateSaved = (await user.save()).state;
+        user.getFriendsId().forEach((id) => {
+            const stateEmitter = new StateChangeEmitter(ios, id.toString());
+            stateEmitter.emit({ userId, state });
+            console.log(
+                " O MAMMAMIA ABBIAMO EMITTATO LO STATO DEL UAGLIONE " + userId.toString().magenta + " al suo amichetto" + id.toString().bgWhite
+            )
+
+        })
+        return stateSaved;
     }
     catch (err) {
         throw err;
