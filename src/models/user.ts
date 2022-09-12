@@ -89,6 +89,7 @@ export interface UserInterface extends Document {
 
     getFriendsId(): Promise<Types.ObjectId[]>;
 
+    changeModInfo(username: string, email: string): Promise<UserInterface>;
 }
 
 enum PlayerState {
@@ -107,7 +108,7 @@ export const UserSchema = new Schema<UserInterface>({
     },
     email: {
         type: SchemaTypes.String,
-        default: ''
+        default: ""
     },
     digest: {
         type: SchemaTypes.String,
@@ -283,6 +284,15 @@ UserSchema.methods.setPlayingState = async function (isPlaying: boolean) {
 }
 UserSchema.methods.getFriendsId = async function () {
     return this.friends
+}
+
+UserSchema.methods.changeModInfo = async function (username: string, email: string): Promise<void>{
+    it(username.length == 0 || email.length == 0){
+        throw new Error("Manca un qualcosotto")
+    }
+    this.username = username;
+    this.email = email;
+    return this.save();
 }
 
 

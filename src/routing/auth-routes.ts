@@ -6,7 +6,8 @@ import passport = require('passport');           // authentication middleware fo
 import passportHTTP = require('passport-http');  // implements Basic and Digest authentication for HTTP (used for /login endpoint)
 import jsonwebtoken = require('jsonwebtoken');
 import { parseJwt } from "./user-routes";
-import { Role } from "../models/user";
+import { getUserById, Role } from "../models/user";
+import { Types } from "mongoose";
 
 export const router = Router();
 
@@ -37,8 +38,8 @@ passport.use(new passportHTTP.BasicStrategy(
 ));
 
 router.get('/login', passport.authenticate('basic', { session: false }), function (req: any, res) {
-  try{
-
+  try {
+    console.log(req);
     let { username, email, role, _id } = req.user;
     let tokendata = {
       username,
@@ -46,11 +47,10 @@ router.get('/login', passport.authenticate('basic', { session: false }), functio
       email,
       _id
     }
-  
     let token = jsonwebtoken.sign(tokendata, process.env.JWT_SECRET, { expiresIn: '24h' });//settare un expires giusto
     return res.status(200).json({ error: false, errormessage: "", token });
   }
-  catch(e){
+  catch (e) {
     return res.status(400).json({ error: true, errormessage: e });
   }
 })
@@ -67,14 +67,15 @@ router.post('/register', async function (req, res, next) {
   let userDoc = await user.getModel().findOne({ username: username })
 
   if (!userDoc) {
-    if(email === '' && jwt['role'] === Role.Mod){
+    if (email === '' && jwt['role'] === Role.Mod) {
       role = Role.Mod;
-      data = {username, password, role};
+      data = { username, password, role };
     }
     else
-      data = {username, email, password};
+      data = { username, email, password };
 
-    let u = user.newUser(data)
+    let u = user.newUser(data);
+    console.log(u);
     u.setPassword(password);
     await u.save().then((data) => {
       return res.status(200).json({ error: false, errormessage: "", id: data._id });
@@ -86,6 +87,23 @@ router.post('/register', async function (req, res, next) {
     return res.status(400).json({ error: true, errormessage: "User already exist" });;
   }
 
+})
+
+
+router.patch('/:userId', async (req, res) => {
+  try {
+    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
+    const { username, email, password } = req.body;
+    const userId = req.params.userId;
+    if (jwt['role'] === Role.Mod && jwt['email'].length == 0) {
+      const user = await getUserById(new Types.ObjectId(userId));
+      user.setPassword(password);
+      await user.changeModInfo(username, email);
+      return res.status(200).json({ err: false });
+    }
+  } catch (err) {
+    return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+  }
 })
 
 

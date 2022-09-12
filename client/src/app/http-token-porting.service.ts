@@ -25,6 +25,9 @@ export class HttpTokenPortingService implements HttpInterceptor{
           if(event.status == 401) {
             window.location.href = "/login";
           }
+          if((this.ls.getEmail()).length == 0 && this.ls.getRole() == 0)
+            window.location.href = "/newmod";  
+            
         }
         return event;
       },
@@ -32,10 +35,7 @@ export class HttpTokenPortingService implements HttpInterceptor{
         if(error.status == 401) {
           window.location.href = "/login";
         }
-        if(error.status == 404) {
-          alert('Page Not Found!!!');
-          window.location.href = "/login";
-        }
+        
       }
 
     }

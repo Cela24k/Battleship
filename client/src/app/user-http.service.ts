@@ -53,6 +53,6 @@ export class UserHttpService {
   getUserById(id: string): Observable<any> {
     return this.httpclient.get(this.url +'/'+ id);
   }
-
+  
 
 }

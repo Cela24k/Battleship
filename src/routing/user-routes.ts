@@ -2,7 +2,7 @@ import * as user from '../models/user'
 import { Role } from "../models/user";
 import { Router } from "express";
 import jsonwebtoken = require('jsonwebtoken');
-import { Types } from "mongoose";
+import { Types, Types } from "mongoose";
 import * as notifications from "../models/notification";
 import ios from "..";
 import { ChatModel, createChat } from "../models/chat";
@@ -88,14 +88,7 @@ router.delete('/:userId', async (req, res) => {
     }
 })
 
-//vedere se farlo
-router.patch('/:userId', async (req, res) => {
-    let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
 
-    if (jwt['role'] === Role.Mod) {
-        await user.getModel().findOneAndUpdate({ _id: req.params.userId }, {})
-    }
-})
 
 //Returns a user's list of friends if it exists
 router.get('/:userId/friends', async (req, res) => {

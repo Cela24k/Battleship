@@ -1,0 +1,19 @@
+<div class="scene">
+    <div class="container">
+        <h2 class="header">Cambia credenziale bro</h2>
+        <form>
+            <div class="text-field-container">
+                <input type="username" class="text-field" #usr id="username" placeholder="Choose a username"
+                    name="username">
+            </div>
+            <div class="text-field-container">
+                <input type="email" class="text-field" #mail id="email" placeholder="Enter email" name="email">
+            </div>
+            <div class="text-field-container">
+                <input type="password" class="text-field" #pass id="pwd" placeholder="Enter password" name="pwd">
+            </div>
+            <div class="submit" (click)="onSubmit(usr.value,mail.value,pass.value)">Submit</div>
+            <div *ngIf="register_error" style="color: red; margin: 5px;"> Errore nella registrazione </div>
+        </form>
+    </div>
+</div>

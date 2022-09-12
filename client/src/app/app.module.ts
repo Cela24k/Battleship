@@ -20,28 +20,28 @@ import { HttpTokenPortingService } from './http-token-porting.service';
 import { ProfileBannerComponent } from './notification/profile-banner/profile-banner.component';
 import { MenuComponent } from './menu/menu.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { CommonModule } from '@angular/common';  
+import { CommonModule } from '@angular/common';
 import { ChatComponent } from './chat/chat.component';
 import { ChatPrevComponent } from './chat/chat-prev/chat-prev.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap'; //vedere se importare solo le singole componenti
-import { ChatWindowComponent } from './chat/chat-window/chat-window.component'; 
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { ChatWindowComponent } from './chat/chat-window/chat-window.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MessageBubbleComponent } from './chat/chat-window/message-bubble/message-bubble.component';
-import {MatCardModule} from '@angular/material/card';
-import {MatDividerModule} from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 import { PlayGameRandomComponent } from './play-game/play-game-random/play-game-random.component';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { MenuSearchboxComponent } from './menu/menu-searchbox/menu-searchbox.component';
-import {MatDialogModule} from '@angular/material/dialog'; //used in menu 
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog'; //used in menu 
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatTableModule } from '@angular/material/table';
-import {MatChipsModule} from '@angular/material/chips';
+import { MatChipsModule } from '@angular/material/chips';
 import { FieldComponent } from './play-game/field/field.component';
 import { ShotsComponent } from './play-game/shots/shots.component';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { ReactiveFormsModule } from '@angular/forms';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ProfileScreenComponent } from './menu/profile-screen/profile-screen.component';
 import { FriendsScreenComponent } from './menu/friends-screen/friends-screen.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -49,12 +49,13 @@ import { FormsModule } from '@angular/forms';
 import { FriendsScreenPrevComponent } from './menu/friends-screen/friends-screen-prev/friends-screen-prev.component';
 import { TileComponent } from './play-game/tile/tile.component';
 import { MatchmakingComponent } from './play-game/matchmaking/matchmaking.component';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChooseFriendComponent } from './play-game/choose-friend/choose-friend.component';
 import { PlaySearchboxComponent } from './play-game/choose-friend/play-searchbox/play-searchbox.component';
 import { WaitingFriendComponent } from './play-game/waiting-friend/waiting-friend.component';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import { FriendStatsComponent } from './menu/friends-screen/friends-screen-prev/friend-stats/friend-stats.component'
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { FriendStatsComponent } from './menu/friends-screen/friends-screen-prev/friend-stats/friend-stats.component';
+import { NewModComponent } from './new-mod/new-mod.component'
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { FriendStatsComponent } from './menu/friends-screen/friends-screen-prev/
     PlaySearchboxComponent,
     WaitingFriendComponent,
     FriendStatsComponent,
-    
+    NewModComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -105,7 +107,7 @@ import { FriendStatsComponent } from './menu/friends-screen/friends-screen-prev/
     MatSnackBarModule,
     MatProgressSpinnerModule,
     ScrollingModule,
-    
+
     FormsModule,
     BrowserAnimationsModule,
     CommonModule,
@@ -114,12 +116,12 @@ import { FriendStatsComponent } from './menu/friends-screen/friends-screen-prev/
     ReactiveFormsModule,
   ],
   providers: [
-              { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi:true},
-              { provide: LocalStorageService, useClass: LocalStorageService },
-              { provide: AuthService, useClass: AuthService },
-              { provide: SocketioService, useClass: SocketioService },
-              { provide: NotificationListenerService, useClass: NotificationListenerService }
-            ],
+    { provide: HTTP_INTERCEPTORS, useClass: HttpTokenPortingService, multi: true },
+    { provide: LocalStorageService, useClass: LocalStorageService },
+    { provide: AuthService, useClass: AuthService },
+    { provide: SocketioService, useClass: SocketioService },
+    { provide: NotificationListenerService, useClass: NotificationListenerService }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

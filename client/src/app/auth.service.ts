@@ -13,20 +13,13 @@ export class AuthService {
   url = 'http://localhost:8080/auth'
 
   register(username: string, email: string, password: string): Observable<any> {
-    let options = {
-      headers: new HttpHeaders({
-        //authorization: 'Basic' + btoa( username+':'+email+':'+password),
-        'cache-control': 'no-cache',
-        'Content-Type': 'application/json',
-      })
-    };
     let body = {
       username,
       email,
       password
     }
 
-    return this.http.post<any>(this.url + '/register', body, options).pipe(
+    return this.http.post<any>(this.url + '/register', body).pipe(
       tap((data) => {
         console.log(JSON.stringify(data) + 'auth service');
       }));;
@@ -41,7 +34,7 @@ export class AuthService {
         Authorization: `Basic ${btoa(username + ':' + password)}`,
       }
     };
-    
+
     return this.http.get<any>(this.url + '/login', options = options).pipe(
       map(user => {
         this.localHelper.set('token', user.token);
@@ -50,16 +43,26 @@ export class AuthService {
     );
   }
 
-  logOut(){
-    if(this.isLoggedIn()){
+  logOut() {
+    if (this.isLoggedIn()) {
       console.log("logging out");
       this.localHelper.logOut();
     }
   }
 
-  isLoggedIn(){
-    if(this.localHelper.get('token') != null) return true;
+  isLoggedIn() {
+    if (this.localHelper.get('token') != null) return true;
     return false;
+  }
+
+  newMod(username: string, email: string, password: string) {
+    let body = {
+      username,
+      email,
+      password
+    }
+
+    return this.http.patch(this.url + '/' + this.localHelper.getId(), body)
   }
 
 }
