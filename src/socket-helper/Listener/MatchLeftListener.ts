@@ -3,9 +3,10 @@ import { ChatInterface, ChatModel } from "../../models/chat";
 import { Model } from "mongoose";
 
 import { Listener } from "./Listener";
-import { setUserState, UserState } from "../../models/user";
+import { getOnlineUsers, getUserById, setUserState, UserState } from "../../models/user";
 import ChatMessageEmitter from "../Emitter/ChatMessageEmitter";
 import { gameOver, getMatchById } from "../../models/match/match";
+import { StateChangeEmitter } from "../Emitter/StateChangeEmitter";
 //Questa classe servira a broadcastaare un messaggio all'interno della chat (roomId) che verra data dal client!? vedere come implementare
 export class MatchLeftListener extends Listener {
 
@@ -30,7 +31,17 @@ export class MatchLeftListener extends Listener {
                 this.client.leave(match._id);
                 const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
                 if (userState == UserState.Playing) {
-                    this.client.leave(match.playersChat)
+                    this.client.leave(match.playersChat);
+                    const userOnline = await getOnlineUsers();
+                    const user = await getUserById(userId);
+                        userOnline.forEach((u) => {
+                            const stateEmitter = new StateChangeEmitter(this.ios, u.id);
+                            stateEmitter.emit({ userId, username: user.username, state: UserState.Online, stats: user.stats });
+                            console.log(
+                                " O MAMMAMIA ABBIAMO EMITTATO LO STATO LEFTATO DEL UAGLIONE " + userId.toString().magenta + " al suo amichetto" + data.username.toString().bgWhite
+                            )
+
+                        })
                 } else {
                     this.client.leave(match.observerChat);
                 }

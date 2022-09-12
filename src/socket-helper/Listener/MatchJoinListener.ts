@@ -3,8 +3,9 @@ import { ChatInterface, ChatModel } from "../../models/chat";
 import { Model } from "mongoose";
 
 import { Listener } from "./Listener";
-import { setUserState, UserState } from "../../models/user";
+import { getOnlineUsers, getUserById, setUserState, UserState } from "../../models/user";
 import ChatMessageEmitter from "../Emitter/ChatMessageEmitter";
+import { StateChangeEmitter } from "../Emitter/StateChangeEmitter";
 //Questa classe servira a broadcastaare un messaggio all'interno della chat (roomId) che verra data dal client!? vedere come implementare
 export class MatchJoinedListener extends Listener {
 
@@ -25,7 +26,17 @@ export class MatchJoinedListener extends Listener {
                     const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
                     await setUserState(userId, userState);
                     if (userState == UserState.Playing) {
-                        this.client.join(match.playersChat)
+                        this.client.join(match.playersChat);
+                        const userOnline = await getOnlineUsers();
+                        const user = await getUserById(userId);
+                            userOnline.forEach((u) => {
+                                const stateEmitter = new StateChangeEmitter(this.ios, u.id);
+                                stateEmitter.emit({ userId, username: user.username, state: userState, stats: user.stats });
+                                console.log(
+                                    " O MAMMAMIA ABBIAMO EMITTATO LO STATO LEFTATO DEL UAGLIONE " + userId.toString().magenta + " al suo amichetto" + data.username.toString().bgWhite
+                                )
+    
+                            })
                     } else {
                         this.client.join(match.observerChat);
                     }

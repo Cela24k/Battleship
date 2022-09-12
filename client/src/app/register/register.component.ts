@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
     if(this.ls.getToken())
       if(email != '')
         this.auth.logOut();
-
+ 
     this.auth.register(username, email, password).subscribe({//right way for subscribing https://rxjs.dev/deprecations/subscribe-arguments
       next: (d) => {
         console.log('Login granted: ' + JSON.stringify(d));

@@ -334,6 +334,21 @@ export async function getUserById(userid: Types.ObjectId): Promise<UserInterface
     else return Promise.reject('No user with such Id'); //mettere dentro un errore?
 }
 
+export async function getOnlineUsers(): Promise<UserInterface[]>{
+    const projection = {
+        _id:true,
+        stats: true,
+        state: true,
+        username: true
+    }
+    let result = await User.find({state: UserState.Online}, projection).catch((err) => {
+        return Promise.reject('Server Error');
+    });
+    if (!result)
+        return Promise.reject('There are no users ;D');
+    return Promise.resolve(result);
+}
+
 export async function getAllUsers(): Promise<UserInterface[]> {
     const projection = {
         username: true,
@@ -396,15 +411,6 @@ export async function setUserState(userId: Types.ObjectId, state: UserState): Pr
         user.state = state;
         console.log((userId.toString() + " has changed his State in: " + state).green.bgRed);
         const stateSaved = (await user.save()).state;
-        const friends = await user.getFriendsId();
-        friends.forEach((id) => {
-            const stateEmitter = new StateChangeEmitter(ios, id.toString());
-            stateEmitter.emit({ userId, state });
-            console.log(
-                " O MAMMAMIA ABBIAMO EMITTATO LO STATO DEL UAGLIONE " + userId.toString().magenta + " al suo amichetto" + id.toString().bgWhite
-            )
-
-        })
         return stateSaved;
     }
     catch (err) {
