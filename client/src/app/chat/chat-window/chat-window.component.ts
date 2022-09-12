@@ -3,6 +3,7 @@ import { Component, ElementRef, EventEmitter, Input, NgModule, OnDestroy, OnInit
 import { ChatHttpService } from 'src/app/chat-http.service';
 import { ChatListenerService } from 'src/app/chat-listener.service';
 import { LocalStorageService } from 'src/app/local-storage.service';
+import { SocketioService } from 'src/app/socketio.service';
 import { ChatInterface, emptyChat, emptyMessage, MessageInterface } from '../chat.component';
 
 
@@ -20,7 +21,7 @@ export class ChatWindowComponent implements OnInit {
   userid: string;
   messages: MessageInterface[];
 
-  constructor(private client: ChatHttpService, private localstorage: LocalStorageService, private socket: ChatListenerService) {
+  constructor(private client: ChatHttpService, private localstorage: LocalStorageService, private socket: ChatListenerService, private sio: SocketioService) {
     this.username = ''
     this.userid = localstorage.getId();
     this.messages = [];
@@ -76,6 +77,8 @@ export class ChatWindowComponent implements OnInit {
       next: (data) => {
         if(this.props._id == ''){
           this.props = data.chat;
+          console.log(data.chat);
+          this.socket.joinChat(data.chat._id);
           console.log(this.props);
           this.messages = this.props.messages;
         }

@@ -8,6 +8,8 @@ import ChatMessageEmitter from "../socket-helper/Emitter/ChatMessageEmitter";
 import ios from "..";
 import { parseJwt } from "./user-routes";
 import { text } from "body-parser";
+import { RoomEmitter } from "../socket-helper/Emitter/RoomEmitter";
+import { Emitter } from "../socket-helper/Emitter/Emitter";
 
 export const router = Router();
 
@@ -38,10 +40,11 @@ router.post('', async (req, res) => {
     let userId = req.body.userId;
     let friendId = req.body.friendId;
     let txt = req.body.txt;
+   
     if (userId && friendId && jwt['_id'] == userId) {
         try {
             var users = [new Types.ObjectId(userId), new Types.ObjectId(friendId)];
-            var chat = await createChat(users, txt);
+            var chat: ChatInterface = await createChat(users, txt);
 
             await User.find({
                 '_id': {
@@ -57,7 +60,7 @@ router.post('', async (req, res) => {
                 // const messageEmitter = new ChatEmitter(ios, chatId);
                 // messageEmitter.emit(chat);
                 // console.log("Socket inviato");//TODO frontend test, or in postman.
-
+                
                 return Promise.all(promises);
             }).catch(err => {
                 throw err;
