@@ -83,7 +83,10 @@ export class MenuComponent implements OnInit {
     const dialogRef = this.dialog.open(MenuSearchboxComponent);
     dialogRef.afterClosed().subscribe(result => {
       let chat = this.stored_chats.find((e)=>{
-        return e.users.indexOf(result[0]._id) != -1;
+        if(result)
+          return e.users.indexOf(result[0]._id) != -1;
+        else 
+          return false
       })
       if(!chat) chat = emptyChat();
 
@@ -96,4 +99,5 @@ export class MenuComponent implements OnInit {
       }
     });
   }
+
 }

@@ -1,4 +1,4 @@
-<mat-form-field class="example-full-width" style="margin-top: 20px;" appearance="fill">
+<mat-form-field style="margin-top: 20px;" appearance="fill">
     <mat-label>Add a user</mat-label>
     <input matInput type="text" [(ngModel)]="searchTerm" placeholder="Ex. Cela24k" value=" " #input>
     <button *ngIf="searchTerm" matSuffix mat-icon-button aria-label="Clear" (click)="searchTerm=''">
@@ -12,8 +12,10 @@
 </div>
 
 <ng-template #open>
-    <div *ngFor="let friend of friends">
-        <mat-divider class="divider"></mat-divider>
-        <app-friends-screen-prev [id]="friend" (sendNameEvent)="addName($event)"></app-friends-screen-prev>
-    </div>
+    <cdk-virtual-scroll-viewport itemSize="0" class="example-viewport">
+        <div *cdkVirtualFor="let friend of friends; let i = index;" class="message">
+            <mat-divider class="divider"></mat-divider>
+            <app-friends-screen-prev [id]="friend" (sendNameEvent)="addName($event)" (click)="openDialog(i)"></app-friends-screen-prev>
+        </div>
+    </cdk-virtual-scroll-viewport>
 </ng-template>

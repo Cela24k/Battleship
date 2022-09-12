@@ -1,0 +1,73 @@
+<img _ngcontent-vji-c169="" src="https://img.icons8.com/ios-filled/344/user-male-circle.png" width="100" height="100">
+<mat-dialog-content class="mat-typography">
+    <!-- <mat-form-field appearance="standard">
+        <mat-label>Username</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ex. Cela24k" #input>
+    </mat-form-field> -->
+    <h2 style="margin-top: 10px; margin-left: 5px;">{{userData.username}}'s stats</h2>
+    <table>
+        <tr>
+            <th class="column" class="header">Stat </th>
+            <th class="column">value</th>
+        </tr>
+        <tr>
+            <td class="column">Wins</td>
+            <td class="column">{{userData.stats.wins}}</td>
+        </tr>
+        <tr>
+            <td class="column">Losses</td>
+            <td class="column">{{userData.stats.losses}}</td>
+        </tr>
+        <tr>
+            <td class="column">Winstreak</td>
+            <td class="column">{{userData.stats.winstreak}}</td>
+        </tr>
+        <tr>
+            <td class="column">Max winstreak</td>
+            <td class="column">{{userData.stats.maxWinstreak}}</td>
+        </tr>
+        <tr>
+            <td class="column">Elo</td>
+            <td class="column">{{userData.stats.elo.toFixed(2).toString()}}</td>
+        </tr>
+        <tr>
+            <td class="column">Played games</td>
+            <td class="column">{{userData.stats.playedGames}}</td>
+        </tr>
+        <tr>
+            <td class="column">Shots fired</td>
+            <td class="column">{{userData.stats.shotsFired}}</td>
+        </tr>
+        <tr>
+            <td class="column">Shots hit</td>
+            <td class="column">{{userData.stats.shotsHit}}</td>
+        </tr>
+        <tr>
+            <td class="column">Ratio</td>
+            <td class="column">{{(userData.stats.shotsHit / userData.stats.shotsFired).toFixed(2).toString()}}</td>
+        </tr>
+        <tr>
+            <td class="column">Time played</td>
+            <td class="column">{{formatDate()}}</td>
+        </tr>
+        <tr>
+            <td class="column">Rank</td>
+            <td class="column">{{userData.stats.rank}}</td>
+        </tr>
+    </table>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <!-- <mat-chip-list aria-label="Fish selection">
+        <div *ngFor="let x of clickedElements; let i = index">
+            <mat-chip>
+                {{clickedElements[i].username}}
+                <button (click)="clickElement(clickedElements[i])" matChipRemove>
+                    <mat-icon>cancel</mat-icon>
+                </button>
+            </mat-chip>
+        </div>
+    </mat-chip-list> -->
+    <!-- <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button [mat-dialog-close]="this.clickedElements" style="background-color: lightgrey;" [disabled]="this.clickedElements.length == 0" cdkFocusInitial>Chat</button> -->
+</mat-dialog-actions>

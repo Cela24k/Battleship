@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserHttpService, UserInterface } from 'src/app/user-http.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { FriendStatsComponent } from './friends-screen-prev/friend-stats/friend-stats.component';
 
 @Component({
   selector: 'app-friends-screen',
@@ -13,7 +15,8 @@ export class FriendsScreenComponent implements OnInit {
   searchTerm: string = '';
   names: string[] = [];
 
-  constructor(private httpservice: UserHttpService, private _snackBar: MatSnackBar) { }
+
+  constructor(private httpservice: UserHttpService, private _snackBar: MatSnackBar, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.fetchData();
@@ -82,4 +85,12 @@ export class FriendsScreenComponent implements OnInit {
   addName(name: string){
     this.names.push(name);
   }
+
+  openDialog(index: number) {
+    const dialogRef = this.dialog.open(FriendStatsComponent, {data: this.friends[index]});
+    dialogRef.afterClosed().subscribe(result => {
+      
+    });
+  }
+
 }

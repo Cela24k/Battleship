@@ -1,15 +1,52 @@
+.example-viewport {
+    height: 80vh;
+    width: 100%;
+    overflow-x: hidden;
+    /* border: 1px solid black; */
+}
+
 .friends-form {
     min-width: 150px;
     max-width: 500px;
     width: 100%;
 }
 
-.adder{
+.adder {
     cursor: pointer;
     margin-left: 20px;
 }
 
-.divider{
-    margin-top: 5px; 
-    margin-bottom: 20px;
+.divider {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.message {
+    cursor: pointer;
+}
+
+.message:hover {
+    -webkit-border-top-left-radius: 10px;
+    -webkit-border-bottom-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-bottomleft: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    background-color: #205B59;
+}
+
+.mat-focused .mat-form-field-label {
+    /*change color of label*/
+    color: white !important;
+}
+
+.mat-form-field-underline {
+    /*change color of underline*/
+    background-color: white !important;
+}
+
+.mat-form-field-ripple {
+    /*change color of underline when focused*/
+    background-color: white !important;
+    ;
 }
