@@ -29,11 +29,13 @@ export class MatchJoinedListener extends Listener {
                         this.client.join(match.playersChat);
                         const userOnline = await getOnlineUsers();
                         const user = await getUserById(userId);
+                        console.log(userOnline);
+
                             userOnline.forEach((u) => {
-                                const stateEmitter = new StateChangeEmitter(this.ios, u.id);
+                                const stateEmitter = new StateChangeEmitter(this.ios, u._id);
                                 stateEmitter.emit({ userId, username: user.username, state: userState, stats: user.stats });
                                 console.log(
-                                    " O MAMMAMIA ABBIAMO EMITTATO LO STATO LEFTATO DEL UAGLIONE " + userId.toString().magenta + " al suo amichetto" + data.username.toString().bgWhite
+                                    " O MAMMAMIA ABBIAMO EMITTATO LO STATO JOINATo DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.username).magenta
                                 )
     
                             })
