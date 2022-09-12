@@ -63,12 +63,10 @@ export class MenuComponent implements OnInit {
         this.stored_chats = d.chats;
         this.n_pending = this.stored_chats.length;
         d.chats.forEach((chat: ChatInterface) => {
-          console.log(chat._id)
           this.socket.joinChat(chat._id);
       });
       },
       error: (err) => {
-        console.log(err);
         console.log('Error: ' + JSON.stringify(err));
       },
       complete: () => { },

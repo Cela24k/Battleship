@@ -32,10 +32,10 @@ export class AccessComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void { 
-    if(this.route === '/login' && this.local.getToken() != null){
-      this.router.navigate(['/play'])
-    }
+  ngOnInit(): void {
+    // if(this.route === '/login' && this.local.getToken() != null){
+    //   this.router.navigate(['/play'])
+    // }
 
   }
 

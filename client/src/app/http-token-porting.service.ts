@@ -6,7 +6,6 @@ import { LocalStorageService } from './local-storage.service';
 @Injectable({
   providedIn: 'root'
 })
-// https://www.syncfusion.com/blogs/post/best-practices-for-jwt-authentication-in-angular-apps.aspx
 export class HttpTokenPortingService implements HttpInterceptor{
 
   constructor(private ls: LocalStorageService) { }
@@ -33,6 +32,7 @@ export class HttpTokenPortingService implements HttpInterceptor{
       },
       error: (error: any) => {
         if(error.status == 401) {
+          console.log(error);
           window.location.href = "/login";
         }
         

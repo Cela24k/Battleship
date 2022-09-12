@@ -25,7 +25,7 @@ interface PendingMatch {
   players: string[],
 }
 
-interface Game {
+export interface Game {
   type: GameType,
   players: string[],
   isChoosingFriend: boolean,
@@ -64,7 +64,6 @@ export class PlayGameComponent implements OnInit {
   random = false;
   friendId: string = '';
   pendingMatch = false;
-
 
   constructor(
     private _snackBar: MatSnackBar, private gameService: GameService,

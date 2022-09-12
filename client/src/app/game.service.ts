@@ -36,4 +36,5 @@ export class GameService {
   matchRequest(userId: string, friendId: string): Observable<any>{
     return this.httpclient.post(this.match_url, {});
   }
+
 }

@@ -22,7 +22,6 @@
     left: 0;
     width: 55%;
     height: 65%;
-    background:url(../../../assets/fiocco.svg);
     background-size: 100% 100%;
     z-index: 2;
 }
@@ -36,22 +35,25 @@
     left: 10px;
     transform: scale(1, 1);
     margin-bottom: 2vh;
+    border-top: 5vh solid #205B59;
+    border-bottom: 5vh solid #205B59;;
 }
 
 .play-button{
-    width: 100%;
+    width: 50%;
     left: 10px;
     /*position: absolute;*/
     z-index: 3;
     font-family: "'89 Speed Affair 3d";
     font-size: 5vh;
     /* top:330px; */
-    margin-bottom: 3vh;
+    margin-bottom: 1vh;
+    border-bottom: 3vh solid #205B59;;
 }
 
 .play-button:hover{
     color: #FFA127  ;
-    width: 100%;
+    width: 50%;
     left: 10px;
     /*position: absolute;*/
     z-index: 3;

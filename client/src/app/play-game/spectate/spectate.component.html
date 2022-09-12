@@ -1,0 +1,44 @@
+<div *ngIf="!isObserving; else observing" class="container">
+    <div class="back-button" (click)="goBack()">
+        <mat-icon>chevron_left</mat-icon>
+        <p style="margin-bottom: 2px;">Back</p>
+    </div>
+    <div class="header-container">
+        <h1 class="header"> Spectate a player </h1>
+    </div>
+    <div class="content-container">
+        <div *ngIf="onlineFriends.length == 0">
+            <p>You have no friends that are playing...</p>
+            <p>Friends that are playing will appear here</p>
+        </div>
+        <div *ngIf="onlineFriends.length != 0">
+            <cdk-virtual-scroll-viewport itemSize="0" class="example-viewport">
+                <div *cdkVirtualFor="let friend of onlineFriends; let i = index;" class="message">
+                    <mat-divider class="divider"></mat-divider>
+                    <app-friends-screen-prev [id]="friend._id" style="cursor: pointer;"
+                        (click)="spectatePlayer(friend._id)"></app-friends-screen-prev>
+                </div>
+            </cdk-virtual-scroll-viewport>
+        </div>
+    </div>
+</div>
+
+<ng-template #observing>
+    <ng-container>
+        <div class="container">
+            <div class="back-button" (click)="stopObserving()">
+                <mat-icon>chevron_left</mat-icon>
+                <p style="margin-bottom: 2px;">Back</p>
+            </div>
+            <div class="flex-content">
+                <div class="column">
+                    <app-field [listeners]="false" [props]="fieldformatProps()"></app-field>
+                </div>
+                <mat-divider vertical class="divider" style="height:50vh"></mat-divider>
+                <div class="column">
+                    <app-shots [listeners]="false" [props]="shotsformatProps()"></app-shots>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</ng-template>

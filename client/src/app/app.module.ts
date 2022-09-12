@@ -53,9 +53,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChooseFriendComponent } from './play-game/choose-friend/choose-friend.component';
 import { PlaySearchboxComponent } from './play-game/choose-friend/play-searchbox/play-searchbox.component';
 import { WaitingFriendComponent } from './play-game/waiting-friend/waiting-friend.component';
+import { NewModComponent } from './new-mod/new-mod.component'
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { FriendStatsComponent } from './menu/friends-screen/friends-screen-prev/friend-stats/friend-stats.component';
-import { NewModComponent } from './new-mod/new-mod.component'
+import { SpectateComponent } from './play-game/spectate/spectate.component'
 
 @NgModule({
   declarations: [
@@ -85,6 +86,8 @@ import { NewModComponent } from './new-mod/new-mod.component'
     WaitingFriendComponent,
     FriendStatsComponent,
     NewModComponent,
+
+    SpectateComponent,
 
   ],
   imports: [

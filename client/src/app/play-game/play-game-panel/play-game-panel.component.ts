@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { GameType } from '../play-game.component';
 
 @Component({
@@ -8,7 +9,9 @@ import { GameType } from '../play-game.component';
 })
 export class PlayGamePanelComponent implements OnInit {
   @Output() gameEvent = new EventEmitter<GameType>();
-  constructor() { }
+  constructor(
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
   }
@@ -22,6 +25,6 @@ export class PlayGamePanelComponent implements OnInit {
   }
 
   spectate(): void {
-    this.gameEvent.emit(GameType.Spectate);
+    this.router.navigate(['/spectate']);
   }
 }
