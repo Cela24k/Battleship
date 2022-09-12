@@ -87,7 +87,7 @@ export interface UserInterface extends Document {
 
     setPlayState(isPlaying: boolean): void;
 
-    getFriendsId(): Types.ObjectId[];
+    getFriendsId(): Promise<Types.ObjectId[]>;
 
 }
 
@@ -107,7 +107,6 @@ export const UserSchema = new Schema<UserInterface>({
     },
     email: {
         type: SchemaTypes.String,
-        unique: true,
         default: ''
     },
     digest: {
@@ -387,7 +386,8 @@ export async function setUserState(userId: Types.ObjectId, state: UserState): Pr
         user.state = state;
         console.log((userId.toString() + " has changed his State in: " + state).green.bgRed);
         const stateSaved = (await user.save()).state;
-        user.getFriendsId().forEach((id) => {
+        const friends = await user.getFriendsId();
+        friends.forEach((id) => {
             const stateEmitter = new StateChangeEmitter(ios, id.toString());
             stateEmitter.emit({ userId, state });
             console.log(
