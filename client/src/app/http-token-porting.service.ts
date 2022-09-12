@@ -1,6 +1,6 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
@@ -19,6 +19,26 @@ export class HttpTokenPortingService implements HttpInterceptor{
         Authorization: `Bearer ${token}`
       }
     });
-    return next.handle(req);
+    return next.handle(req).pipe(tap({
+      next: (event: any) => {
+        if (event instanceof HttpResponse) {
+          if(event.status == 401) {
+            window.location.href = "/login";
+          }
+        }
+        return event;
+      },
+      error: (error: any) => {
+        if(error.status == 401) {
+          window.location.href = "/login";
+        }
+        if(error.status == 404) {
+          alert('Page Not Found!!!');
+          window.location.href = "/login";
+        }
+      }
+
+    }
+    ))
   }
 }

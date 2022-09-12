@@ -1,6 +1,5 @@
 .message {
-    list-style-type: none;
-    height: auto;
+    height: 60px;
 }
 
 .empty {
@@ -11,5 +10,12 @@
 .content {
     text-align: center;
     font-weight: bold;
+}
+
+.example-viewport {
+    height: 80vh;
+    width: 100%;
+    overflow-x: hidden;
+    /* border: 1px solid black; */
 }
 

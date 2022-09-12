@@ -12,7 +12,7 @@ import NotificationEmitter from '../socket-helper/Emitter/NotificationEmitter';
 
 export const router = Router();
 
-export function parseJwt(auth){
+export function parseJwt(auth) {
     return auth ? jsonwebtoken.decode(auth.replace("Bearer ", "")) : null;
 }
 /*
@@ -71,20 +71,21 @@ router.get('/:userid', async (req, res) => {
 router.delete('/:userId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
 
-    if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod) {
-        try {
+    try {
+        if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod) {
             var result = await user.deleteUser(new Types.ObjectId(req.params.userId));
+            return res.status(200).json(result);
         }
-        catch (err) {
-            if (err === 'Server Error')
-                return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
-            else
-                return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+        else {
+            return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
         }
-        return res.status(200).json(result);
     }
-    else
-        return res.status(401).json({ error: true, errormessage: 'No authorization to execute this endpoint', timestamp: Date.now() });
+    catch (err) {
+        if (err === 'Server Error')
+            return res.status(500).json({ error: true, errormessage: err, timestamp: Date.now() });
+        else
+            return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
+    }
 })
 
 //vedere se farlo
@@ -133,7 +134,7 @@ router.put('/:userId/friends/:friendId', async (req, res) => {
             // new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend 
             // ));
             let n = await notifications.newNotification(sender.username, sender._id, new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)
-            const notificationEmitter = new NotificationEmitter(ios,req.params.friendId);
+            const notificationEmitter = new NotificationEmitter(ios, req.params.friendId);
             notificationEmitter.emit(n);
 
         } catch (err) {
@@ -178,7 +179,7 @@ router.put('/:userId/notifications/:notificationId', async (req, res) => {
         try {
             var u = await user.getModel().findById(new Types.ObjectId(req.params.userId));
             var notification = u.notifications.find((val) => (String(val._id) === req.params.notificationId));
-            if (action == 'accept'){
+            if (action == 'accept') {
                 //attenzione
                 await notification.accept();
                 await u.removeNotification(notification);
@@ -233,12 +234,12 @@ router.post('/:userId/chat', async (req, res) => {
 router.get('/:userId/chats', async (req, res) => {
     let jwt = parseJwt(req.headers.authorization);
     const userId = req.params.userId;
-    if(userId && jwt['_id'] == userId){
+    if (userId && jwt['_id'] == userId) {
         try {
             const u = await getUserById(new Types.ObjectId(userId));
             const chats = await u.getChats();
             //console.log(chats);
-            const response = {chats, timestamp:Date.now()};
+            const response = { chats, timestamp: Date.now() };
             //console.log(response);
             return res.status(200).json(response);
         } catch (err) {
@@ -248,7 +249,7 @@ router.get('/:userId/chats', async (req, res) => {
                 return res.status(404).json({ error: true, errormessage: err, timestamp: Date.now() });
         }
     }
-    return res.status(401).json({error: false, errormessage:"Unauthorized", timestamp:Date.now()})
-    
+    return res.status(401).json({ error: false, errormessage: "Unauthorized", timestamp: Date.now() })
+
 })
 

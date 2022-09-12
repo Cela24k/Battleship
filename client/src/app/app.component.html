@@ -320,10 +320,10 @@
   <button *ngIf="route === '/login'" class="button" (click)="navigateRegister()">Registrati</button>
   <button *ngIf="route === '/register'" class="button" (click)="navigateLogin()">Accedi</button>
   <button *ngIf="isLoggedIn()" class="button" (click)="logOut(); navigateLogin()">Log-out</button>
-  <a *ngIf="isLoggedIn()" aria-label="Notifications" target="_blank" rel="noopener" title="Notifications">
+  <a *ngIf="route === '/play' " aria-label="Notifications" target="_blank" rel="noopener" title="Notifications">
     <app-notification></app-notification>
   </a>
-  <a *ngIf="isLoggedIn()" aria-label="Menu" target="_blank" rel="noopener"
+  <a *ngIf="route === '/play'" aria-label="Menu" target="_blank" rel="noopener"
     style="margin-right: 10px; color: white">
     <app-menu (openChatEvent)="updateChats($event)"></app-menu>
   </a>

@@ -1,7 +1,10 @@
 <div *ngIf="stored_chats.length != 0; else empty">
-    <li class="message" *ngFor="let x of stored_chats;">
-        <app-chat-prev (openChatEvent)="bridge($event)" (deleteChatEvent)="deleteBridge($event)" [props]="x"></app-chat-prev>
-    </li>
+    <cdk-virtual-scroll-viewport itemSize="0" class="example-viewport">
+        <div *cdkVirtualFor="let x of stored_chats" class="message">
+            <app-chat-prev (openChatEvent)="bridge($event)" (deleteChatEvent)="deleteBridge($event)" [props]="x">
+            </app-chat-prev>
+        </div>
+    </cdk-virtual-scroll-viewport>
 </div>
 <ng-template #empty>
     <div class="content">
@@ -9,5 +12,5 @@
             It's all empty here...
         </h2>
         <mat-icon>smart_toy</mat-icon>
-    </div> 
+    </div>
 </ng-template>

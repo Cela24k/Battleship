@@ -103,8 +103,8 @@ export const UserSchema = new Schema<UserInterface>({
     },
     email: {
         type: SchemaTypes.String,
-        required: true,
-        unique: true
+        unique: true,
+        default: ''
     },
     digest: {
         type: SchemaTypes.String,
