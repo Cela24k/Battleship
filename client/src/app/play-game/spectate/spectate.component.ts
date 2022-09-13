@@ -27,7 +27,6 @@ interface GameSpectate {
 })
 export class SpectateComponent implements OnInit {
   onlineFriends: UserInterface[] = [];
-  flag = false;
   isObserving = false;
   observedGame: GameSpectate | null = null;
   chat: ChatInterface[] = [];
@@ -101,13 +100,12 @@ export class SpectateComponent implements OnInit {
         console.log(value);
         if (value.state == "Playing") {
           this.onlineFriends.push({ _id: value.userId, username: value.username, state: value.state, stats: value.stats });
-          console.log(this.onlineFriends);
-          this.flag = this.flag ? false : true;
+          this.onlineFriends = this.onlineFriends.slice()
         }
         else {
-          let index = this.onlineFriends.indexOf(value);
+          let index = this.onlineFriends.indexOf({ _id: value.userId, username: value.username, state: value.state, stats: value.stats });
           if (index != -1)
-            this.onlineFriends.splice(index, 1);
+            this.onlineFriends = this.onlineFriends.splice(index, 1);
         }
       },
       error(err) {
