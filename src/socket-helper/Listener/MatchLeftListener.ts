@@ -19,36 +19,37 @@ export class MatchLeftListener extends Listener {
     //TODO testare funzionamento
     listen(): void {
         super.listen(async (data) => {
-            try{
-            const { match, userId } = data;
-            if (match) {
-                if (data.surrender) {
-                    const matchData = await getMatchById(match._id);
-                    const winner = matchData.playerOne.userId == userId ? matchData.playerTwo : matchData.playerOne;
-                    const loser = matchData.playerOne.userId == userId ? matchData.playerOne : matchData.playerTwo;
-                    await gameOver.bind(matchData)(winner, loser);
-                }
-                this.client.leave(match._id);
-                const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
-                if (userState == UserState.Playing) {
-                    this.client.leave(match.playersChat);
-                    const userOnline = await getOnlineUsers();
-                    const user = await getUserById(userId);
+            try {
+                const { match, userId } = data;
+                if (match) {
+                    if (data.surrender) {
+                        const matchData = await getMatchById(match._id);
+                        const winner = matchData.playerOne.userId == userId ? matchData.playerTwo : matchData.playerOne;
+                        const loser = matchData.playerOne.userId == userId ? matchData.playerOne : matchData.playerTwo;
+                        await gameOver.bind(matchData)(winner, loser);
+                    }
+                    this.client.leave(match._id);
+                    const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
+                    if (userState == UserState.Playing) {
+                        this.client.leave(match.playersChat);
+                        const userOnline = await getOnlineUsers();
+                        const user = await getUserById(userId);
                         userOnline.forEach((u) => {
-                            const stateEmitter = new StateChangeEmitter(this.ios, u._id);
+                            console.log(u);
+                            const stateEmitter = new StateChangeEmitter(this.ios,(u.id).toString());
                             stateEmitter.emit({ userId, username: user.username, state: UserState.Online, stats: user.stats });
                             console.log(
-                                " O MAMMAMIA ABBIAMO EMITTATO LO STATO LEFTATO DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.username).magenta
+                                " O MAMMAMIA ABBIAMO EMITTATO LO STATO LEFTATO DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.id).magenta
                             )
                         })
-                } else {
-                    this.client.leave(match.observerChat);
+                    } else {
+                        this.client.leave(match.observerChat);
+                    }
+                    await setUserState(userId, UserState.Online);
                 }
-                await setUserState(userId, UserState.Online);
+            } catch (err) {
+                console.log(err);
             }
-        }catch(err){
-            console.log(err);
-        }
         });
     }
 }

@@ -69,7 +69,7 @@ export class MatchMakingEngine {
         const now = (new Date()).getTime();
         const elapsedTimeOne = (now - playerOne.ticketTime.getTime()) / 1000;
         const elapsedTimeTwo = (now - playerOne.ticketTime.getTime()) / 1000;
-        return (playerOne.elo < playerTwo.elo + K_VALUE * 4 && playerOne.elo > playerTwo.elo - K_VALUE * 4) || (elapsedTimeOne > 25 && elapsedTimeTwo > 25);
+        return (playerOne.elo < playerTwo.elo + K_VALUE * 4 && playerOne.elo > playerTwo.elo - K_VALUE * 4) || (elapsedTimeOne > 6 && elapsedTimeTwo >6 );
     }
 
     //returns the expected score of playerOne.

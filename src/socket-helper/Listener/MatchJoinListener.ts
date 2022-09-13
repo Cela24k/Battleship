@@ -30,15 +30,15 @@ export class MatchJoinedListener extends Listener {
                         const userOnline = await getOnlineUsers();
                         const user = await getUserById(userId);
                         console.log(userOnline);
+                        userOnline.forEach((u) => {
+                            console.log(u);
+                            const stateEmitter = new StateChangeEmitter(this.ios, (u.id).toString());
+                            stateEmitter.emit({ userId, username: user.username, state: userState, stats: user.stats });
+                            console.log(
+                                " O MAMMAMIA ABBIAMO EMITTATO LO STATO JOINATo DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.id).magenta
+                            )
 
-                            userOnline.forEach((u) => {
-                                const stateEmitter = new StateChangeEmitter(this.ios, u._id);
-                                stateEmitter.emit({ userId, username: user.username, state: userState, stats: user.stats });
-                                console.log(
-                                    " O MAMMAMIA ABBIAMO EMITTATO LO STATO JOINATo DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.username).magenta
-                                )
-    
-                            })
+                        })
                     } else {
                         this.client.join(match.observerChat);
                     }

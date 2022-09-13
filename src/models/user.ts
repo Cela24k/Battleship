@@ -336,7 +336,7 @@ export async function getUserById(userid: Types.ObjectId): Promise<UserInterface
 
 export async function getOnlineUsers(): Promise<UserInterface[]>{
     const projection = {
-        _id:true,
+        id:true,
         stats: true,
         state: true,
         username: true

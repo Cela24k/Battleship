@@ -27,6 +27,7 @@ interface GameSpectate {
 })
 export class SpectateComponent implements OnInit {
   onlineFriends: UserInterface[] = [];
+  flag = false;
   isObserving = false;
   observedGame: GameSpectate | null = null;
   chat: ChatInterface[] = [];
@@ -69,45 +70,48 @@ export class SpectateComponent implements OnInit {
     //   },
     //   state: 'Offline'
     // });
-    
+
     this.fetchData();
   }
 
   fetchData() {
-    let users: UserInterface[]; 
+    let users: UserInterface[];
     this.userhttp.getUsers().subscribe({
       next(value) {
         users = value;
       },
       error(err) {
-          console.log(err);
+        console.log(err);
       },
       complete: () => {
         let playingUsers: UserInterface[] = [];
-          users.forEach((e)=>{
-            if(e.state == 'Playing')
-              playingUsers.push(e);
-          })
-          this.onlineFriends = playingUsers;
-          this.listenOnline();
+        users.forEach((e) => {
+          if (e.state == 'Playing')
+            playingUsers.push(e);
+        })
+        this.onlineFriends = playingUsers;
+        this.listenOnline();
       },
     })
   }
 
-  listenOnline(){
+  listenOnline() {
     this.sio.listen('state-change').subscribe({
-      next: (value: UserInterface)=> {
+      next: (value: any) => {
         console.log(value);
-        if(value.state == 'Online')
-          this.onlineFriends.push(value);
+        if (value.state == "Playing") {
+          this.onlineFriends.push({ _id: value.userId, username: value.username, state: value.state, stats: value.stats });
+          console.log(this.onlineFriends);
+          this.flag = this.flag ? false : true;
+        }
         else {
           let index = this.onlineFriends.indexOf(value);
-          if(index != -1 )
-            this.onlineFriends.splice(index,1);
+          if (index != -1)
+            this.onlineFriends.splice(index, 1);
         }
       },
       error(err) {
-          console.log(err);
+        console.log(err);
       },
     })
   }
@@ -116,7 +120,7 @@ export class SpectateComponent implements OnInit {
     this.router.navigate(['/play']);
   }
 
-  spectatePlayer(id: number){
+  spectatePlayer(id: number) {
     //fare la chiamata poi this.observing = true e game = {}
     this.isObserving = true;
     this.observedGame = {
@@ -133,12 +137,12 @@ export class SpectateComponent implements OnInit {
     };
   }
 
-  stopObserving(){
+  stopObserving() {
     this.isObserving = false;
     this.observedGame = null;
   }
 
-  formatProps(){
+  formatProps() {
     return {}
   }
 

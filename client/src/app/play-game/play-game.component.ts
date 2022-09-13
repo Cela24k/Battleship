@@ -337,9 +337,6 @@ export class PlayGameComponent implements OnInit {
 
   gameOver(value: any) {
     this.sio.emit("match-left", { match: this.game?.match, userId: this.ls.getId() });
-    this.sio.removeListener("chat-match");
-    this.sio.removeListener("ship-destroyed");
-    this.sio.removeListener("game-over");
     this.stopAudio();
     this.userHttp.getUserById(value.matchResult.winner).subscribe({
       next: (value) => {
