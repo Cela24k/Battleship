@@ -22,21 +22,16 @@ export class MatchJoinedListener extends Listener {
                 const { match, userId } = data;
                 if (match) {
                     this.client.join(match._id);
-                    console.log(match._id.rainbow);
                     const userState = userId == match.playerOne.userId || userId == match.playerTwo.userId ? UserState.Playing : UserState.Observing
                     await setUserState(userId, userState);
                     if (userState == UserState.Playing) {
                         this.client.join(match.playersChat);
                         const userOnline = await getOnlineUsers();
                         const user = await getUserById(userId);
-                        console.log(userOnline);
                         userOnline.forEach((u) => {
-                            console.log(u);
                             const stateEmitter = new StateChangeEmitter(this.ios, (u.id).toString());
                             stateEmitter.emit({ userId, username: user.username, state: userState, stats: user.stats });
-                            console.log(
-                                " O MAMMAMIA ABBIAMO EMITTATO LO STATO JOINATo DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.id).magenta
-                            )
+                            
 
                         })
                     } else {

@@ -23,7 +23,6 @@ export class ChooseFriendComponent implements OnInit {
   fetchData(): void {
     this.httpservice.getFriends().subscribe({
       next: (d) => {
-        console.log(d)
       },
       error: (err) => {
         console.log(err);

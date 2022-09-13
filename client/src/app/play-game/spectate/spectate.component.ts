@@ -97,7 +97,6 @@ export class SpectateComponent implements OnInit {
   listenOnline() {
     this.sio.listen('state-change').subscribe({
       next: (value: any) => {
-        console.log(value);
         if (value.state == "Playing") {
           this.onlineFriends.push({ _id: value.userId, username: value.username, state: value.state, stats: value.stats });
           this.onlineFriends = this.onlineFriends.slice()
@@ -110,7 +109,6 @@ export class SpectateComponent implements OnInit {
             }
           })
           if (index != null) {
-            console.log(index)
             this.onlineFriends.splice(index, 1)
             this.onlineFriends = this.onlineFriends.slice()
           };

@@ -13,17 +13,16 @@ import ios from "../..";
 
 export interface MatchInterface extends Document {
     readonly _id: Types.ObjectId,
-    playerOne: MatchPlayer,//vedere se utilizzare l'interfaccio o solo l'Id
+    playerOne: MatchPlayer,
     playerTwo: MatchPlayer,
-    // turn: MatchTurn,//palyerOne, o playerTwo possibile utilizzo di un enum e vedere se mettere di default sempre il primo oppure lancio della monetina, oppure vedere se basare la posizione del giocatore in base all'elo
     result: MatchResults,
-    playersChat: Types.ObjectId,//vedere se le chat devono essere due e quindi quale struttura dati utilizzare
+    playersChat: Types.ObjectId,
     observersChat: Types.ObjectId,
-    gameTurn: Types.ObjectId, // which player has the turn.
+    gameTurn: Types.ObjectId,
 
     makePlayerMove: (player: Types.ObjectId, shot: Cell) => Promise<[Cell, string]> //funzione da chiamare quando finisce un turno di sicuro
     initBoardPlayer: (playerId: Types.ObjectId, board: BattleGrid) => Promise<MatchInterface>;
-    arePlayerReady(): boolean;
+    arePlayersReady(): boolean;
 
 }
 export const MatchSchema = new Schema<MatchInterface>({
@@ -95,7 +94,7 @@ MatchSchema.methods.initBoardPlayer = async function (playerId: Types.ObjectId, 
     }
 }
 
-MatchSchema.methods.arePlayerReady = function (): boolean {
+MatchSchema.methods.arePlayersReady = function (): boolean {
     return this.playerOne.ready && this.playerTwo.ready;
 }
 
@@ -113,8 +112,6 @@ export async function newMatch(playerOne: Types.ObjectId, playerTwo: Types.Objec
         const _playerOne: UserInterface = await getUserById(playerOne);
         const _playerTwo: UserInterface = await getUserById(playerTwo);
         const delta_score: number = getExpectedScore(_playerOne.stats.elo, _playerTwo.stats.elo);
-        // _playerOne.setPlayState(true);//TODO drop the database due this 
-        // _playerTwo.setPlayState(true);
         const dataOne = { userId: _playerOne._id, elo: _playerOne.stats.elo, delta_score };
         const dataTwo = { userId: _playerTwo._id, elo: _playerTwo.stats.elo, delta_score: 1 - delta_score };
         const result = {};
@@ -148,9 +145,7 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
         await winnerUser.save();
         await loserUser.save();
         const matchId = this._id;
-        console.log(matchId);
         const gameOver = new GameOverEmitter(ios, matchId.toString());
-        console.log(matchResult);
         gameOver.emit({ matchResult });
 
         var match = await Match.deleteOne({ _id: this._id });;

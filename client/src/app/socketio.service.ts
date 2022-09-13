@@ -20,7 +20,6 @@ export class SocketioService {
     return new Observable((observer) => {
 
       this.socket.on(eventName, (data: any) => {
-        console.log('Socket listening to '+ eventName);
         observer.next(data);
       })
 

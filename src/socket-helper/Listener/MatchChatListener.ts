@@ -17,7 +17,6 @@ export class MatchChatListener extends Listener {
 
     listen(): void {
         super.listen(async (data: any) => {//TODO qui si avranno anche le chaiamate al databse
-            console.log(data);
             if (data && data.chatId && data.message) {
                 const matchChat = new ChatMatchEmitter(ios, data.chatId);
                 matchChat.emit({ message: data.message });

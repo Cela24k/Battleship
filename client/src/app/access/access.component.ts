@@ -26,7 +26,6 @@ export class AccessComponent implements OnInit {
 
       this.router.events.subscribe((event) => {
         event instanceof NavigationEnd ? this.route = this.router.url : null;
-        console.log(this.route);
       })
 
     });

@@ -17,14 +17,14 @@ import { router as matchMakingRoutes } from './routing/matchmaking-routes';
 import { router as matchRoutes } from './routing/match-routes';
 import { MatchMakingEngine } from './routing/matchmaking-engine/engine';
 import { UserJoinListener } from './socket-helper/Listener/UserJoinListener';
-import { ChatMessageListener } from './socket-helper/Listener/ChatMessageListener';
+import { JoinChatListener } from './socket-helper/Listener/JoinChatListener';
 import { MatchJoinedListener } from './socket-helper/Listener/MatchJoinListener';
 import ChatMatchEmitter from './socket-helper/Emitter/ChatMatchEmitter';
 import { MatchChatListener } from './socket-helper/Listener/MatchChatListener';
 import { MatchLeftListener } from './socket-helper/Listener/MatchLeftListener';
 import { setUserState, UserState } from './models/user';
 import { LogOutListener } from './socket-helper/Listener/LogOutListener';
-import { FrienMatchListener } from './socket-helper/Listener/FriendMatchListener';
+import { FriendMatchListener } from './socket-helper/Listener/FriendMatchListener';
 import { FriendMatchResponseListener } from './socket-helper/Listener/FriendMatchResponseListener';
 
 //crezione dell'istanza del modulo Express
@@ -81,8 +81,8 @@ ios.on('connection', (client) => {
     const userJoin = new UserJoinListener(client);
     userJoin.listen();
 
-    const chatMessage = new ChatMessageListener(client);
-    chatMessage.listen();
+    const joinChat = new JoinChatListener(client);
+    joinChat.listen();
 
     const matchJoin = new MatchJoinedListener(ios, client);
     matchJoin.listen();
@@ -96,7 +96,7 @@ ios.on('connection', (client) => {
     const logOut = new LogOutListener(client);
     logOut.listen();
 
-    const friendMatch = new FrienMatchListener(client);
+    const friendMatch = new FriendMatchListener(client);
     friendMatch.listen();
 
     const friendMatchResponse = new FriendMatchResponseListener(client);

@@ -26,7 +26,6 @@ export class MenuSearchboxComponent implements OnInit {
   fetchData() {
     this.httpClient.getUsers().subscribe({
       next: (data) => {
-        console.log(data);
         this.friendlist = data;
         this.filterList();
       },

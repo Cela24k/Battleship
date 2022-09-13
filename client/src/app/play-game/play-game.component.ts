@@ -77,7 +77,6 @@ export class PlayGameComponent implements OnInit {
   }
   ngOnDestroy(): any {
     if(this.game){
-      console.log("mimmmmoo");
       this.surrender();
     }
   }
@@ -173,7 +172,6 @@ export class PlayGameComponent implements OnInit {
   }
 
   onMatchEvent(event: Match) {
-    console.log(this.game);
     this.pendingMatch = false;
     
     if (this.game) {
@@ -251,8 +249,6 @@ export class PlayGameComponent implements OnInit {
   }
 
   sendMessage() {
-    console.log(this.text);
-    console.log(this.chatId);
     if (this.text != " ") {
       this.sio.emit('match-message', { chatId: this.chatId, message: { sender: this.ls.getId(), text: this.text, timestamp: Date.now() } })
       this.text = " ";
@@ -356,7 +352,6 @@ export class PlayGameComponent implements OnInit {
   }
 
   surrender() {//TODO change html and go away
-    console.log(this.game); 
     this.sio.emit("match-left", { match: this.game?.match, userId: this.ls.getId(), surrender: true });
   }
 
@@ -381,7 +376,6 @@ export class PlayGameComponent implements OnInit {
           //sostituire cella con hit o miss 
           if (this.game && this.shot && value[0]) {
             this.game.shots.push(value[0]);
-            console.log(this.game.shots);
           }
 
         },
@@ -453,7 +447,6 @@ export class PlayGameComponent implements OnInit {
       if (fId)
         this.userHttp.getUserById(fId).subscribe({
           next: (value) => {
-            console.log(value)
             this.friendUsername = value.username;
           },
           error(err) {
@@ -472,7 +465,6 @@ export class PlayGameComponent implements OnInit {
 
   randomizeBoard() {
     this.random = true;
-    console.log(this.random);
   }
 
   getTimerSecs() {
@@ -483,7 +475,6 @@ export class PlayGameComponent implements OnInit {
   }
 
   joinMatch() {
-    console.log('im listening for matches');
     this.sio.listen('new-match').subscribe({
       next: (data: Match) => {
         // this.joinedMatchEvent.emit(data);

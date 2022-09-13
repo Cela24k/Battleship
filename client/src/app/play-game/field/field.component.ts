@@ -36,7 +36,6 @@ export class FieldComponent implements OnInit {
     this.placeExistingBoards();
     // sostituire con props veri
     this.populateShots();
-    console.log(this.randomize);
     if(this.randomize){
       this.randomizeField();
     }

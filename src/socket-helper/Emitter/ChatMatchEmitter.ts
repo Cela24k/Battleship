@@ -8,9 +8,7 @@ class ChatMatchEmitter<T> extends RoomEmitter<any>{
         super(ios, 'chat-match',roomId);
     }
 
-    emit(payload?: T): void{
-         this.ios.emit(this.event, payload);
-    }
+    
 }
 
 export default ChatMatchEmitter;

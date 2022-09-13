@@ -21,7 +21,6 @@ export interface StatsInterface {
     winstreakReset(): void,
     eloIncrement(expected_score: number, actual_score: number): void,
     accuracySet(): void,
-    rankSet(): void,
     win(): void,
     lose(): void,
     updateStats(player: MatchPlayer, result: MatchResults): void;
@@ -66,9 +65,9 @@ export const StatsSchema = new Schema<StatsInterface>({
     timePlayed: {
         type: SchemaTypes.Date,
         default: new Date(0),
-    },
+    }
     
-})
+},{_id: false})
 
 
 StatsSchema.methods.winsAdd = function (): void {

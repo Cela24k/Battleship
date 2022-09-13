@@ -6,7 +6,7 @@ import { Listener } from "./Listener";
 import ChatMatchEmitter from "../Emitter/ChatMatchEmitter";
 import ios from "../..";
 import FriendMatchEmitter from "../Emitter/FriendMatchEmitter";
-export class FrienMatchListener extends Listener {
+export class FriendMatchListener extends Listener {
 
     constructor(client: Socket) {
         super(client, 'friend-match');

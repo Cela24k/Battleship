@@ -3,7 +3,6 @@ import { Types } from "mongoose";
 import { ChatInterface, ChatModel, createChat } from "../models/chat";
 import { getUser, getUserById, User } from "../models/user";
 import jsonwebtoken = require('jsonwebtoken');
-import { ChatMessageListener } from "../socket-helper/Listener/ChatMessageListener";
 import ChatMessageEmitter from "../socket-helper/Emitter/ChatMessageEmitter";
 import ios from "..";
 import { parseJwt } from "./user-routes";
@@ -57,9 +56,7 @@ router.post('', async (req, res) => {
                     promises.push(element.addChat(chat));
                 });
 
-                // const messageEmitter = new ChatEmitter(ios, chatId);
-                // messageEmitter.emit(chat);
-                // console.log("Socket inviato");//TODO frontend test, or in postman.
+               
                 
                 return Promise.all(promises);
             }).catch(err => {
@@ -125,7 +122,6 @@ router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
     
             const messageEmitter = new ChatMessageEmitter(ios, chatId);
             messageEmitter.emit({message, chatId});
-            console.log("Socket inviato");//TODO frontend test, or in postman.
     
             return res.status(200).json({ error: false, timestamp: Date.now(), message });
     

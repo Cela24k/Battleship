@@ -19,8 +19,6 @@ export enum UserState {
     Offline = "Offline",
     Observing = "Observing",
     Waiting = "Waiting",
-
-
 }
 
 export interface UserInterface extends Document {
@@ -46,47 +44,13 @@ export interface UserInterface extends Document {
 
     validatePassword(pwd: String): boolean,
 
-    /* Returns true if this user's role field is set to "Role.Admin" */
-    isModerator(): boolean;
 
-    /* Handy in the matchmaking, read "waiting" property.
-    * Returns true if the player is looking for a match 
-    */
-    isWaiting(): boolean;
 
-    isPlaying(): boolean;
-
-    /* Directly adds a user to this user's friendlist */
-    addFriend(friend: Types.ObjectId): void;
-
-    //TODO vedere se si elimina uno alla volta, in caso contrario dobbiamo mettere come parametri un array di id
-    removeFriend(friend: Types.ObjectId): void;
-
-    blockFriend(friend: Types.ObjectId): void;
-
-    /* Invites a friend to a game with a notification*/
-    gameNotification(friend: Types.ObjectId): void;
-
-    /* Sends a friend notification, the addFriend function is called 
-    *  if it is accepted */
     friendNotification(friend: Types.ObjectId): Promise<boolean>;
-
-
     removeNotification(notification: NotificationInterface): Promise<void>;
-
-    /* Sets this User's role */
     setRole(role: Role): void;
-    // addChat(): void, // vedere che parametri ha bisogno 
-    // removeChat(): void,//stessa cosa
-
-    getUserPublicInfo(): void;
-
     addChat(chat: ChatInterface): void;
-
     getChats(): Promise<ChatInterface[]>;
-
-    setPlayState(isPlaying: boolean): void;
-
     getFriendsId(): Promise<Types.ObjectId[]>;
 
     changeModInfo(username: string, email: string): Promise<UserInterface>;
@@ -159,43 +123,11 @@ UserSchema.methods.validatePassword = function (pwd: string): boolean {
     return (this.digest === digest);
 }
 
-UserSchema.methods.isModerator = function (): boolean {
-    return this.role == Role.Mod;
-}
-
-UserSchema.methods.isWaiting = function (): boolean {
-    return this.waiting == true;
-}
-
-UserSchema.methods.addFriend = function (friend: Types.ObjectId): void {
-    if (!this.friends.find(friend))
-        this.friends.push(friend);
-}
-
 UserSchema.methods.setRole = function (role: Role): void {
     if (this.role !== role) this.role = role;
 }
-UserSchema.methods.removeFriend = async function (friend: Types.ObjectId): Promise<void> {
-    var index = this.friend.indexOf(friend);
-    if (index > -1) {
-        this.friends.splice(index, 1);
-    }
-    let res = await this.save().catch(//TODO vedere se e' giusto il modo in cui facciamo la save
-        () => Promise.reject('Server Error')
-    )
-    return Promise.resolve(res);
-}
 
-UserSchema.methods.getUserPublicInfo = function (): Object {
-    let body = {
-        username: this.username,
-        friends: this.friendlist,
-        stats: this.stats,
-        isPlaying: this.playing
-    }
 
-    return body;
-}
 
 UserSchema.methods.friendNotification = async function (userId: Types.ObjectId): Promise<void> {
     let u = await User.findById(userId, { notifications: true }).catch(
@@ -225,9 +157,6 @@ UserSchema.methods.friendNotification = async function (userId: Types.ObjectId):
     else return Promise.reject('There are no users with such id')
 }
 
-UserSchema.methods.getNotifications = function (): NotificationInterface[] {
-    return this.notifications;
-}
 
 UserSchema.methods.removeNotification = async function (notification: NotificationInterface): Promise<void> {//TODO vedere che pattern mettere sulla save
     const index = this.notifications.indexOf(notification);
@@ -275,19 +204,13 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
     return Promise.resolve();
 }
 
-//Changes the playing state in true if he' joining a game, false otherwise(we use it in 2 different methods)
-UserSchema.methods.setPlayingState = async function (isPlaying: boolean) {
-    if (this.playing && this.playing != isPlaying)
-        throw new Error("Player is already in a game");
-    this.playing = isPlaying;
-    await this.save()
-}
+
 UserSchema.methods.getFriendsId = async function () {
     return this.friends
 }
 
-UserSchema.methods.changeModInfo = async function (username: string, email: string): Promise<void>{
-    if(username.length == 0 || email.length == 0){
+UserSchema.methods.changeModInfo = async function (username: string, email: string): Promise<void> {
+    if (username.length == 0 || email.length == 0) {
         throw new Error("Manca un qualcosotto")
     }
     this.username = username;
@@ -334,14 +257,14 @@ export async function getUserById(userid: Types.ObjectId): Promise<UserInterface
     else return Promise.reject('No user with such Id'); //mettere dentro un errore?
 }
 
-export async function getOnlineUsers(): Promise<UserInterface[]>{
+export async function getOnlineUsers(): Promise<UserInterface[]> {
     const projection = {
-        id:true,
+        id: true,
         stats: true,
         state: true,
         username: true
     }
-    let result = await User.find({state: UserState.Online}, projection).catch((err) => {
+    let result = await User.find({ state: UserState.Online }, projection).catch((err) => {
         return Promise.reject('Server Error');
     });
     if (!result)

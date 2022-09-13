@@ -48,7 +48,6 @@ export class ChatWindowComponent implements OnInit {
         this.scrollToBottom();
       }
     })
-    console.log(this.props);
   }
 
   ngOnDestroy(): void {
@@ -77,9 +76,7 @@ export class ChatWindowComponent implements OnInit {
       next: (data) => {
         if(this.props._id == ''){
           this.props = data.chat;
-          console.log(data.chat);
           this.socket.joinChat(data.chat._id);
-          console.log(this.props);
           this.messages = this.props.messages;
         }
       },

@@ -47,20 +47,5 @@ export class WaitingFriendComponent implements OnInit {
       })
   }
 
-  // joinMatch() {
-  //   console.log('im listening for matches');
-  //   this.gameSocket.listen('new-match').subscribe({
-  //     next: (data: Match) => {
-  //       console.log(data);
-  //       // this.joinedMatchEvent.emit(data);
-  //       this.gameSocket.emit("match-join",{userId: this.ls.getId(), match: data});
-  //     },
-  //     error: (e) => {
-  //       console.log(e);
-  //     },
-  //     complete: () => {
-  //     }
-  //   })
-  // }
 
 }

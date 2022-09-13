@@ -17,7 +17,6 @@ export class UserJoinListener extends Listener {
         super.listen(async (userId: string) => {
             try {
                 this.client.join(userId);
-                console.log("User Joined the server: " + userId);
                 await setUserState(new Types.ObjectId(userId), UserState.Online);
             } catch (err) {
                 console.log(err);

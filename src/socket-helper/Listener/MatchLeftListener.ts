@@ -35,12 +35,9 @@ export class MatchLeftListener extends Listener {
                         const userOnline = await getOnlineUsers();
                         const user = await getUserById(userId);
                         userOnline.forEach((u) => {
-                            console.log(u);
                             const stateEmitter = new StateChangeEmitter(this.ios,(u.id).toString());
                             stateEmitter.emit({ userId, username: user.username, state: UserState.Online, stats: user.stats });
-                            console.log(
-                                " O MAMMAMIA ABBIAMO EMITTATO LO STATO LEFTATO DEL UAGLIONE " + (userId.toString()).magenta + " al suo amichetto" + (u.id).magenta
-                            )
+                            
                         })
                     } else {
                         this.client.leave(match.observerChat);

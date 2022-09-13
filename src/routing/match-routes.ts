@@ -23,8 +23,6 @@ router.patch('/:matchId', async (req, res) => {
     const action = req.query.action;
     const { userId, shot } = req.body;
     const matchId: any = req.params.matchId;
-    console.log(req.body)
-    //TODO the problem is in the gameturn, lets find out, also there's a problem that if we join 2 times in a queue, it depends on which playerMatch are u if one or tweo, and u can create 2 match
 
     try {
         if (action != "move")
@@ -48,7 +46,6 @@ router.patch('/:matchId', async (req, res) => {
 
 router.post('/:matchId', async (req, res) => {
     const action = req.query.action;
-    console.log(req.body)
     const { userId, board } = req.body;
     const matchId = req.params.matchId;
     try {
@@ -56,7 +53,7 @@ router.post('/:matchId', async (req, res) => {
             throw new Error("Endpoint not found");
         var match = await getMatchById(new Types.ObjectId(matchId));
         match = await match.initBoardPlayer(userId, board);
-        if (match.arePlayerReady()) {
+        if (match.arePlayersReady()) {
             const turnEmitter = new MatchTurnEmitter(ios, (match._id).toString());
             turnEmitter.emit({ gameTurn: match.gameTurn });
             console.log("MatchInizializzzto".america);

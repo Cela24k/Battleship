@@ -25,7 +25,6 @@ export class FriendsScreenComponent implements OnInit {
   fetchData(): void {
     this.httpservice.getFriends().subscribe({
       next: (data) => {
-        console.log(data);
         this.friends = data;
       },
       error: (e) => {
@@ -40,7 +39,6 @@ export class FriendsScreenComponent implements OnInit {
 
   addFriend(name: any) {
     const isFriend =  this.names.includes(name);
-    console.log(name);
 
     if (!isFriend && name.length > 1) {
       // get user id from his Name
@@ -59,7 +57,6 @@ export class FriendsScreenComponent implements OnInit {
           if(userid)
             this.httpservice.friendRequest(userid).subscribe({
               next: (data) => {
-                console.log(data);
               },
               error: (e) => {
                 console.log(e)

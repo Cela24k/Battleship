@@ -1,7 +1,7 @@
 import { Schema, SchemaTypes, Types } from "mongoose";
 
 export interface MatchResults {
-    winner: Types.ObjectId,
+    winner: string,
     startTime: Date,
     finishTime: Date,
     updateResult(winner: Types.ObjectId): MatchResults,

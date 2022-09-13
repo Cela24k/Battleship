@@ -38,27 +38,11 @@ export class MatchmakingComponent implements OnInit {
     })
   }
 
-  // joinMatch() {
-  //   console.log('im listening for matches');
-  //   this.gameSocket.listen('new-match').subscribe({
-  //     next: (data: Match) => {
-  //       console.log(data);
-  //       this.joinedMatchEvent.emit(data);
-  //       this.gameSocket.emit("match-join",{userId: this.ls.getId(), match: data});
-  //     },
-  //     error: (e) => {
-  //       console.log(e);
-  //     },
-  //     complete: () => {
-  //     }
-  //   })
-  // }
+
 
   joinQueue() {
-    console.log('im connected to the queue');
     this.gameService.joinQueue().subscribe({
       next: (data) => {
-        console.log(data);
       },
       error: (e) => {
         console.log(e);
@@ -72,7 +56,6 @@ export class MatchmakingComponent implements OnInit {
   leaveQueue() {
     this.gameService.removeQueue().subscribe({
       next: (data) => {
-        console.log('removed')
         this.queueLeftEvent.emit(null);
       },
       error: (e) => {

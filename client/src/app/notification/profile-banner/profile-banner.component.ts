@@ -32,7 +32,6 @@ export class ProfileBannerComponent implements OnInit {
   accept(): void {
     this.httpservice.accept(this.notification._id).subscribe({
       next: (data) => {
-        console.log(data);
         this.state = State.Accepted;
       },
       error: (e) => {
