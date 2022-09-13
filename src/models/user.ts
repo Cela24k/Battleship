@@ -287,7 +287,7 @@ UserSchema.methods.getFriendsId = async function () {
 }
 
 UserSchema.methods.changeModInfo = async function (username: string, email: string): Promise<void>{
-    it(username.length == 0 || email.length == 0){
+    if(username.length == 0 || email.length == 0){
         throw new Error("Manca un qualcosotto")
     }
     this.username = username;
