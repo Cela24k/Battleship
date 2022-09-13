@@ -102,10 +102,18 @@ export class SpectateComponent implements OnInit {
           this.onlineFriends.push({ _id: value.userId, username: value.username, state: value.state, stats: value.stats });
           this.onlineFriends = this.onlineFriends.slice()
         }
-        else {
-          let index = this.onlineFriends.indexOf({ _id: value.userId, username: value.username, state: value.state, stats: value.stats });
-          if (index != -1)
-            this.onlineFriends = this.onlineFriends.splice(index, 1);
+        else if (value.state == "Online") {
+          let index = null;
+          this.onlineFriends.map((user, i) => {
+            if (user._id == value.userId) {
+              index = i;
+            }
+          })
+          if (index != null) {
+            console.log(index)
+            this.onlineFriends.splice(index, 1)
+            this.onlineFriends = this.onlineFriends.slice()
+          };
         }
       },
       error(err) {
