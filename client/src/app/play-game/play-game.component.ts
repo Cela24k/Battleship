@@ -73,6 +73,13 @@ export class PlayGameComponent implements OnInit {
   ngOnInit(): void {
     this.turnListener();
     this.sio.emit("user-join", this.ls.getId());
+    window.onbeforeunload = () => this.ngOnDestroy();
+  }
+  ngOnDestroy(): any {
+    if(this.game){
+      console.log("mimmmmoo");
+      this.surrender();
+    }
   }
 
   //ottenere partite gia esistenti e cambiare il valore di game.preparation a false;
@@ -348,7 +355,8 @@ export class PlayGameComponent implements OnInit {
     })
   }
 
-  surrender() {//TODO change html and go away 
+  surrender() {//TODO change html and go away
+    console.log(this.game); 
     this.sio.emit("match-left", { match: this.game?.match, userId: this.ls.getId(), surrender: true });
   }
 
