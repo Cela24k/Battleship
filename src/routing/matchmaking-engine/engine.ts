@@ -28,7 +28,6 @@ export class MatchMakingEngine {
     //this function refresh every time the timeout binding. Clearing the previous one could be cozy xP
     private async refreshSearchEngine() {
         this.timeoutId = setTimeout(async () => { return await this.searchEngine() }, this.interval);
-
     }
 
     private async searchEngine() {
