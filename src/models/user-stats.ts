@@ -96,7 +96,7 @@ StatsSchema.methods.eloIncrement = function (amount: number): void {
     else this.elo += amount;
 }
 StatsSchema.methods.accuracySet = function (): void {
-    this.accuracy = this.shotsHit / this.shotsFired;
+    this.accuracy = this.shotsFired != 0 ? this.shotsHit / this.shotsFired : 0;
 }
 
 StatsSchema.methods.win = function (): void {

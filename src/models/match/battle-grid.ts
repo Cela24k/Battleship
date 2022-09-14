@@ -10,7 +10,7 @@ export interface BattleGrid {
     //      un semplice array di coordinate, contenti le barche e quindi basare la logica solo sulle coordinate delle barchette.
     //      il primo metodo penso sia comodo per i colpi sparati (spari un colpo, vedi nella grid se in quella posizione ci sta una barca)
     //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
-    shots: Cell[], 
+    shots: Cell[],
     ships: Ship[],
     shotsFired: number,
     shotsHitted: number,
@@ -20,6 +20,8 @@ export interface BattleGrid {
     addShot: (shot: Cell) => void,
 
 }
+
+
 
 
 export const BattleGridSchema = new Schema<BattleGrid>({
@@ -47,7 +49,7 @@ BattleGridSchema.methods.areAllShipsDestroyed = function () {
 
 BattleGridSchema.methods.isAlreadyShot = function (shot: Cell) {
     return this.shots.some((s: Cell) => s.row == shot.row && s.col === shot.col);
-    
+
 }
 
 BattleGridSchema.methods.addShot = function (shot: Cell) {
@@ -56,20 +58,30 @@ BattleGridSchema.methods.addShot = function (shot: Cell) {
         throw new Error("You alreay shot this Cell");
     }
     this.shotsFired++;
-    if(shot.cellType == CellType.Hit) this.shotsHitted++;
+    if (shot.cellType == CellType.Hit) this.shotsHitted++;
     return this.shots.push(shot);
 }
 
 BattleGridSchema.methods.shipHasBeenHit = function (shot: Cell, matchId: Types.ObjectId) {
     const result: Ship[] = this.ships.filter((s: Ship) => s.hasBeenHit(shot));
     const flag = result[0]?.isDestroyed() ?? false;
-    if(flag){
-        const shipDestroyed = new ShipDestroyedEmitter(ios,matchId.toString());
-        shipDestroyed.emit({ship: result[0]});
-        
+    if (flag) {
+        const shipDestroyed = new ShipDestroyedEmitter(ios, matchId.toString());
+        shipDestroyed.emit({ ship: result[0] });
+
     }
     return result.length != 0;
-    
+
+}
+export function RandomBoard(): BattleGrid {
+
+}
+
+export function isTooClose(ships: Cell[], cell: Cell) {
+    return ships.some((pos) => pos.row == cell.row + 1 && pos.col == cell.col + 1 ||
+        pos.row == cell.row + 1 && pos.col == cell.col - 1 ||
+        pos.row == cell.row - 1 && pos.col == cell.col + 1 ||
+        pos.row == cell.row - 1 && pos.col == cell.col - 1)
 }
 //It controls if the ships' cells number are not compromised
 BattleGridSchema.pre("save", function (this, next) {
@@ -78,7 +90,7 @@ BattleGridSchema.pre("save", function (this, next) {
         var clength: number = 0;
         this.ships.forEach((ship: Ship) => {
             ship.position.forEach((c: Cell) => {
-                if (cells.includes(c)) {
+                if (cells.includes(c) || isTooClose(cells, c)) {
                     throw new Error("Ships compromised");
                 }
                 cells.push(c);

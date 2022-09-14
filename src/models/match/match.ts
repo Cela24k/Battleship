@@ -157,6 +157,15 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
         throw err;
     }
 }
+export async function getMatchByPlayerId(playerId: Types.ObjectId):Promise<MatchInterface>{
+   const match = await  Match.findOne( {$or :[{"playerOne.userId": playerId},{"playerTwo.userId": playerId}]});
+   if(match){
+    return Promise.resolve(match);
+   }else{
+    throw new Error("No match with such id");
+   }
+
+}
 
 var matchModel: Model<MatchInterface>;
 function getModel(): Model<MatchInterface> { // Return Model as singleton
