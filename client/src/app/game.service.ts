@@ -37,4 +37,8 @@ export class GameService {
     return this.httpclient.post(this.match_url, {});
   }
 
+  getSpectateMatch(playerId: string): Observable<any>{
+    return this.httpclient.get(this.match_url+ '/' + playerId);
+  }
+
 }
