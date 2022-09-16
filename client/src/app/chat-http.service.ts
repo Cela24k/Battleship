@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { concatMap, map, Observable } from 'rxjs';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
+import { environment } from 'src/environments/environment';
 
 
 @Injectable({
@@ -12,7 +13,7 @@ export class ChatHttpService {
   url: string;
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) {
-    this.url = 'http://localhost:8080';
+    this.url = environment.apiUrl;
   }
 
   getChats(): Observable<any> {

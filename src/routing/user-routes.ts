@@ -2,7 +2,7 @@ import * as user from '../models/user'
 import { Role } from "../models/user";
 import { Router } from "express";
 import jsonwebtoken = require('jsonwebtoken');
-import { Types, Types } from "mongoose";
+import { Types } from "mongoose";
 import * as notifications from "../models/notification";
 import ios from "..";
 import { ChatModel, createChat } from "../models/chat";
@@ -15,27 +15,13 @@ export const router = Router();
 export function parseJwt(auth) {
     return auth ? jsonwebtoken.decode(auth.replace("Bearer ", "")) : null;
 }
-/*
-    ENDPOINTS	        ATTRIBUTES	    METHOD	    DESCRIPTION
-    /users		                        GET	        Returns a list of all users if the client is a moderator
-        	
-    /users		                        POST	    Create a new user if the client is a moderator 
-                                                    (Maybe replaced by /register or just use this endpoint in the register section)
 
-    /users	            ?name=	        GET	        Returns the userS containing the specified name
-    /users/:userId		                GET	        Returns the user specified by its id, if it exists
-    /users/:userId		                DELETE	    Deletes the specified user if it exists
-    /users/:userId		                PATCH	    Edit a user with the body of the request
-    
- **/
 
 router.get('/list', (req, res) => {
-    console.log("GIUSTO ED AUTENTICATO");//Debugging tool for auth
     res.send(202);
 })
 
 
-// DONE
 // Returns a list of all users' public data: id, username, stats, playing
 router.get('/', async (req, res) => {
     try {
@@ -50,7 +36,6 @@ router.get('/', async (req, res) => {
     return res.status(200).json(result);
 })
 
-// DONE
 // Returns the public data of the user identified by {:userId} if it exists, else throws error 404 
 router.get('/:userid', async (req, res) => {
     try {
@@ -112,20 +97,12 @@ router.get('/:userId/friends', async (req, res) => {
 })
 
 //Sends a friend request 
-// TODO use websocket
 router.put('/:userId/friends/:friendId', async (req, res) => {
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
     if (jwt['_id'] === req.params.userId || jwt['role'] === Role.Mod) {
         try {
             var sender = await user.getUser(new Types.ObjectId(req.params.userId));
             await sender.friendNotification(new Types.ObjectId(req.params.friendId));
-
-            //fare una classe
-            // ios.in(req.params.friendId).emit('notification', notifications.newNotification(
-            // sender.username,
-            // sender._id,
-            // new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend 
-            // ));
             let n = await notifications.newNotification(sender.username, sender._id, new Types.ObjectId(req.params.friendId), notifications.NotificationType.Friend)
             const notificationEmitter = new NotificationEmitter(ios, req.params.friendId);
             notificationEmitter.emit(n);
@@ -163,8 +140,7 @@ router.get('/:userId/notifications', async (req, res) => {
 })
 
 //accept or refuse a notification (?action=accept - ?action=refuse)
-//TODO use websocket with room
-// TODO delete notifications not working
+
 router.put('/:userId/notifications/:notificationId', async (req, res) => {
     let action = req.query.action ? req.query.action : undefined;
     let jwt = jsonwebtoken.verify(req.headers.authorization.replace("Bearer ", ""), process.env.JWT_SECRET);
@@ -173,7 +149,6 @@ router.put('/:userId/notifications/:notificationId', async (req, res) => {
             var u = await user.getModel().findById(new Types.ObjectId(req.params.userId));
             var notification = u.notifications.find((val) => (String(val._id) === req.params.notificationId));
             if (action == 'accept') {
-                //attenzione
                 await notification.accept();
                 await u.removeNotification(notification);
             }
@@ -190,9 +165,7 @@ router.put('/:userId/notifications/:notificationId', async (req, res) => {
 })
 
 router.post('/:userId/chat', async (req, res) => {
-    //TODO try to find out if newchat should include a 
-    //message on his req.body. Shall the request be called when user create a chat, or when he send  his first message?
-    // see if is good pract send friend id in the url.
+    
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
     let userId = req.params.userId;
     let friendId = req.body.friendId;
@@ -231,9 +204,7 @@ router.get('/:userId/chats', async (req, res) => {
         try {
             const u = await getUserById(new Types.ObjectId(userId));
             const chats = await u.getChats();
-            //console.log(chats);
             const response = { chats, timestamp: Date.now() };
-            //console.log(response);
             return res.status(200).json(response);
         } catch (err) {
             if (err === 'Server Error')

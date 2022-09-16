@@ -56,7 +56,6 @@ MatchSchema.methods.makePlayerMove = async function (playerId: Types.ObjectId, s
     try {
         const player: MatchPlayer = playerId == this.playerOne.userId ? this.playerOne : this.playerTwo;
         const opponent: MatchPlayer = playerId != this.playerOne.userId ? this.playerOne : this.playerTwo;
-        //TODO see if the shot has the same row and col of the opponent ship
         if (opponent.board.shipHasBeenHit(shot, this.id)) {
             shot.cellType = CellType.Hit;
             if (opponent.board.areAllShipsDestroyed()) {
@@ -150,8 +149,7 @@ export async function gameOver(winner: MatchPlayer, loser: MatchPlayer) {
 
         var match = await Match.deleteOne({ _id: this._id });;
         return match;
-        // winnerUser.setPlayState(true);
-        // loserUser.setPlayState(true);
+       
     }
     catch (err) {
         throw err;

@@ -60,8 +60,8 @@ ChatSchema.methods.addMessage = async function (sender: Types.ObjectId, text: st
 export function getSchema() { return ChatSchema; }
 
 
-var chatModel;  // This is not exposed outside the model
-export function getModel(): Model<ChatInterface> { // Return Model as singleton
+var chatModel; 
+export function getModel(): Model<ChatInterface> {
     if (!chatModel) {
         chatModel = mongoose.model('Chat', getSchema());
     }

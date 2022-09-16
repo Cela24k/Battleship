@@ -14,7 +14,7 @@ export const MatchResultsSchema = new Schema<MatchResults>({
     },
     startTime: {
         type: SchemaTypes.Date,
-        default: Date.now //TODO see if it returns a "now" Date
+        default: Date.now 
     },
     finishTime: {
         type: SchemaTypes.Date,

@@ -41,7 +41,6 @@ export class FriendsScreenComponent implements OnInit {
     const isFriend =  this.names.includes(name);
 
     if (!isFriend && name.length > 1) {
-      // get user id from his Name
       let userid: string | undefined = undefined;
 
       this.httpservice.getUsers().subscribe({

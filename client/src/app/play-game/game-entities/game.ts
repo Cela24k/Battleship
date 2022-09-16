@@ -46,10 +46,6 @@ export class Ship {
 }
 
 export class BattleGrid {
-    //TODO vedere in che modo implementarla, vogliamo implementare una grid 10x10 e la logica si basera su tutta la griglia, oppure vogliamo 
-    //      un semplice array di coordinate, contenti le barche e quindi basare la logica solo sulle coordinate delle barchette.
-    //      il primo metodo penso sia comodo per i colpi sparati (spari un colpo, vedi nella grid se in quella posizione ci sta una barca)
-    //      IL secondo penso sia comodo per vedere se uno e' vincitore, bisognerebbe solo ciclare l'array di coordinate/barche.
     shots: Cell[]; // Shots array for our "grid", the cells have a cellType(see in cell.ts) which helps us for the frontend
     ships: Ship[];// Ships array that could be studied for the opponent shots.
     constructor(shots?: Cell[], ships?: Ship[]) {
@@ -112,11 +108,3 @@ export function getAllShips(){
     new Ship([], ShipLenght.Destroyer, "Destroyer", OrientationShip.Horizontal)]
 }
 
-// if (!this.rotated) {
-//     console.log('ciao')
-//     this.field[e.nativeElement.id] = new Cell(coords[0], coords[1] + i, CellType.Ship);
-//   }
-//   else {
-//     console.log('ciao2')
-//     this.field[e.nativeElement] = new Cell(coords[0] + i, coords[1], CellType.Ship);
-//   }

@@ -92,7 +92,7 @@ router.get('/:chatId', async (req, res) => {
     try {
         const chatId = req.params.chatId;
         const chat = await ChatModel.findById(chatId).catch(err => { throw err; });
-        return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat });// should we either return the entire chat, or split the chat into multiple attributes? Such as charId: chat._id, chatUsers: chat.users...
+        return res.status(200).json({ error: false, timestamp: Date.now(), chat: chat }); 
 
     } catch (err) {
         if (err === 'Server Error')
@@ -107,7 +107,7 @@ router.get('/:chatId', async (req, res) => {
 *   Returns the chatInterface or 404/500 if an error occurs.
 *   Sends a message
 */
-router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
+router.post('/:chatId/messages', async (req, res) => {
     let jwt = jsonwebtoken.decode(req.headers.authorization.replace("Bearer ", ""));
     const { sender, text } = req.body;
     if(sender === jwt['_id']){
@@ -136,4 +136,3 @@ router.post('/:chatId/messages', async (req, res) => {//TODO socket integration
 
     return res.status(401).json({error: false, errormessage: 'Unauthorized', timestamp: Date.now()});
 })
-//TODO think about a delete, is it useful to delete a private chat? moreover a game chat might be deleted when the game ends.

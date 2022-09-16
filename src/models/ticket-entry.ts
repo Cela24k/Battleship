@@ -28,7 +28,7 @@ export const TicketEntrySchema = new Schema<TicketEntryInterface>({
 // Creates a ticket entry for entering in the queue, with userId as parameter that will be unique one ticket by one.
 export async function createTicket(userId: Types.ObjectId): Promise<TicketEntryInterface> {
     const playerQueued: UserInterface = await getUser(userId);
-    const ticketEntry: any = { // if i put TicketEntryInterface as type gets me some errors, see that.
+    const ticketEntry: any = { 
         userId: userId,
         elo: playerQueued.stats.elo,
         ticketTime: new Date()
@@ -52,8 +52,8 @@ export async function removeTicket(userId: Types.ObjectId): Promise<void> {
 
 
 
-var ticketEntryModel;  // This is not exposed outside the model
-export function getModel(): Model<TicketEntryInterface> { // Return Model as singleton
+var ticketEntryModel;  
+export function getModel(): Model<TicketEntryInterface> { 
     if (!ticketEntryModel) {
         ticketEntryModel = mongoose.model('MatchmakingQueue', TicketEntrySchema);
     }

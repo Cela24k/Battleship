@@ -44,7 +44,6 @@ export class ChatPrevComponent implements OnInit {
 
   deleteChat(data:any){
     console.log('da implementare bene');
-    // this.deleteChatEvent.emit(this.props);
   }
   
 }

@@ -32,7 +32,6 @@ export class MatchmakingComponent implements OnInit {
         console.log(e);
       },
       complete: () => {
-        // this.joinMatch();
         this.joinQueue();
       }
     })

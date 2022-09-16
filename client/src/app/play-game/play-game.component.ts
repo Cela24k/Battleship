@@ -81,7 +81,6 @@ export class PlayGameComponent implements OnInit {
     }
   }
 
-  //ottenere partite gia esistenti e cambiare il valore di game.preparation a false;
   fetchExistingMatch(): void {
   }
 
@@ -196,7 +195,6 @@ export class PlayGameComponent implements OnInit {
         }
       }
       timer();
-      // this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + event.playerOne + 'connected', timestamp: Date.now() } })
     }
   }
 
@@ -229,7 +227,6 @@ export class PlayGameComponent implements OnInit {
       this.gameService.initBoard(this.game.match._id, new BattleGrid([], this.game.positions)).subscribe({
         next: (value) => {
           if (this.game) {
-            //ste due righe di codice da fare quando il server emitta che i due giocatori sono pronti
             this.game.preparation = false;
             this.game.playing = true;
             this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: 'player ' + this.ls.getUsername() + ' initialized his board', timestamp: Date.now() } })
@@ -260,10 +257,7 @@ export class PlayGameComponent implements OnInit {
 
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
-        if (this.turn == null) {
-          //emittare un messaggio nella chat quando si entra
-          // this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: myId + 'joined the match', timestamp: Date.now() } })
-        }
+        
         this.turn = value.gameTurn == myId;
         if (value.shot && value.userId != myId) {
           this.game?.oppentShots.push(value.shot);
@@ -292,9 +286,7 @@ export class PlayGameComponent implements OnInit {
       next: (value) => {
         value.ship.position.forEach((e: Cell) => {
           this._snackBar.open(value.ship.type + 'Ship destroyed', 'Close', { duration: 3000 });
-          //fare qualcosa
-          // let elem = document.getElementById(((e.row*10+e.col)+100).toString());
-          // elem?.setAttribute('style','border: 1px solid black');
+         
         });
       },
       error(err) {
@@ -351,7 +343,7 @@ export class PlayGameComponent implements OnInit {
     })
   }
 
-  surrender() {//TODO change html and go away
+  surrender() {
     this.sio.emit("match-left", { match: this.game?.match, userId: this.ls.getId(), surrender: true });
   }
 
@@ -373,7 +365,6 @@ export class PlayGameComponent implements OnInit {
     if (this.game && this.game.match && this.shot) {
       this.gameService.shoot(this.game.match._id, this.shot).subscribe({
         next: (value) => {
-          //sostituire cella con hit o miss 
           if (this.game && this.shot && value[0]) {
             this.game.shots.push(value[0]);
           }
@@ -477,7 +468,6 @@ export class PlayGameComponent implements OnInit {
   joinMatch() {
     this.sio.listen('new-match').subscribe({
       next: (data: Match) => {
-        // this.joinedMatchEvent.emit(data);
         this.onMatchEvent(data);
         this.sio.emit("match-join",{userId: this.ls.getId(), match: data});
       },

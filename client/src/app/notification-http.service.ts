@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { concatMap, map, Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
 
@@ -11,7 +12,7 @@ export class NotificationHttpService {
   url: string;
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) {
-    this.url = 'http://localhost:8080/user';
+    this.url = environment.apiUrl +'/user';
   }
 
   getNotifications(): Observable<any> { 

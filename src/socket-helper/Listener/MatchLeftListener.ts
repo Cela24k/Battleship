@@ -7,16 +7,14 @@ import { getOnlineUsers, getUserById, setUserState, UserState } from "../../mode
 import ChatMessageEmitter from "../Emitter/ChatMessageEmitter";
 import { gameOver, getMatchById } from "../../models/match/match";
 import { StateChangeEmitter } from "../Emitter/StateChangeEmitter";
-//Questa classe servira a broadcastaare un messaggio all'interno della chat (roomId) che verra data dal client!? vedere come implementare
 export class MatchLeftListener extends Listener {
 
     public readonly ios: Server;
-    public readonly chat: Model<ChatInterface>;//TODO vorrei far diventare la chat un singleton anche se non dovrebbe servire
+    public readonly chat: Model<ChatInterface>;
     constructor(ios: Server, client: Socket) {
         super(client, 'match-left');
         this.ios = ios;
     }
-    //TODO testare funzionamento
     listen(): void {
         super.listen(async (data) => {
             try {

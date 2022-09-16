@@ -14,7 +14,6 @@ export interface StatsInterface {
     shotsHit: number,
     accuracy: number,
     timePlayed: Date,
-    //TODO see if it's worth call just one method to update everystats.
     winsAdd(): void,
     lossesAdd(): void,
     winstreakAdd(): void,
@@ -109,9 +108,8 @@ StatsSchema.methods.lose = function (): void {
     this.winstreakReset();
 }
 
-//TODO see if everything is correct;
 StatsSchema.methods.updateStats = function(player: MatchPlayer, result: MatchResults) : void {
-    if(result.winner == player.userId){
+    if(result.winner == (player.userId).toString()){
         this.win();
         this.eloIncrement(K_VALUE*(1 - player.delta_score));
     }else{

@@ -58,11 +58,7 @@ NotificationSchema.methods.accept = async function(): Promise<void> {
         );
         return Promise.resolve();
     }
-    else if(this.ntype === NotificationType.Game){
-        
-        //DO SOMETHING ELSE
-
-    }
+    
     else return Promise.reject('Wrong notification type')
 }
 

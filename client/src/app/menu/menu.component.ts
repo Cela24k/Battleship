@@ -38,7 +38,6 @@ export class MenuComponent implements OnInit {
 
   ngOnInit(): void {
     this.socket.onNewMessage().subscribe((data) => {
-      //controllare se la chat è gia stata aperta
       this.n_pending++;
     })
 

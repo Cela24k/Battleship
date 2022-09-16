@@ -1,7 +1,6 @@
 import { Server } from "socket.io";
 import { Emitter } from "./Emitter";
 
-//Classe che serve per creare un emitter di stanze
 export class RoomEmitter<T> extends Emitter<T>{
 
     public readonly roomId: string;

@@ -32,16 +32,13 @@ export class AccessComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // if(this.route === '/login' && this.local.getToken() != null){
-    //   this.router.navigate(['/play'])
-    // }
+   
 
   }
 
   ngOnUpdate(){
     console.log('update');
-    // if(this.route === '/login' && (this.local.getToken() || this.local.getToken() != ''))
-    //   this.router.navigate(['/play'])
+    
   }
 
   onSubmit(username: string, password: string) {
@@ -49,7 +46,7 @@ export class AccessComponent implements OnInit {
       next: (d: any) => {
         this.router.navigate(['/play']);
       },
-      error: (err) => {//TODO vedere redirect per quando ci sono errori
+      error: (err) => {
         this.errors = true;
       },
       complete: ()=> console.log('Login completed'),

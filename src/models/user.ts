@@ -27,7 +27,7 @@ export interface UserInterface extends Document {
     digest: string,
     salt: string,
     role: Role,
-    friends: Types.ObjectId[], // by reference ?
+    friends: Types.ObjectId[], 
     state: UserState,
     stats: StatsInterface,
     notifications: NotificationInterface[],
@@ -111,7 +111,7 @@ UserSchema.methods.setPassword = function (pwd: string): void {
     this.salt = crypto.randomBytes(16).toString('hex');
     var hmac = crypto.createHmac('sha512', this.salt);
     hmac.update(pwd);
-    this.digest = hmac.digest('hex'); // The final digest depends both by 
+    this.digest = hmac.digest('hex'); 
 
 }
 
@@ -194,13 +194,13 @@ UserSchema.methods.addChat = async function (chat: ChatInterface): Promise<void>
     if (!flag) {
         this.chats.push(chat._id);
         try {
-            await this.save();//TODO see if here when we save the usersdoc it saves alse the chats(createChat doesn save the chat)
+            await this.save();
         } catch (err) {
             return Promise.reject(err);
         }
     } else {
         return Promise.reject("Already Exist");
-    }  // TODO need to see how to handle this rejection according to POST request returning state.
+    } 
     return Promise.resolve();
 }
 
@@ -221,9 +221,9 @@ UserSchema.methods.changeModInfo = async function (username: string, email: stri
 
 export function getSchema() { return UserSchema; }
 
-// Mongoose Model
-var userModel;  // This is not exposed outside the model
-export function getModel(): Model<UserInterface> { // Return Model as singleton
+
+var userModel;  
+export function getModel(): Model<UserInterface> {
     if (!userModel) {
         userModel = mongoose.model('User', getSchema())
     }
@@ -245,7 +245,7 @@ export async function getUser(userid: Types.ObjectId): Promise<UserInterface> {
         (err) => Promise.reject('Server error')
     );
     if (result) return Promise.resolve(result);
-    else return Promise.reject('No user with such Id'); //mettere dentro un errore?
+    else return Promise.reject('No user with such Id');
 }
 
 export async function getUserById(userid: Types.ObjectId): Promise<UserInterface> {
@@ -254,7 +254,7 @@ export async function getUserById(userid: Types.ObjectId): Promise<UserInterface
         (err) => Promise.reject('Server error')
     );
     if (result) return Promise.resolve(result);
-    else return Promise.reject('No user with such Id'); //mettere dentro un errore?
+    else return Promise.reject('No user with such Id');
 }
 
 export async function getOnlineUsers(): Promise<UserInterface[]> {

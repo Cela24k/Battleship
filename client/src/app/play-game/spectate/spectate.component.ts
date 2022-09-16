@@ -39,42 +39,6 @@ export class SpectateComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.onlineFriends.push({
-    //   _id: '629e11b0f044755ee06215d9',
-    //   username: 'Cela',
-    //   stats: {
-    //     wins: 0,
-    //     losses: 0,
-    //     winstreak: 0,
-    //     maxWinstreak: 0,
-    //     elo: 0,
-    //     playedGames: 0,
-    //     shotsFired: 0,
-    //     shotsHit: 0,
-    //     timePlayed: '',
-    //     rank: 0,
-    //     _id: '6352r761376568'
-    //   },
-    //   state: 'Offline'
-    // }, {
-    //   _id: '629e11b0f044755ee06215d9',
-    //   username: 'Cela',
-    //   stats: {
-    //     wins: 0,
-    //     losses: 0,
-    //     winstreak: 0,
-    //     maxWinstreak: 0,
-    //     elo: 0,
-    //     playedGames: 0,
-    //     shotsFired: 0,
-    //     shotsHit: 0,
-    //     timePlayed: '',
-    //     rank: 0,
-    //     _id: '6352r761376568'
-    //   },
-    //   state: 'Offline'
-    // });
-
     this.fetchData();
     this.turnListener();
   }
@@ -145,7 +109,6 @@ export class SpectateComponent implements OnInit {
       shots: [],
       opponentShots: []
     };
-    //fare la chiamata poi this.observing = true e game = {}
     this.isObserving = true;
     this.gameService.getSpectateMatch(id).subscribe({
       next: (value) => {
@@ -170,10 +133,7 @@ export class SpectateComponent implements OnInit {
 
     this.sio.listen('match-turn').subscribe({
       next: (value) => {
-        if (this.observedGame.turn == null) {
-          //emittare un messaggio nella chat quando si entra
-          // this.sio.emit('match-message', { chatId: this.chatId, message: { sender: 'Server', text: myId + 'joined the match', timestamp: Date.now() } })
-        }
+      
         if (value.userId == this.observedGame.playerOneId) {
           this.observedGame.shots.push(value.shot);
         } else {

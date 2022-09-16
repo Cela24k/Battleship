@@ -1,5 +1,4 @@
 import { Server, Socket } from "socket.io";
-//Classe per listenare determinati eventi di ogni singolo client
 export abstract class Listener {
     public readonly client: Socket;
     public readonly event: string;

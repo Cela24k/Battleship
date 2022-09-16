@@ -28,7 +28,7 @@ export interface Ship extends Types.Subdocument {
 export const ShipSchema = new Schema<Ship>({
     position: {
         type: [CellSchema],
-        required: true//TODO see how can i make them unique(or if we should put everything in the frontend)
+        required: true
     },
     orientation: {
         type: SchemaTypes.Number,

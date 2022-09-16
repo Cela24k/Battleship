@@ -33,7 +33,5 @@ export class TileComponent implements OnInit {
     else if(this.isMiss()) return 'tile-miss';
     return 'tile-shot';
   }
-  // generateColor(): string {
-  //   return "background-color: "+ 
-  // }
+
 }

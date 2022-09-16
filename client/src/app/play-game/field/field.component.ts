@@ -34,7 +34,6 @@ export class FieldComponent implements OnInit {
   ngOnInit(): void {
     this.populateField();
     this.placeExistingBoards();
-    // sostituire con props veri
     this.populateShots();
     if(this.randomize){
       this.randomizeField();
@@ -74,7 +73,6 @@ export class FieldComponent implements OnInit {
   clickHandler(event: any, index: number) {
     const coords = formatCoords(SIZE, index); //[x,y]
 
-    // cliccata una barca 
     if (this.listeners) {
       if (this.field[index].cellType == CellType.Ship) {
         let shipElement: Ship = new Ship([], 0, '', 0);
@@ -98,7 +96,7 @@ export class FieldComponent implements OnInit {
           this.placedShips.splice(shipIndex, 1);
           this.addShipEvent.emit(shipElement);
         }
-      } //cliccata una empty
+      } 
       else {
         if (!this.isOutBound(coords[0], coords[1]) && !this.isTooClose(coords[0], coords[1]) && !this.isHoveringSomething() && this.selected) {
           this.hovered.forEach((e, i) => {
@@ -116,7 +114,6 @@ export class FieldComponent implements OnInit {
             else console.log('e null')
           });
           this.placedShips.push(this.selected);
-          // mandare emitter di poppare la nave dalla lista
           this.popShipEvent.emit(this.selected);
           if (this.placedShips.length == 5)
             this.positionsEvent.emit(this.placedShips);

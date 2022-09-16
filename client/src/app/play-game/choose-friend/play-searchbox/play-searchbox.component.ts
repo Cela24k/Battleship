@@ -54,7 +54,6 @@ export class PlaySearchboxComponent implements OnInit {
     });
   }
 
-  //filtrare per lutente normale gli utenti non amici 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();

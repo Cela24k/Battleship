@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { tap, catchError } from 'rxjs/operators';
 import { Observable, of, map } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'//TODO capire dove far providare i servizi che abbiamo come DI
@@ -10,7 +11,7 @@ import { LocalStorageService } from './local-storage.service';
 
 export class AuthService {
   constructor(private http: HttpClient, private localHelper: LocalStorageService) { }
-  url = 'http://localhost:8080/auth'
+  url = environment.apiUrl+'/auth';
 
   register(username: string, email: string, password: string): Observable<any> {
     let body = {

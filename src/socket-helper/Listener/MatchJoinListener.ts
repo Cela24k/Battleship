@@ -6,11 +6,10 @@ import { Listener } from "./Listener";
 import { getOnlineUsers, getUserById, setUserState, UserState } from "../../models/user";
 import ChatMessageEmitter from "../Emitter/ChatMessageEmitter";
 import { StateChangeEmitter } from "../Emitter/StateChangeEmitter";
-//Questa classe servira a broadcastaare un messaggio all'interno della chat (roomId) che verra data dal client!? vedere come implementare
 export class MatchJoinedListener extends Listener {
 
     public readonly ios: Server;
-    public readonly chat: Model<ChatInterface>;//TODO vorrei far diventare la chat un singleton anche se non dovrebbe servire
+    public readonly chat: Model<ChatInterface>;
     constructor(ios: Server, client: Socket) {
         super(client, 'match-join');
         this.ios = ios;

@@ -17,7 +17,7 @@ export class FriendMatchResponseListener extends Listener {
     }
 
     listen(): void {
-        super.listen(async (data: any) => {//TODO qui si avranno anche le chaiamate al databse
+        super.listen(async (data: any) => {
             const userId =data.userId;
             const friendId =data.friendId;
             if (data.accept) {

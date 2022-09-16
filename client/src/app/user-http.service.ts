@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
 
@@ -29,7 +30,7 @@ export interface UserInterface {
   providedIn: 'root'
 })
 export class UserHttpService {
-  private url: string = 'http://localhost:8080/user';
+  private url: string = environment.apiUrl+'/user';
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) { }
 

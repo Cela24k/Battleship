@@ -63,7 +63,6 @@ export class MatchMakingEngine {
     private findOpponent(playerOne: TicketEntryInterface, ticketList: TicketEntryInterface[]): TicketEntryInterface {
         return ticketList.filter((playerTwo: TicketEntryInterface) => this.arePlayersMatchable(playerOne, playerTwo)).pop()
     }
-    //TODO study and implement an elo logic, try to find how to use it
     private arePlayersMatchable(playerOne: TicketEntryInterface, playerTwo: TicketEntryInterface): boolean {
         const now = (new Date()).getTime();
         const elapsedTimeOne = (now - playerOne.ticketTime.getTime()) / 1000;
@@ -71,7 +70,6 @@ export class MatchMakingEngine {
         return (playerOne.elo < playerTwo.elo + K_VALUE * 4 && playerOne.elo > playerTwo.elo - K_VALUE * 4) || (elapsedTimeOne > 6 && elapsedTimeTwo >6 );
     }
 
-    //returns the expected score of playerOne.
-    //https://mathspp-com.translate.goog/blog/elo-rating-system-simulation?_x_tr_sl=en&_x_tr_tl=it&_x_tr_hl=it&_x_tr_pto=op,sc
+   
 
 } 

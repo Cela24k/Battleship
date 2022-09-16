@@ -1,5 +1,4 @@
-// importati  imoduli che ci possono servire per l'applicazione
-const result = require('dotenv').config(); //loada variabili d'ambiente into process.env:The process.env property returns an object containing the user environment. https://nodejs.org/docs/latest/api/process.html#process_process_env
+const result = require('dotenv').config(); 
 import fs = require('fs');
 import http = require('http');
 import colors = require('colors');
@@ -27,14 +26,11 @@ import { LogOutListener } from './socket-helper/Listener/LogOutListener';
 import { FriendMatchListener } from './socket-helper/Listener/FriendMatchListener';
 import { FriendMatchResponseListener } from './socket-helper/Listener/FriendMatchResponseListener';
 
-//crezione dell'istanza del modulo Express
 const app = express();
 var auth = expressjwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] });
-//utilizziamo delle global middleware functions che possono essere inserite nella pipeline indipendentemente dal metodo HTTP e endpoint usati. Attenzione all'ordine in cui si possono mettere
-// in questo caso cors(cross-origin resource sharing) serve nel condividere risorse limitate tra le origini che possono avere domini diversi
+
 app.use(cors());
 
-//estrae l'intero body di una incoming request stream e lo "passa" nel req.body in formato json
 app.use(bodyparser.json())
 
 app.use((req, res, next) => {
@@ -48,7 +44,6 @@ app.get("/", (req, res) => {
     res.status(200).json({ api_version: "1.0", endpoints: ["/auth", "/user"] });
 });
 
-//qui passiamo tutti i middleware(routes) che implementiamo
 app.use('/auth', authRoutes);
 app.use('/user', auth, userRoutes);
 app.use('/chat', auth, chatRoutes);
@@ -61,7 +56,7 @@ export const ios = new Server(server, {
     cors: {
         origin: "*"
     }
-}); //qui inizializziamo il web socket, Server e' la creazione del server socket
+}); 
 
 mongoose.connect(process.env.DB_URI)
     .then(
@@ -115,11 +110,8 @@ ios.on('connection', (client) => {
         }
     })
     client.on('notification', (data) => {
-        //client.broadcast.to('id').emit('notification','mimmetto a tutti');
         console.log('Il server socket ha captato: ', data);
-        //client.broadcast.emit('notification',"MIMMO BROADCASTATO")
     })
-    //client.emit('notification',{mimmo: "el mimmo server"});
 })
 
 

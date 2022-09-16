@@ -3,7 +3,6 @@ import { createTicket, removeTicket } from "../models/ticket-entry";
 import { parseJwt } from "./user-routes";
 
 export const router = Router();
-//TODO need to be tested
 router.post('/join', async (req, res) => {
     const userId = req.body.userId;
     const jwt = parseJwt(req.headers.authorization);
