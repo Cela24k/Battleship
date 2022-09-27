@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
+import { environment } from 'src/environments/environment';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
@@ -9,7 +10,7 @@ import { LocalStorageService } from './local-storage.service';
 //TODO sperare e pregare che funzioni.
 export class SocketioService {
 
-  readonly uri = "ws://localhost:8080";
+  readonly uri = environment.apiUrl;
   private socket: Socket;
 
   constructor(private ls: LocalStorageService) {
