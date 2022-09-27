@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "rocketbattleship"
+  },
+  "targets": {
+    "rocketbattleship": {
+      "hosting": {
+        "client": [
+          "rocketbattleship"
+        ]
+      }
+    }
+  }
+}
