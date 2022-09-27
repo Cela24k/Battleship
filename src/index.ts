@@ -1,6 +1,7 @@
 const result = require('dotenv').config(); 
 import fs = require('fs');
 import http = require('http');
+//vedere se bisogna fare da qua https
 import colors = require('colors');
 colors.enabled = true;
 import mongoose = require('mongoose');
