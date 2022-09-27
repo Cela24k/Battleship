@@ -10,7 +10,7 @@ import { LocalStorageService } from './local-storage.service';
 //TODO sperare e pregare che funzioni.
 export class SocketioService {
 
-  readonly uri = environment.apiUrl;
+  readonly uri = environment.socketUrl;
   private socket: Socket;
 
   constructor(private ls: LocalStorageService) {

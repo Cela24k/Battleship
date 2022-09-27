@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 import { HttpTokenPortingService } from './http-token-porting.service';
 import { LocalStorageService } from './local-storage.service';
 import { BattleGrid, Cell } from './play-game/game-entities/game';
@@ -9,8 +10,8 @@ import { BattleGrid, Cell } from './play-game/game-entities/game';
   providedIn: 'root'
 })
 export class GameService {
-  private matchmaking_url: string = 'http://localhost:8080/matchmaking';
-  private match_url: string = 'http://localhost:8080/match';
+  private matchmaking_url: string = environment.apiUrl+'/matchmaking';
+  private match_url: string = environment.apiUrl+'/match';
 
   constructor(private httpclient: HttpClient, private localstorage: LocalStorageService, private auth: HttpTokenPortingService) { }
 
