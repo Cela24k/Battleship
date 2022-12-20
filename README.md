@@ -12,3 +12,7 @@ opponent’s ship is present at that location, the ship is “hit” and the cor
 secondary grid is marked as hit. On the contrary, if no ships are present, the cell is marked
 as “miss”. When all the cells occupied by a ship are marked as “hit”, that ship is destroyed.
 The player who destroys all the opponent’s ships wins the match.
+
+
+https://user-images.githubusercontent.com/62605203/208728979-67596d26-1d0b-4905-b206-442562f0d627.mp4
+
